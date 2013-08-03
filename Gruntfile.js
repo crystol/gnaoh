@@ -13,7 +13,7 @@ module.exports = function(grunt) {
             options: {
                 report: 'gzip'
             },
-            source: {
+            javascript: {
                 files: {
                     'build/js/<%= package.name %>.js': 'source/js/<%= package.name %>.js',
                     'source/temp/<%= package.name %>.loader.js': 'source/js/<%= package.name %>.loader.js',
@@ -22,12 +22,10 @@ module.exports = function(grunt) {
         },
         //stringing scripts and stylesheets
         concat: {
-            options: {
-                separator: '\n',
-            },
-            source: {
-                src: ['<%= library %>/js/require.js', 'source/temp/<%= package.name %>.loader.js'],
-                dest: 'build/js/loader.js',
+            javascript: {
+                files: {
+                    'build/js/loader.js': ['<%= library %>/js/require.js', 'source/temp/<%= package.name %>.loader.js'],
+                }
             },
         },
         //javascript linting
@@ -41,13 +39,12 @@ module.exports = function(grunt) {
                 immed: true,
                 latedef: true,
                 newcap: true,
-                quotmark: true,
                 noarg: true,
                 sub: true,
                 undef: true,
-                unused: true,
                 node: true,
-                jquery:true,
+                browser: true,
+                jquery: true,
                 globals: {
                     'define': true
                 }
@@ -61,7 +58,7 @@ module.exports = function(grunt) {
                     paths: ['source/less']
                 },
                 files: {
-                    'build/css/<%= package.name %>.css': 'source/css/<%= package.name %>.less'
+                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less'
                 }
             },
             production: {
@@ -71,7 +68,7 @@ module.exports = function(grunt) {
                     yuicompress: true,
                 },
                 files: {
-                    'build/css/<%= package.name %>.css': 'source/css/<%= package.name %>.less'
+                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less'
                 }
             }
         },
@@ -103,6 +100,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     //assign tasks
-    grunt.registerTask('build', ['jshint', 'uglify', 'concat', 'less']);
-    grunt.registerTask('default', ['build']);
+    grunt.registerTask('build', ['uglify', 'concat', 'less:production']);
+    grunt.registerTask('default', ['jshint', 'build']);
 };

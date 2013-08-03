@@ -1,0 +1,633 @@
+/*
+ * This file contains the styling behind gnaoh.com.
+ * Less.js is required to compile this stylesheet into browser CSS.
+ *
+ *  Map!
+ * - Variables
+ * - Mixins
+ * - Page
+ *      - Typography
+ *      - Resets
+ *      - Universials (e.g, responsive fluid grid, transitions)
+ *      - HTML & Body level styling.
+ *      - Navigator (Sidebar)
+ *          - Logo 
+ *              - Pyrimidine and Benzene aromatic rings
+ *          - Navigation Links
+ *      - Content & Post
+ *          - Paragraphs, Headings, Sections
+ *          - Videos
+ *          - Image Galleries
+ *              - Wall/Brick Styling
+ *      - Media Queries for Responsive functionality.
+ */
+//variables
+@font: 'Roboto', Helvetica, sans-serif;                                //default font
+@font-size: 15px;                                                               //default font size
+@color: #9371B3;                                                                //highlighted color
+@bg-color: #fff;                                                                //background color
+@selection: darken(@color,5%);                                                  //selection color
+@navigator-h: 175px;                                                            //height of sidebar
+@navigator-w: 100%;                                                             //with of sidebar
+@navigator-bg: #464646;                                                         //background color of sidebar
+@navigator-fc: #BBB;                                                            //font color of nav links
+@content-margin:;                                                          //margin for main content
+@post-width: 1000px;                                                            //max width of main post
+@gallery-w: @post-width;                                                        //image gallery's width
+@aromatics-size: 70px;                                                          //side of logo
+@cssTransitionTime: 900ms;                                                      //default time for css transitions
+
+@nl:`'\n'`;                                                                     //newline shorthand
+// @baseURL: `"//lib." + document.location.host`;                               //URL for developement
+@baseURL: "/library";                                        //URL for compilation
+
+
+//common mixinables
+.animated (@time: @cssTransitionTime; @type: all) {
+    transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    -webkit-transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+//arguments as follows: name, duration, easing, delay, iteration count, direction, fill
+.key-animated (@name; @duration: 2s; @iteration: infinite; @easing: cubic-bezier(1,1,1,1); @delay: 0ms; @direction: normal; @fill: both) {
+    animation: @name @duration @easing @delay @iteration @direction @fill;
+    -webkit-animation: @name @duration @easing @delay @iteration @direction @fill;
+}
+//keyframe mixin. this is a really really ugly mixin hack. it's not possible until LESS implements mixins from variables.
+.keyframes(@name; @from: none; @to: 'none;';  @vendor:~'';){
+     @open: ~"@@{vendor}keyframes @{name} {@{nl}  from {@{nl}    @{vendor}@{from}@{nl}  }@{nl}  to {@{nl}    @{vendor}@{to}@{nl}  }@{nl}}@{nl}.@{name}";
+ 	@{open} {
+      .key-animated(@name);
+    }
+}
+.transform(@type; @value){
+    @mixin: ~'@{type}(@{value})';
+    transform: @mixin;
+    -webkit-transform: @mixin;
+}
+.noselect (){
+    -webkit-user-select: none;
+    -moz-user-select: none;    
+    -ms-user-select: none;   
+}
+.hide (){
+    display: none;
+}
+.show (){
+    display: block;
+}
+.fixed (){
+    position: fixed;
+}
+.relative (){
+    position: relative;
+}
+.absolute (){
+    position: absolute;
+}
+// Typography
+// @font-face {
+  // font-family: 'Open Sans';
+  // font-style: normal;
+  // font-weight: 400;
+  // src: local('Open Sans'), local('OpenSans'), url("@{baseURL}/fonts/opensans.woff") format('woff');
+// }
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Light'), local('Roboto-Light'), url("@{baseURL}/fonts/roboto300.woff") format('woff');
+}
+// @font-face {
+    // font-family: 'Roboto';
+    // font-style: normal;
+    // font-weight: 300;
+    // src: local('Roboto Light'), local('Roboto-Light'), url(//themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+// }
+// Page Layout
+//Normalizer
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    text-rendering: optimizeLegibility;
+}
+table {
+    border-collapse:collapse;
+    border-spacing: 0;
+}
+li {
+    list-style: none;
+}
+img, video {
+    width: 100%;
+    vertical-align: middle;
+    .noselect;
+}
+//responsive fluid grids
+[class *= 'grid-'] {
+    display: inline;
+    float: left;
+    padding: 0 0.5%;
+}
+//the parent wrappers of grid elements
+.gridlock {
+    float: none;
+    & >:first-child {
+        padding-left: 0;
+    }
+    & >:last-child {
+        padding-right: 0;
+    }
+    .clearfix;
+}
+//grid widths
+.grid-100   {width: 100% !important;}
+.grid-80    {width:80% !important;}
+.grid-75    {width:75% !important;}
+.grid-66    {width:66.6% !important;}
+.grid-60    {width:60% !important;}
+.grid-50    {width:50% !important;}
+.grid-40    {width:40% !important;}
+.grid-33    {width:33.3% !important;}
+.grid-25    {width:25% !important;}
+.grid-20    {width:20% !important;}
+.grid-10    {width:10% !important;}
+
+//grid blank offsets
+.grid-offset-80    {margin-left:80%;}
+.grid-offset-75    {margin-left:75%;}
+.grid-offset-66    {margin-left:66%;}
+.grid-offset-60    {margin-left:60%;}
+.grid-offset-50    {margin-left:50%;}
+.grid-offset-40    {margin-left:40%;}
+.grid-offset-33    {margin-left:33%;}
+.grid-offset-25    {margin-left:25%;}
+.grid-offset-20    {margin-left:20%;}
+.grid-offset-10    {margin-left:10%;}
+
+//universials
+//.loading class will rotate the object continuously
+.keyframes(loading, 'transform:none;', 'transform:rotate(360deg);');
+.keyframes(loading, 'transform:none;', 'transform:rotate(360deg);', -webkit-);
+.keyframes(gnidaol, 'transform:none;', 'transform:rotate(-360deg);');
+.keyframes(gnidaol, 'transform:none;', 'transform:rotate(-360deg);', -webkit-);
+ //default transition animation
+.animated {
+    .animated();
+}
+.no-height {
+    max-height: 0;
+    overflow: hidden;
+}
+.collapse {
+	@collapsed-w: -@navigator-w*0.85;
+	.transform(translate, '@{collapsed-w}, 0');
+}
+.clearfix {
+    &:before, &:after {
+        content:" ";
+        display:table;
+    }
+     &:before, &:after {
+        clear:both;
+    }
+}
+html {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    body {
+        font-family: @font;
+        background: @bg-color;
+        font-size: @font-size;
+        line-height: 20px;
+        vertical-align: middle;
+    }
+    //selection colors
+    ::-moz-selection {
+        background: @selection;
+        color: #fff;
+        text-shadow: none;
+    }
+    ::selection {
+        background: @selection;
+        color: #fff;
+        text-shadow: none;
+    }
+}
+#navigator {
+    // width: @navigator-w;
+    // height: @navigator-h;
+    .clearfix;
+    background: @bg-color;
+    z-index: 10;
+    .noselect;
+    &.collapse {
+        a {
+            opacity: 0;
+            .animated;
+        }
+    }
+   //Branding Logo
+    .logo {
+        .relative;
+        float: left;
+        width: @navigator-h;
+        height: @navigator-h;
+        background: @color;
+        //G (gangsta) Molecule
+        .aromatics {
+            position: relative;
+            left: 23%;
+            top: 13%;
+            .pyrimidine, .benzene {
+                position: absolute;
+                .top {
+                    width: 0;
+                    border-bottom: @aromatics-size/4 solid #fff;
+                    border-left: @aromatics-size/2 * 0.866 solid transparent;
+                    border-right: @aromatics-size/2 * 0.866 solid transparent;
+                }
+                .middle {
+                    width: @aromatics-size * 0.866;   //width to heigh ratio is root(3) to 1
+                    height: @aromatics-size/2;
+                    background: @bg-color;
+                }
+                .bottom {
+                    width: 0;
+                    border-top: @aromatics-size/4 solid @bg-color;
+                    border-left: @aromatics-size/2 * 0.866 solid transparent;
+                    border-right: @aromatics-size/2 * 0.866 solid transparent;
+                }
+            }
+            .benzene {
+                left: @aromatics-size*0.43;
+                top: @aromatics-size*0.755;
+            }
+            .flipper {
+                .hide;
+            }
+            .kenny, .hoang, .gnaoh {
+                color: @color;
+                .absolute;
+				.animated(500ms);
+                height: 0;
+                width: 0;
+            }
+            .kenny {
+                left: @aromatics-size/7;
+                top: @aromatics-size/3;
+            }
+            .hoang {
+                left: @aromatics-size*0.55;
+                top: @aromatics-size*1.1;
+                transform-origin: @aromatics-size/3 @aromatics-size/6;
+                -webkit-transform-origin: @aromatics-size/3 @aromatics-size/6;
+            }
+           .gnaoh {
+				opacity: 0;
+                left: @aromatics-size*0.55;
+                top: @aromatics-size*1.1;
+                transform-origin: @aromatics-size/3 @aromatics-size/6;
+                -webkit-transform-origin: @aromatics-size/3 @aromatics-size/6;
+				.transform(rotate, -180deg);
+            }
+			&:hover .hoang {
+				opacity: 0;
+				.transform(rotate, -180deg);
+			}
+			&:hover .gnaoh {
+				opacity: 1;
+				.transform(rotate, -360deg);
+			}
+        }
+    }
+	//the list with all of them links
+    // #nav-list {
+        // width: 200px;
+        // position: relative;
+        // top: 5px;
+        // box-shadow: 0 0 5px #555;
+        // background: @navigator-bg;
+        // a {
+            // display: block;
+            // color: @navigator-fc;
+            // padding: 0.75em 0.75em 0.75em;
+            // text-decoration: none;
+            // text-align: right;
+        // }
+        // .nav-parent {
+            // overflow: hidden;
+            // a {
+                // &:hover,
+                // &:active,
+                // &.active {
+                    // color: #fff;
+                    // background: @color;
+                // }
+                // &.active + .nav-child {
+                    // max-height: 300px;
+                // }
+            // }
+            // .nav-child {
+                // .animated(400ms);
+                // max-height: 0;
+                // a {
+                    // // text-align: left;
+                    // padding: 0.3em .5em;
+                    // border-left: 1em solid lighten(@navigator-bg,15%);
+                    // &:hover,
+                    // &:active,
+                    // &.active {
+                        // color: #fff;
+                        // background: lighten(@navigator-bg, 5%);
+                        // border-left: 1em solid @color;
+                    // }
+                // }
+            // }
+        // }
+    // }
+} 
+//content page
+#content {
+    position: relative;
+    padding: 2em;
+	margin: @content-margin;
+    &.collapsed {
+        margin-left:  @navigator-w - @navigator-w * 0.85;
+    }
+}
+#post {
+    max-width: @post-width;
+    h1,h2,h3,h4 {
+        color: @selection;
+    }
+    h1 {
+        margin: 10px 0;
+        font-size: @font-size*2;
+    }
+    a {
+        color: @color;
+        text-decoration: underline;
+    }
+    .cv {
+        max-width: 80%;
+        .category {
+            margin-bottom: 0.75em;
+            font-size: @font-size*1.75;
+            color: @selection;
+            padding-bottom: 5px;
+            border-bottom: 1px solid @color;
+        }
+        .position {
+            transform-origin: left top;
+            -webkit-transform-origin: left top;
+            margin-bottom: 2em;
+            .animated(150ms, all);
+            
+            .title {
+                font-size: @font-size*1.2;
+            }
+            .date {
+                color: @selection;
+                margin-bottom: 0.5em;
+            }
+            .description {
+                 li { 
+                    list-style: circle inside;
+                 }
+            }
+            .genus-species {
+                font-style: italic;
+            }
+            &.active {
+                .transform(scale, 1.3);
+                border-left: 5px solid @color;
+                padding-left: 1em;
+                margin-bottom: 4.5em;
+                .title {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+    #old-post {
+        width: @post-width;
+        .animated(1100ms);
+    }
+    #new-post{
+        width: @post-width;
+        @translatex: -@post-width*1.1;
+        .transform(translate, '@{translatex}, 0');
+        z-index: 5;
+        .animated(1100ms);
+    }
+    //image galleries
+    .gallery {
+        margin: 10px 0;
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        max-width: @gallery-w;
+        overflow: hidden;
+        .image {
+            position: relative;
+            margin: 10px 0;
+            img{
+                width: 100%;
+                max-width: 100%;
+                height: 100%;
+                vertical-align: middle;
+            }
+            .caption {
+                width: 100%;
+                position: absolute;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                color: #fff;
+                opacity: 0;
+                padding: 0 0 0 1%;
+                .animated(300ms);
+            }
+            //displays captions on hover
+            &:hover > .caption {
+                padding: 1.5% 0 1.5% 1%;
+                opacity: 1;
+            }
+        }
+            
+        //the resizable gallery
+        &.wall {
+            .animated(500ms);
+            .brick {
+                cursor: cell;
+                // float: left;
+                max-width: 24.5%;
+                margin: 0.25% 0;
+                transition-property: transform, opacity;
+                transition-duration: 0.5s;
+                 -webkit-transition-property: -webkit-transform, opacity;
+                  -webkit-transition-duration: 0.5s;
+                &.biggie {
+                    max-width:  49.5%;
+                    .caption {
+                        padding: 1.5% 0 1.5% 1%;
+                        opacity: 1;
+                    }
+                }
+                &.top {
+                    z-index: 5 !important;
+                                    .animated(500ms);
+                }
+                &.brick-hidden {
+                    pointer-events: none;
+                    z-index: 0;
+                }
+            }
+            
+            //hides the gallery when it's initializing 
+            &.mortar {
+                opacity: 0;
+                .animated(0) !important;
+                .brick {
+                    .animated(0) !important;
+                }
+            }
+        }
+    }
+    //video wrapper and UI
+    .video {
+        .relative;
+        width: 100%;
+        margin-bottom: 1em;
+        overflow: hidden;
+        .poster {
+            .absolute;
+            width: 100%;
+            background-size:100%;
+            background-repeat: no-repeat;
+            background-clip: content-box;
+        }
+        video {
+            max-width: 100%;
+        }
+    }
+    
+}
+
+//Media Queries!
+@media (min-width:1025px) {
+ 
+}
+//tablets
+@media (max-width:1024px) {
+}
+//Phones in landscape & Tablets in portrait
+@media (max-width:768px) {
+    @topbar-height: 2.5em;
+    html {
+    .grid-25,
+    .grid-20,
+    .grid-10 {
+        .grid-50;
+        }
+    }
+    .auto {
+        .show !important;
+    }
+    #navigator {
+       width: 100%;
+       height: auto;
+       .logo {
+            width: 100%;
+            height: @topbar-height;
+            z-index: 10;
+            right: 0;
+                .aromatics {
+                    top : auto;
+                    left : auto;
+                    right : @aromatics-size/2;
+                    .absolute;
+                    .transform(scale, 0.55);
+                //hides everything but pyrimidine ring
+                 & >:not(.pyrimidine) {
+                    .hide;
+                 }
+                .pyrimidine {
+                    .flipper {
+                        .show;
+                        width: 55%;
+                        height: 15%;
+                        margin: 0 auto;
+                        position: relative;
+                        top: 45%;
+                        background: @color;
+                    }
+                    .flipper:before {
+                        content: "";
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        top: -200%;
+                        background: @color;
+                    }
+                    .flipper:after {
+                        content: "";
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        top: 200%;
+                        background: @color;
+                    }
+                }
+            }
+        }
+        #nav-list {
+            .relative;
+            .hide;
+            top: 0;
+            border-top: 5px solid @navigator-bg;
+            opacity: 0.9;
+            .nav-parent {
+                .nav-child a {
+                    padding-left: 75%;
+                }
+            }
+        }
+    }
+    #content {
+        margin:  @topbar-height*1.5 0.5em;
+        padding: 0;
+        #post {
+            .cv {
+                max-width: 100%;
+            }
+            .gallery {
+                &.wall {
+                     .brick, li {
+                        max-width: 49.5%;
+                        &.biggie {
+                            max-width:  100%;
+                        }
+                    }
+                }
+            }
+            .video {
+                width: 100% !important;
+                margin-bottom: 0.5em;
+                video {
+                    max-width: 100%;
+                }
+            }
+        }
+    }
+}
+//Phones in portrait layout
+@media (max-width:480px) {
+    //makes all grid items turn into 100% width
+     [class *= 'grid-'] {
+        width:100% !important;
+        margin: auto 0;
+    }
+}
