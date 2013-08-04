@@ -599,18 +599,6 @@
             gnaoh.requireCss('gnaoh.less');
             root.require(['lib/less']);
         };
-        //things to do on localhost
-        if (/(127\.0\.0\.1)|(192\.168\.1\.200)/i.test(root.location.host)) {
-            $('link[rel=stylesheet]').remove();
-            root.less = {
-                poll: 1000,
-                rootpath: library + '/css/'
-            };
-            gnaoh.less();
-            root.setTimeout(function () {
-                root.less.watch();
-            }, 500);
-        }
         gnaoh.init();
         /*****************************************************************************************
          * Misc. DOM event bindings and manipulations
@@ -655,11 +643,6 @@
             $this.addClass('active');
             root.history.pushState({}, "", href);
             return false;
-        });
-        //navigator hide/show
-        $navigator.on('dblclick', function () {
-            gnaoh.isMini();
-            $navigator.add('#content').deanimate().toggleClass('collapse');
         });
         //navlist toggle for smaller devices
         $('.middle').on('click', function () {

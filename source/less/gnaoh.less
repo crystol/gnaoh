@@ -27,12 +27,11 @@
 @color: #9371B3;                                                                //highlighted color
 @bg-color: #fff;                                                                //background color
 @selection: darken(@color,5%);                                                  //selection color
-@navigator-h: 175px;                                                            //height of sidebar
+@navigator-h: 125px;                                                            //height of sidebar
 @navigator-w: 100%;                                                             //with of sidebar
-@navigator-bg: #464646;                                                         //background color of sidebar
+@navigator-bg: #464646;                                                    //background color of sidebar
 @navigator-fc: #BBB;                                                            //font color of nav links
-@content-margin:;                                                          //margin for main content
-@post-width: 1000px;                                                            //max width of main post
+@post-width: 1250px;                                                            //max width of main post
 @gallery-w: @post-width;                                                        //image gallery's width
 @aromatics-size: 70px;                                                          //side of logo
 @cssTransitionTime: 900ms;                                                      //default time for css transitions
@@ -217,30 +216,23 @@ html {
     }
 }
 #navigator {
-    // width: @navigator-w;
-    // height: @navigator-h;
     .clearfix;
-    background: @bg-color;
-    z-index: 10;
+    width:100%;
+    height: @navigator-h;
+    background-size: 100% 200%;
+    background-image: linear-gradient(70deg, darken(@color, 15%), lighten(@color, 10%));
     .noselect;
-    &.collapse {
-        a {
-            opacity: 0;
-            .animated;
-        }
-    }
    //Branding Logo
     .logo {
         .relative;
-        float: left;
+        margin:0 auto;
         width: @navigator-h;
         height: @navigator-h;
-        background: @color;
         //G (gangsta) Molecule
         .aromatics {
             position: relative;
-            left: 23%;
-            top: 13%;
+            left: 25%;
+            top: 1%;
             .pyrimidine, .benzene {
                 position: absolute;
                 .top {
@@ -280,7 +272,7 @@ html {
                 top: @aromatics-size/3;
             }
             .hoang {
-                left: @aromatics-size*0.55;
+                left: @aromatics-size/1.8;
                 top: @aromatics-size*1.1;
                 transform-origin: @aromatics-size/3 @aromatics-size/6;
                 -webkit-transform-origin: @aromatics-size/3 @aromatics-size/6;
@@ -303,63 +295,16 @@ html {
 			}
         }
     }
-	//the list with all of them links
-    // #nav-list {
-        // width: 200px;
-        // position: relative;
-        // top: 5px;
-        // box-shadow: 0 0 5px #555;
-        // background: @navigator-bg;
-        // a {
-            // display: block;
-            // color: @navigator-fc;
-            // padding: 0.75em 0.75em 0.75em;
-            // text-decoration: none;
-            // text-align: right;
-        // }
-        // .nav-parent {
-            // overflow: hidden;
-            // a {
-                // &:hover,
-                // &:active,
-                // &.active {
-                    // color: #fff;
-                    // background: @color;
-                // }
-                // &.active + .nav-child {
-                    // max-height: 300px;
-                // }
-            // }
-            // .nav-child {
-                // .animated(400ms);
-                // max-height: 0;
-                // a {
-                    // // text-align: left;
-                    // padding: 0.3em .5em;
-                    // border-left: 1em solid lighten(@navigator-bg,15%);
-                    // &:hover,
-                    // &:active,
-                    // &.active {
-                        // color: #fff;
-                        // background: lighten(@navigator-bg, 5%);
-                        // border-left: 1em solid @color;
-                    // }
-                // }
-            // }
-        // }
-    // }
+	
 } 
 //content page
 #content {
+    max-width: @post-width;
+    margin: 0 auto;
     position: relative;
     padding: 2em;
-	margin: @content-margin;
-    &.collapsed {
-        margin-left:  @navigator-w - @navigator-w * 0.85;
-    }
 }
 #post {
-    max-width: @post-width;
     h1,h2,h3,h4 {
         color: @selection;
     }
@@ -372,7 +317,6 @@ html {
         text-decoration: underline;
     }
     .cv {
-        max-width: 80%;
         .category {
             margin-bottom: 0.75em;
             font-size: @font-size*1.75;

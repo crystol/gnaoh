@@ -115,13 +115,7 @@ module.exports = function () {
             lint: {
                 files: ['source/**/*.js'],
                 tasks: ['jshint']
-            },
-            // livereload: {
-            // files: ['build/**/**'],
-            // options: {
-            // livereload: 35729
-            // }
-            // }
+            }
         }
     });
     //load tasks
