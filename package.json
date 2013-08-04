@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "express": "~3.3.4",
-    "jade": "~0.34.1"
+    "jade": "~0.34.1",
+    "spdy": "~1.10.1"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
