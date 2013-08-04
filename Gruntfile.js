@@ -37,7 +37,6 @@ module.exports = function() {
                 eqeqeq: true,
                 eqnull: true,
                 esnext: true,
-                indent: 4,
                 immed: true,
                 latedef: true,
                 newcap: true,
@@ -49,9 +48,10 @@ module.exports = function() {
                 jquery: true,
                 globals: {
                     'define': true
-                }
+                },
+                force: true
             },
-            source: ['Gruntfile.js', 'source/js/*.js']
+            source: ['Gruntfile.js', 'source/**/*.js']
         },
         //less css preprocessor
         less: {
@@ -99,6 +99,10 @@ module.exports = function() {
             options: {
                 spawn: false,
             },
+            copy: {
+                files: ['source/routes/**', 'source/views/**', 'source/*.js'],
+                tasks: ['copy']
+            },
             js: {
                 files: ['source/js/*.js'],
                 tasks: ['uglify', 'concat']
@@ -107,9 +111,9 @@ module.exports = function() {
                 files: ['source/less/*.less'],
                 tasks: ['less:development']
             },
-            copy: {
-                files: ['source/routes/**', 'source/views/**', 'source/*.js'],
-                tasks: ['copy']
+            lint: {
+                files: ['source/**/*.js'],
+                tasks: ['jshint']
             },
             // livereload: {
             //     files: ['source/less/**', 'source/js/**', 'source/views/**'],

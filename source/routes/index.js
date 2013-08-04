@@ -1,5 +1,6 @@
-exports.index = function(req, res) {
+module.exports.index = function(req, res) {
 	res.render('index', {
-		title: 'Kenny Hoang'
+		title: 'Kenny Hoang',
+		pretty: true
 	});
 };

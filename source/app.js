@@ -11,6 +11,7 @@ var fs = require('fs');
 // app settings
 app.configure(function() {
 	app.set('views', __dirname + '/views');
+	app.engine('jade', require('jade').__express);
 	app.set('view engine', 'jade');
 	app.set('http port', 1337);
 	app.set('https port', 1338);
@@ -19,7 +20,7 @@ app.configure(function() {
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
 	app.use(app.router);
-	
+
 	// static url for domain wide routing
 	app.use(express.static(__dirname));
 	// static url for developement with /node address
@@ -30,7 +31,6 @@ app.configure(function() {
 		res.status(404).sendfile('404.html');
 	});
 });
-
 // http server
 http.createServer(app).listen(app.get('http port'), function() {
 	console.log('Starting a server on port: ' + app.get('http port'));
