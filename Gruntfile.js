@@ -96,6 +96,9 @@ module.exports = function() {
         },
         //watches for changes within files & perform tasks if found
         watch: {
+            options: {
+                spawn: false,
+            },
             js: {
                 files: ['source/js/*.js'],
                 tasks: ['uglify', 'concat']
@@ -107,11 +110,11 @@ module.exports = function() {
             copy: {
                 files: ['source/routes/**', 'source/views/**', 'source/*.js'],
                 tasks: ['copy']
-            }
+            },
             // livereload: {
-            //     files: ['*.html', 'stylesheets/*.less', 'scripts/*.js'],
+            //     files: ['source/less/**', 'source/js/**', 'source/views/**'],
             //     options: {
-            //         livereload: 1337
+            //         livereload: 1339
             //     }
             // }
         }
