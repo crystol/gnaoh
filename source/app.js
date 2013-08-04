@@ -23,14 +23,13 @@ app.configure(function () {
 	// static url for domain wide routing
 	app.use(express.static(__dirname));
 	// static url for developement with /node address
-	app.use('/node/', express.static(__dirname));
-	app.use('/library/', express.static('../../library'));
+	app.use('/library/', express.static('../library'));
 	// 404 page
 	app.use(function (req, res) {
 		res.status(404).sendfile('views/404.html');
 	});
 });
-// http server
+// http serve
 http.createServer(app).listen(app.get('http port'), function () {
 	console.log('Starting a server on port: ' + app.get('http port'));
 });
@@ -44,4 +43,6 @@ spdy.createServer(options, app).listen(app.get('https port'), function () {
 });
 // routers
 app.get('/', routes.index);
+app.get('/about', routes.about);
 app.get('/gallery', routes.gallery);
+app.get('/videos', routes.videos);

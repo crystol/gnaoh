@@ -1,11 +1,11 @@
-//lists of all the routes used by the app
-module.exports.index = function (req, res) {
-    res.render('index', {
-        title: 'Kenny Hoang',
-    });
-};
-module.exports.gallery = function (req, res) {
-    res.render('index', {
-        title: 'Gallery',
-    });
-};
+//lists of all of the possible routes used by the app
+var routes = ['index', 'about', 'gallery', 'videos'];
+routes.forEach(function (value) {
+    //exports a module per route
+    module.exports[value] = function (req, res) {
+        res.render(value, {
+            title: value,
+            pretty: true
+        });
+    };
+});

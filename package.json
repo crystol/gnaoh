@@ -2,14 +2,15 @@
   "name": "gnaoh",
   "version": "0.0.1",
   "description": "gnaoh.com",
+  "author": "Kenny Hoang",
   "repository": {
     "type": "git",
     "url": "git://github.com/crystol/gnaoh.git"
   },
-  "author": "Kenny Hoang",
   "bugs": {
     "url": "https://github.com/crystol/gnaoh/issues"
   },
+  "main": "build/app.js",
   "dependencies": {
     "express": "~3.3.4",
     "jade": "~0.34.1",
@@ -23,6 +24,8 @@
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-jshint": "~0.6.2",
     "grunt-contrib-watch": "~0.5.1",
-    "grunt-contrib-copy": "~0.4.1"
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-nodemon": "0.0.8",
+    "grunt-concurrent": "~0.3.0"
   }
 }

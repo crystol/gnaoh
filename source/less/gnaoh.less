@@ -31,7 +31,7 @@
 @navigator-w: 100%;                                                             //with of sidebar
 @navigator-bg: #464646;                                                    //background color of sidebar
 @navigator-fc: #BBB;                                                            //font color of nav links
-@post-width: 1250px;                                                            //max width of main post
+@post-width: 1200px;                                                            //max width of main post
 @gallery-w: @post-width;                                                        //image gallery's width
 @aromatics-size: 70px;                                                          //side of logo
 @cssTransitionTime: 900ms;                                                      //default time for css transitions
@@ -303,8 +303,12 @@ html {
     margin: 0 auto;
     position: relative;
     padding: 2em;
+    -webkit-perspective: 1000;
 }
 #post {
+    position: relative;
+    -webkit-transform-style: preserve-3d;
+    .animated(1000ms);
     h1,h2,h3,h4 {
         color: @selection;
     }
@@ -356,14 +360,27 @@ html {
             }
         }
     }
+    &.flipped {
+        .transform(rotateY, 180deg);
+    }
     #old-post {
         width: @post-width;
         .animated(1100ms);
+        z-index: 2;
+        -webkit-backface-visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
     }
     #new-post{
+        -webkit-backface-visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
         width: @post-width;
-        @translatex: -@post-width*1.1;
-        .transform(translate, '@{translatex}, 0');
+        // @translatex: -@post-width*1.1;
+        // .transform(translate, '@{translatex}, 0');
+        .transform(rotateY, -180deg);
         z-index: 5;
         .animated(1100ms);
     }

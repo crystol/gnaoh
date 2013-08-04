@@ -25,7 +25,6 @@
         var $content = $('#content');
         var $post = $('#post');
         var $navList = $('#nav-list');
-        var $navigator = $('#navigator');
         var $loader = $('#navigator .pyrimidine');
         var $gallery;
         var $video;
@@ -205,13 +204,14 @@
                 if (mini) {
                     return cleanUp();
                 }
-                $old.css('transform', 'translate(' + width + 'px, 0)').wait(1200, function () {
-                    $body.scrollTop(0);
-                    $old.css('position', 'absolute');
-                    $new.css({
-                        width: $post.width(),
-                        transform: 'translate(0,0)'
-                    }).wait(1200, cleanUp);
+                $old.css('transform', 'rotateY(90deg').wait(1200, function () {
+                    // $body.scrollTop(0);
+                    // $old.css('position', 'absolute');
+                    // $new.css({
+                    //     width: $post.width(),
+                    //     transform: 'translate(0,0)'
+                    // }).wait(1200, cleanUp);
+                    $post.addClass('flipped').wait(1200, cleanUp);
                 });
             });
         };
@@ -257,7 +257,7 @@
                 if (options.captions) {
                     var captions;
                     $.ajax({
-                        url: library + '/img/' + options.id + '/captions.JSON',
+                        url: library + '/img/gallery/' + options.id + '/captions.JSON',
                         success: function (data) {
                             captions = data;
                             //the text will match with corresonponding image wrapper and insert a captions div
@@ -274,7 +274,12 @@
                 for (var i = options.start; i < options.amount; i++) {
                     var image = document.createElement('img');
                     var imageWrapper = document.createElement('div');
-                    image.src = library + '/img/' + options.id + '/' + i + '.jpg';
+                    //load smaller images for mobile devices
+                    if (mini) {
+                        image.src = library + '/img/gallery/' + options.id + '/' + i + 's.jpg';
+                    } else {
+                        image.src = library + '/img/gallery/' + options.id + '/' + i + '.jpg';
+                    }
                     imageWrapper.className = 'image';
                     imageWrapper.id = options.id + '-' + i;
                     imageWrapper.appendChild(image);
@@ -512,7 +517,7 @@
             };
             var scrollOptions = {
                 //portrait oriented photos will scroll at 1s and landscape will be .5s
-                duration: ($this.find('img').height() < 1000) ? 500 : 1000,
+                duration: ($this.find('img').height() < 1000) ? 200 : 800,
                 complete: function () {
                     scrolling = false;
                 }
