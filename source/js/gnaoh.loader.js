@@ -1,5 +1,5 @@
 //loading configuration & analytics
-(function(root, document) {
+(function (root, document) {
 	'use strict';
 	//CDN hosted scripts and their local fallbacks
 	var library = '/library/js';
@@ -19,7 +19,7 @@
 	//load the main scriptd
 	root.require(['gnaoh']);
 	//Google analytics
-	root.onload = function() {
+	root.onload = function () {
 		var cookieTray = document.cookie.split(';').sort();
 		var remote;
 		while (cookieTray.length) {

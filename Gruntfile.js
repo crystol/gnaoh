@@ -1,11 +1,10 @@
-module.exports = function() {
+module.exports = function () {
     'use strict';
     var grunt = require('grunt');
     grunt.initConfig({
         port: 1337,
         package: grunt.file.readJSON('package.json'),
         library: '../library',
-
         // clean directories
         clean: {
             build: ['build/']
@@ -46,6 +45,7 @@ module.exports = function() {
                 node: true,
                 browser: true,
                 jquery: true,
+                unused: true,
                 globals: {
                     'define': true
                 },
@@ -98,6 +98,7 @@ module.exports = function() {
         watch: {
             options: {
                 spawn: false,
+                livereload: 35729
             },
             copy: {
                 files: ['source/routes/**', 'source/views/**', 'source/*.js'],
@@ -116,14 +117,13 @@ module.exports = function() {
                 tasks: ['jshint']
             },
             // livereload: {
-            //     files: ['source/less/**', 'source/js/**', 'source/views/**'],
-            //     options: {
-            //         livereload: 1339
-            //     }
+            // files: ['build/**/**'],
+            // options: {
+            // livereload: 35729
+            // }
             // }
         }
     });
-
     //load tasks
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -136,8 +136,7 @@ module.exports = function() {
     //assign tasks
     grunt.registerTask('build', ['uglify', 'concat', 'less:production', 'copy']);
     grunt.registerTask('default', ['jshint', 'clean', 'build']);
-    grunt.registerTask('live', function() {
+    grunt.registerTask('live', function () {
         grunt.loadTasks('build/app.js');
     });
-
 };

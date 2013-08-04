@@ -1,6 +1,7 @@
-define(["jQuery"], function() {
-    (function(root, document, $) {
-        "use strict";
+(function (root, document) {
+    define(['jQuery'], function () {
+        'use strict';
+        var $ = root.$ || root.jQuery;
         //an object to wield the burden of responsibilities--it will be the one...
         //..to have a capitalized name like it's a big-shot constructor
         var gnaoh = {};
@@ -18,7 +19,6 @@ define(["jQuery"], function() {
         var resizeCallbacks;
         var cssDelay = 1000;
         var library = '/library';
-
         //common jquery selectors cache to speed things up
         var $window = $(root);
         var $body = $('body');
@@ -41,7 +41,7 @@ define(["jQuery"], function() {
         takeout = {
             fn: gnaoh,
             lib: library,
-            vars: function() {
+            vars: function () {
                 return {
                     initPromise: initPromise,
                     initCallbacks: initCallbacks,
@@ -52,12 +52,11 @@ define(["jQuery"], function() {
             }
         };
         root.gnaoh = takeout;
-
         /*****************************************************************************************
          * Extending jQuery functions
          * *****************************************************************************************/
         //stall function that can be used more versitile from $().delay()
-        $.prototype.wait = $.wait = function(time, callback) {
+        $.prototype.wait = $.wait = function (time, callback) {
             //need to cache this and pass it to window as context
             var $this = this;
             var procrastinate = $.Deferred();
@@ -66,23 +65,23 @@ define(["jQuery"], function() {
             }
             //if callback exists, perform it after the delay and return jquery object for chaining
             if (typeof callback === 'function') {
-                root.setTimeout(function() {
+                root.setTimeout(function () {
                     callback.call($this);
                 }, time);
                 return $this;
             } else {
                 //return promise--use withh .done()--if no callbacks are provided
-                root.setTimeout(function() {
+                root.setTimeout(function () {
                     procrastinate.resolveWith($this);
                 }, time);
                 return procrastinate;
             }
         };
         //adds the animate class to selected element, wait for animation, and removes the class
-        $.prototype.deanimate = function(removee, styleClear, time) {
+        $.prototype.deanimate = function (removee, styleClear, time) {
             time = time || cssDelay;
             var removees = 'animated ' + removee;
-            this.addClass('animated').wait(time).done(function() {
+            this.addClass('animated').wait(time).done(function () {
                 this.removeClass(removees);
                 if (styleClear) {
                     this.removeAttr('style');
@@ -94,37 +93,36 @@ define(["jQuery"], function() {
          * Functionality
          * ***************************************************************************************/
         //function to initialize the page on first load or ajax loaded sections. this usually deals with the big files.
-        gnaoh.init = function() {
+        gnaoh.init = function () {
             $loader.addClass('loading').next().addClass('gnidaol');
             //promises and callbacks
             initPromise = $.Deferred();
             initCallbacks = $.Callbacks();
             resizeCallbacks = $.Callbacks();
             //add functions post-init callbacks list
-            initCallbacks.add(function() {
+            initCallbacks.add(function () {
                 loading = false;
                 //pagescroll observer
                 gnaoh.observer();
                 //removeloading animation
-                $loader.on('animationiteration webkitAnimationIteration', function(event) {
-                    $loader.off().on(event.type, function() {
+                $loader.on('animationiteration webkitAnimationIteration', function (event) {
+                    $loader.off().on(event.type, function () {
                         $loader.removeClass('loading').next().removeClass('gnidaol');
                         $loader.off();
                     });
                 });
             });
             //exectue the callbacks after init is finished
-            initPromise.done(function() {
+            initPromise.done(function () {
                 initCallbacks.fire();
             });
             //add handlers for window's resize events
             resizeCallbacks.add([gnaoh.observer, gnaoh.size]);
             //bind said handlers to window and add a delay to prevent rapid firing
-            $window.on('resize', function() {
+            $window.on('resize', function () {
                 root.clearTimeout(resizeDelay);
                 resizeDelay = root.setTimeout(resizeCallbacks.fire, 200);
             });
-
             //loading additional sections on the page
             $gallery = $('#post .gallery');
             $video = $('#post .video');
@@ -149,9 +147,7 @@ define(["jQuery"], function() {
             if (!$video.length && !$gallery.length) {
                 initPromise.resolve();
             }
-
         };
-
         //media query: will set mini || medium || massive to true appropiately.
         gnaoh.size = (function size() {
             var width = document.body.clientWidth;
@@ -165,13 +161,12 @@ define(["jQuery"], function() {
             }
             return size;
         })();
-
         //checks to see if the layout is currently in mini (mobile) responsive mode
         //it will throw a silent error and stop execution of the caller function
-        gnaoh.isMini = function() {
+        gnaoh.isMini = function () {
             if (mini) {
                 //event listener that stops the error from being an error
-                $window.on('error', function(event) {
+                $window.on('error', function (event) {
                     //remove the listener to prevent silencing of other errors
                     $window.off(event);
                     return false;
@@ -179,9 +174,8 @@ define(["jQuery"], function() {
                 throw 'Mini detected';
             }
         };
-
         //ajax loading of pages
-        gnaoh.getPage = function(link) {
+        gnaoh.getPage = function (link) {
             loading = true;
             $loader.addClass('loading').next().addClass('gnidaol');
             //clear sticky settings and unbind listeners
@@ -190,7 +184,7 @@ define(["jQuery"], function() {
             $.ajax({
                 type: 'GET',
                 url: link
-            }).done(function(data) {
+            }).done(function (data) {
                 //wraps the old page and replaces it with the data fetched from ajax request
                 var $data = $(data).find('#post').contents();
                 var $postPrep = $('<div id="new-post">').append($data);
@@ -198,18 +192,6 @@ define(["jQuery"], function() {
                 var $old = $('#old-post');
                 var $new = $('#new-post');
                 var width = Math.floor(($gallery.hasClass('wall') ? $content.width() : $old.width()) * -1.1);
-                //animating the pages
-                if (mini) {
-                    return cleanUp();
-                }
-                $old.css('transform', 'translate(' + width + 'px, 0)').wait(1200, function() {
-                    $body.scrollTop(0);
-                    $old.css('position', 'absolute');
-                    $new.css({
-                        width: $post.width(),
-                        transform: 'translate(0,0)'
-                    }).wait(1200, cleanUp);
-                });
                 //restores the order
 
                 function cleanUp() {
@@ -219,21 +201,31 @@ define(["jQuery"], function() {
                     $old.remove();
                     gnaoh.init();
                 }
+                //animating the pages
+                if (mini) {
+                    return cleanUp();
+                }
+                $old.css('transform', 'translate(' + width + 'px, 0)').wait(1200, function () {
+                    $body.scrollTop(0);
+                    $old.css('position', 'absolute');
+                    $new.css({
+                        width: $post.width(),
+                        transform: 'translate(0,0)'
+                    }).wait(1200, cleanUp);
+                });
             });
         };
-
         //load a css sheet
-        gnaoh.requireCss = function(name) {
+        gnaoh.requireCss = function (name) {
             var stylesheet = document.createElement("link");
             var href = (name === 'gnaoh.less') ? 'css/gnaoh.less' : library + '/css/' + name;
             stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
             stylesheet.href = href;
             document.getElementsByTagName("head")[0].appendChild(stylesheet);
         };
-
         //load a  gallery from a specified directory. sample html code <div class='gallery' id='dirName' start='1' amount='10'></div>
-        gnaoh.loadGallery = function() {
-            $gallery.each(function(element) {
+        gnaoh.loadGallery = function () {
+            $gallery.each(function (element) {
                 var $this = $(this);
                 var options = {};
                 var imageArray = [];
@@ -257,7 +249,7 @@ define(["jQuery"], function() {
                 }
                 //if it's the last gallery to load, it will resolve the init promise
                 if (options.lastOne) {
-                    galleryPromise.done(function() {
+                    galleryPromise.done(function () {
                         initPromise.resolve();
                     });
                 }
@@ -266,10 +258,10 @@ define(["jQuery"], function() {
                     var captions;
                     $.ajax({
                         url: library + '/img/' + options.id + '/captions.JSON',
-                        success: function(data) {
+                        success: function (data) {
                             captions = data;
                             //the text will match with corresonponding image wrapper and insert a captions div
-                            galleryPromise.done(function() {
+                            galleryPromise.done(function () {
                                 for (var key in data) {
                                     var caption = $('<div class="caption">' + data[key] + '</div>');
                                     $this.find('#' + options.id + '-' + key).append(caption);
@@ -293,20 +285,20 @@ define(["jQuery"], function() {
                 galleryPromise.resolve();
             });
             //if not mobile nor wall gallery, it will do a fancy scroll upon click
-            $gallery.filter(':not(.wall)').on('click', '.image', function(event) {
+            $gallery.filter(':not(.wall)').on('click', '.image', function (event) {
                 gnaoh.isMini();
                 gnaoh.smoothScroll.call(this, event);
             });
         };
         //lay the brick elements from class wall
-        gnaoh.layBricks = function() {
+        gnaoh.layBricks = function () {
             var $foundation = $('.wall');
             $foundation.css({
                 'max-width': $content.width(),
                 width: $content.width()
             });
-            root.require(['lib/isotope'], function() {
-                $foundation.imagesLoaded(function() {
+            root.require(['lib/isotope'], function () {
+                $foundation.imagesLoaded(function () {
                     $foundation.isotope({
                         itemSelector: '.image',
                         layoutMode: 'masonry',
@@ -336,14 +328,14 @@ define(["jQuery"], function() {
                         $.wait(cssDelay * 0.5, anotherBrickOnTheWall);
                         return rebrick;
                     })();
-                    $.wait(100).done(function() {
+                    $.wait(100).done(function () {
                         $foundation.removeClass('mortar');
                     });
                     //add rebrick as a handler for resizing events
                     resizeCallbacks.add(rebrick);
                     //clicking on each image will toggle its enlargement.
-                    $foundation.on('click', '.image', function() {
-                        $(this).toggleClass('biggie top').wait(cssDelay).done(function() {
+                    $foundation.on('click', '.image', function () {
+                        $(this).toggleClass('biggie top').wait(cssDelay).done(function () {
                             this.removeClass('top');
                         });
                         $.wait(cssDelay * 0.5).done(anotherBrickOnTheWall);
@@ -353,8 +345,8 @@ define(["jQuery"], function() {
             });
         };
         //loads html5 video content from div tags with .video class.
-        gnaoh.loadVideo = function() {
-            $video.each(function() {
+        gnaoh.loadVideo = function () {
+            $video.each(function () {
                 var $wrapper = $(this); //the parent container for the videos
                 var id = this.id;
                 var options = this.dataset;
@@ -395,7 +387,7 @@ define(["jQuery"], function() {
                 //event bindings
                 $(video).on({
                     //single click to play/pause
-                    click: function(event) {
+                    click: function (event) {
                         event.stopPropagation();
                         if (this.paused) {
                             this.play();
@@ -404,13 +396,13 @@ define(["jQuery"], function() {
                         }
                     },
                     //fullscreen on double click
-                    dblclick: function() {
+                    dblclick: function () {
                         if (this.webkitRequestFullscreen) {
                             this.webkitRequestFullscreen();
                         }
                     },
                     //if data-hover=true, will play on hover
-                    mouseenter: function(event) {
+                    mouseenter: function (event) {
                         event.stopPropagation();
                         if (this.hover) {
                             this.loop = true;
@@ -418,17 +410,17 @@ define(["jQuery"], function() {
                         }
                         this.preload = 'auto';
                     },
-                    mouseleave: function() {
+                    mouseleave: function () {
                         if (this.hover) {
                             this.pause();
                         }
                     },
                     //removes background once the video starts playing
-                    play: function(event) {
+                    play: function (event) {
                         if (options.controls) {
                             this.controls = true;
                         }
-                        $(poster).deanimate().css('opacity', 0).wait(500, function() {
+                        $(poster).deanimate().css('opacity', 0).wait(500, function () {
                             this.remove();
                         });
                         $(this).off(event);
@@ -437,7 +429,7 @@ define(["jQuery"], function() {
                     // timeupdate : function () {}
                 });
                 //the parent wrapper will delegate all of these events to its video child
-                $wrapper.on('click mouseenter', function(event) {
+                $wrapper.on('click mouseenter', function (event) {
                     $wrapper.find('video').trigger(event.type);
                 });
             });
@@ -446,37 +438,37 @@ define(["jQuery"], function() {
                 $.wait(1000, initPromise.resolve);
             }
             //on window resize, the video heights will adjust
-            resizeCallbacks.add(function() {
-                $video.each(function() {
+            resizeCallbacks.add(function () {
+                $video.each(function () {
                     var $this = $(this);
                     $this.css('height', $this.width() * (9 / 16));
                 });
             });
         };
         //curriculum vitae section
-        gnaoh.loadCV = function() {
+        gnaoh.loadCV = function () {
             $cv.find('.position:not(.active)').on({
-                click: function() {
+                click: function () {
                     gnaoh.isMini();
                     $cv.find('.active ').removeClass(' active ');
                     $(this).addClass(' active ');
                 },
-                mouseenter: function() {
+                mouseenter: function () {
                     gnaoh.isMini();
                     var $this = $(this);
-                    var countdown = root.setTimeout(function() {
+                    var countdown = root.setTimeout(function () {
                         $cv.find('.active').removeClass('active');
                         $this.addClass(' active ');
                     }, 1000);
-                    $this.on(' mouseleave ', function(event) {
+                    $this.on(' mouseleave ', function (event) {
                         root.clearTimeout(countdown);
                         $this.off(event);
                     });
                 }
             });
-            $("#coolio").on('click', function() {
+            $("#coolio").on('click', function () {
                 gnaoh.requireCss('fancybox/fancybox.css');
-                root.require(['lib/fancybox'], function() {
+                root.require(['lib/fancybox'], function () {
                     $.fancybox({
                         padding: 3,
                         closeClick: true,
@@ -488,7 +480,7 @@ define(["jQuery"], function() {
             });
         };
         //animated smoothScroll to next sibbling element or specified target
-        gnaoh.smoothScroll = function(event, direction, customTarget) {
+        gnaoh.smoothScroll = function (event, direction, customTarget) {
             var $this = $(this);
             //prevent stacking scroll animations
             if (scrolling) {
@@ -497,20 +489,6 @@ define(["jQuery"], function() {
             if (event) {
                 event.preventDefault();
             }
-            //call either next or previous of current element (depended on scroll direction)
-            direction = direction || $.fn.next;
-            var target = customTarget ? customTarget : getNext($this);
-            //if custom target is not specified, default offsets for next/prev elements are used
-            var selector = {
-                scrollTop: $(target).offset() ? $(target).offset().top - 5 : 0
-            };
-            var scrollOptions = {
-                //portrait oriented photos will scroll at 1s and landscape will be .5s
-                duration: ($this.find('img').height() < 1000) ? 500 : 1000,
-                complete: function() {
-                    scrolling = false;
-                }
-            };
             //recursively try to get the target
 
             function getNext(current) {
@@ -525,6 +503,20 @@ define(["jQuery"], function() {
                     return next;
                 }
             }
+            //call either next or previous of current element (depended on scroll direction)
+            direction = direction || $.fn.next;
+            var target = customTarget ? customTarget : getNext($this);
+            //if custom target is not specified, default offsets for next/prev elements are used
+            var selector = {
+                scrollTop: $(target).offset() ? $(target).offset().top - 5 : 0
+            };
+            var scrollOptions = {
+                //portrait oriented photos will scroll at 1s and landscape will be .5s
+                duration: ($this.find('img').height() < 1000) ? 500 : 1000,
+                complete: function () {
+                    scrolling = false;
+                }
+            };
             //executes the scroll
             try {
                 scrolling = true;
@@ -532,9 +524,8 @@ define(["jQuery"], function() {
                 $('html').animate(selector, scrollOptions);
             } catch (e) {}
         };
-
         //divides sections and bind scrolling and nav-list highlighting
-        gnaoh.observer = function(padding) {
+        gnaoh.observer = function (padding) {
             //divides the sections and push them into an array with offset attributes
             var $sections = $('section');
             var sections = [];
@@ -546,7 +537,7 @@ define(["jQuery"], function() {
                 return;
             }
             //push the sections with its id, top, and bottom offsets into an array
-            $sections.each(function() {
+            $sections.each(function () {
                 var $this = $(this);
                 var singleSection = {
                     id: this.id,
@@ -563,9 +554,9 @@ define(["jQuery"], function() {
                 }
                 //add a cleartimeout to prevent the scroll events from stacking/firing too often/degrading performance
                 root.clearTimeout(spyDelay);
-                spyDelay = root.setTimeout(function() {
+                spyDelay = root.setTimeout(function () {
                     var windowPos = $window.scrollTop() + padding;
-                    sections.forEach(function(element) {
+                    sections.forEach(function (element) {
                         if (!element.id) {
                             return;
                         }
@@ -581,7 +572,7 @@ define(["jQuery"], function() {
             $window.off('scroll').on('scroll', spy).trigger('scroll');
         };
         //changing the colors!
-        gnaoh.rainbow = function() {
+        gnaoh.rainbow = function () {
             var colors = ['#52a87f', '#EE8080', '#9371b3', '#7C7C7C', '#0EAED6'];
             var randomColor = Math.floor(Math.random() * colors.length);
 
@@ -604,7 +595,7 @@ define(["jQuery"], function() {
         };
         // root.setInterval(gnaoh.rainbow, 30000);
         //enable less auto-refresh
-        gnaoh.less = function() {
+        gnaoh.less = function () {
             gnaoh.requireCss('gnaoh.less');
             root.require(['lib/less']);
         };
@@ -616,18 +607,17 @@ define(["jQuery"], function() {
                 rootpath: library + '/css/'
             };
             gnaoh.less();
-            root.setTimeout(function() {
+            root.setTimeout(function () {
                 root.less.watch();
             }, 500);
         }
         gnaoh.init();
-
         /*****************************************************************************************
          * Misc. DOM event bindings and manipulations
          * *****************************************************************************************/
         //history navigation (back/forward buttons) for ajax loaded pages
         try {
-            root.onpopstate = function() {
+            root.onpopstate = function () {
                 if (popState && currentPage.path !== document.location.pathname) {
                     gnaoh.getPage(document.location);
                 }
@@ -635,7 +625,7 @@ define(["jQuery"], function() {
             };
         } catch (e) {}
         //nav list functions for each link
-        $navList.on('click', 'a', function(event) {
+        $navList.on('click', 'a', function (event) {
             var $this = $(this);
             //dont break middle mouse/ctrl+click functionality
             if (event.which === 2 || event.ctrlKey) {
@@ -667,12 +657,12 @@ define(["jQuery"], function() {
             return false;
         });
         //navigator hide/show
-        $navigator.on('dblclick', function() {
+        $navigator.on('dblclick', function () {
             gnaoh.isMini();
             $navigator.add('#content').deanimate().toggleClass('collapse');
         });
         //navlist toggle for smaller devices
-        $('.middle').on('click', function() {
+        $('.middle').on('click', function () {
             var $this = $('.flipper');
             var rotation = $this.css('transform') === 'none' ? 'rotate(90deg)' : 'none';
             $this.css({
@@ -680,5 +670,5 @@ define(["jQuery"], function() {
             });
             $navList.toggleClass('auto');
         });
-    })(this, document, jQuery);
-});
+    });
+})(window, document);
