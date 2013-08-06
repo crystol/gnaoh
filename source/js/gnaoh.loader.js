@@ -8,7 +8,7 @@
 		paths: {
 			lib: library,
 			jQuery: [
-				document.location.protocol + '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min',
+				'//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min',
 				library + '/jQuery'
 			],
 			analytics: [

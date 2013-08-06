@@ -9,7 +9,7 @@
         var mini;
         var medium;
         var massive;
-        var loading;
+        var loading = true;
         var popState;
         var scrolling;
         var currentPage;
@@ -190,29 +190,22 @@
                 $post.attr('name', $(data).find('#post').attr('name')).wrapInner('<div id="old-post">').append($postPrep);
                 var $old = $('#old-post');
                 var $new = $('#new-post');
-                var width = Math.floor(($gallery.hasClass('wall') ? $content.width() : $old.width()) * -1.1);
                 //restores the order
 
                 function cleanUp() {
-                    //push new page to analytics and browser history
-                    root._gaq.push(['_trackPageview', document.location.pathname]);
-                    $new.contents().unwrap();
                     $old.remove();
+                    $new.contents().unwrap();
+                    $post.removeClass('flipped');
+                    //push new page to analytics and browser history
                     gnaoh.init();
+                    root._gaq.push(['_trackPageview', document.location.pathname]);
                 }
                 //animating the pages
                 if (mini) {
                     return cleanUp();
                 }
-                $old.css('transform', 'rotateY(90deg').wait(1200, function () {
-                    // $body.scrollTop(0);
-                    // $old.css('position', 'absolute');
-                    // $new.css({
-                    //     width: $post.width(),
-                    //     transform: 'translate(0,0)'
-                    // }).wait(1200, cleanUp);
-                    $post.addClass('flipped').wait(1200, cleanUp);
-                });
+                // $old.css('position', 'absolute');
+                $post.deanimate(null, null, 1100).addClass('flipped').find($old).fadeOut(500).wait(1100, cleanUp);
             });
         };
         //load a css sheet
@@ -298,10 +291,18 @@
         //lay the brick elements from class wall
         gnaoh.layBricks = function () {
             var $foundation = $('.wall');
-            $foundation.css({
-                'max-width': $content.width(),
-                width: $content.width()
-            });
+
+            function calcWidth() {
+                var columnWidth;
+                if (mini) {
+                    columnWidth = $post.width() / 2;
+                } else if (medium) {
+                    columnWidth = $post.width() / 3;
+                } else {
+                    columnWidth = $post.width() / 4;
+                }
+                return columnWidth;
+            }
             root.require(['lib/isotope'], function () {
                 $foundation.imagesLoaded(function () {
                     $foundation.isotope({
@@ -309,7 +310,7 @@
                         layoutMode: 'masonry',
                         masonry: {
                             //width of the distributed collumns
-                            columnWidth: mini ? $post.width() * 0.5 : $content.width() * 0.25
+                            columnWidth: calcWidth()
                         },
                         containerClass: 'wall',
                         itemClass: 'brick',
@@ -327,7 +328,7 @@
                             'max-width': $content.width()
                         }).isotope('option', {
                             masonry: {
-                                columnWidth: mini ? $post.width() * 0.5 : $content.width() * 0.25
+                                columnWidth: calcWidth()
                             }
                         });
                         $.wait(cssDelay * 0.5, anotherBrickOnTheWall);
@@ -625,7 +626,7 @@
                 return;
             }
             //return if link is already active or page is currently loading
-            if ($this.hasClass('active') || loading) {
+            if (loading || $this.hasClass('active')) {
                 return false;
             }
             var href = this.href;

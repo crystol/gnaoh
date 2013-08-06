@@ -17,6 +17,14 @@ app.configure(function () {
 	app.use(express.logger('dev'));
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
+	// strip slashes
+	app.use(function (req, res, next) {
+		if (req.url.substr(-1) === '/' && req.url.length > 1) {
+			res.redirect(301, req.url.slice(0, -1));
+		} else {
+			next();
+		}
+	});
 	app.use(express.favicon(__dirname + '/views/favicon.ico'));
 	app.use(app.router);
 	app.disable('x-powered-by');

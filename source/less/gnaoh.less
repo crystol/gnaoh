@@ -220,7 +220,7 @@ html {
     width:100%;
     height: @navigator-h;
     background-size: 100% 200%;
-    background-image: linear-gradient(70deg, darken(@color, 15%), lighten(@color, 10%));
+    background-image: linear-gradient(70deg,#6E4B8F 5%,#E5D6F5 90%);
     .noselect;
    //Branding Logo
     .logo {
@@ -304,11 +304,9 @@ html {
     position: relative;
     padding: 2em;
     -webkit-perspective: 1000;
+    perspective:1000;
 }
 #post {
-    position: relative;
-    -webkit-transform-style: preserve-3d;
-    .animated(1000ms);
     h1,h2,h3,h4 {
         color: @selection;
     }
@@ -362,33 +360,25 @@ html {
     }
     &.flipped {
         .transform(rotateY, 180deg);
+        position: relative;
+        -webkit-transform-style: preserve-3d;
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1000;
     }
-    #old-post {
-        width: @post-width;
-        .animated(1100ms);
-        z-index: 2;
+    #old-post, #new-post {
+        max-width: @post-width;
+        .animated;
         -webkit-backface-visibility: hidden;
         position: absolute;
         top: 0;
         left: 0;
     }
     #new-post{
-        -webkit-backface-visibility: hidden;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: @post-width;
-        // @translatex: -@post-width*1.1;
-        // .transform(translate, '@{translatex}, 0');
         .transform(rotateY, -180deg);
-        z-index: 5;
-        .animated(1100ms);
     }
     //image galleries
     .gallery {
         margin: 10px 0;
-        background-repeat: no-repeat;
-        background-position: 50% 0;
         max-width: @gallery-w;
         overflow: hidden;
         .image {
@@ -422,7 +412,6 @@ html {
             .animated(500ms);
             .brick {
                 cursor: cell;
-                // float: left;
                 max-width: 24.5%;
                 margin: 0.25% 0;
                 transition-property: transform, opacity;
