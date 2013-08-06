@@ -5,7 +5,7 @@ var http = require('http');
 var spdy = require('spdy');
 var express = require('express');
 var app = express();
-var routes = require('./routes.js');
+var router = require('./router.js');
 var fs = require('fs');
 // app settings
 app.configure(function () {
@@ -50,7 +50,7 @@ spdy.createServer(options, app).listen(app.get('https port'), function () {
 	console.log('Starting a SPDY server listening on port: ' + app.get('https port'));
 });
 // routers
-app.get('/', routes.index);
-app.get('/about', routes.about);
-app.get('/gallery', routes.gallery);
-app.get('/videos', routes.videos);
+app.get('/', router.index);
+app.get('/about', router.about);
+app.get('/gallery', router.gallery);
+app.get('/videos', router.videos);

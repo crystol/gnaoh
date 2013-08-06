@@ -93,6 +93,7 @@
          * ***************************************************************************************/
         //function to initialize the page on first load or ajax loaded sections. this usually deals with the big files.
         gnaoh.init = function () {
+            gnaoh.activate();
             $loader.addClass('loading').next().addClass('gnidaol');
             //promises and callbacks
             initPromise = $.Deferred();
@@ -190,12 +191,13 @@
                 $post.attr('name', $(data).find('#post').attr('name')).wrapInner('<div id="old-post">').append($postPrep);
                 var $old = $('#old-post');
                 var $new = $('#new-post');
+                var animethod = (Math.round(Math.random())===0) ? 'flipped' : 'deppilf';
                 //restores the order
 
                 function cleanUp() {
                     $old.remove();
                     $new.contents().unwrap();
-                    $post.removeClass('flipped');
+                    $post.removeClass(animethod);
                     //push new page to analytics and browser history
                     gnaoh.init();
                     root._gaq.push(['_trackPageview', document.location.pathname]);
@@ -205,7 +207,7 @@
                     return cleanUp();
                 }
                 // $old.css('position', 'absolute');
-                $post.deanimate(null, null, 1100).addClass('flipped').find($old).fadeOut(500).wait(1100, cleanUp);
+                $post.deanimate(null, null, 1100).addClass(animethod).find($old).fadeOut(500).wait(1100, cleanUp);
             });
         };
         //load a css sheet
@@ -530,20 +532,30 @@
                 $('html').animate(selector, scrollOptions);
             } catch (e) {}
         };
+        //highlights the current page
+        gnaoh.activate = function () {
+            var pageName = $post.attr('name');
+            if (pageName === 'index') {
+                pageName = '.';
+            }
+            var activists = $navList.find('a[href="' + pageName + '"]');
+            activists = activists.add(activists.parent());
+            $navList.find('.active').removeClass('active');
+            activists.addClass('active');
+        };
         //divides sections and bind scrolling and nav-list highlighting
-        gnaoh.observer = function (padding) {
+        gnaoh.observer = function(padding) {
             //divides the sections and push them into an array with offset attributes
             var $sections = $('section');
             var sections = [];
             var spyDelay;
             var initialHeight = document.body.clientHeight;
             padding = padding || 50;
-            $navList.find('a[href="' + $post.attr('name') + '"]').addClass('active');
             if (!$sections.length) {
                 return;
             }
             //push the sections with its id, top, and bottom offsets into an array
-            $sections.each(function () {
+            $sections.each(function() {
                 var $this = $(this);
                 var singleSection = {
                     id: this.id,
@@ -560,17 +572,17 @@
                 }
                 //add a cleartimeout to prevent the scroll events from stacking/firing too often/degrading performance
                 root.clearTimeout(spyDelay);
-                spyDelay = root.setTimeout(function () {
+                spyDelay = root.setTimeout(function() {
                     var windowPos = $window.scrollTop() + padding;
-                    sections.forEach(function (element) {
+                    sections.forEach(function(element) {
                         if (!element.id) {
                             return;
                         }
                         if (windowPos >= element.top && windowPos <= element.bottom) {
-                            $navList.find('.active').removeClass('active');
-                            var activists = $navList.find('a[href*="' + element.id + '"]');
-                            activists = activists.add(activists.parents('.link').find('a:first'));
-                            activists.addClass('active');
+                            // $navList.find('.active').removeClass('active');
+                            // var activists = $navList.find('a[href*="' + element.id + '"]');
+                            // activists = activists.add(activists.parents('.nav-parent').find('a:first'));
+                            // activists.addClass('active');
                         }
                     });
                 }, 75);
@@ -581,7 +593,6 @@
         gnaoh.rainbow = function () {
             var colors = ['#52a87f', '#EE8080', '#9371b3', '#7C7C7C', '#0EAED6'];
             var randomColor = Math.floor(Math.random() * colors.length);
-
             function modify() {
                 $('link[rel=stylesheet]').remove();
                 $('body *').deanimate();
@@ -590,21 +601,13 @@
                 });
             }
             if (!root.less) {
-                root.less = {
-                    env: "production"
-                };
-                gnaoh.less();
-                root.setTimeout(modify, 1500);
+                gnaoh.requireCss('gnaoh.less');
+                root.require(['lib/less'], modify);
             } else {
                 modify();
             }
         };
-        // root.setInterval(gnaoh.rainbow, 30000);
-        //enable less auto-refresh
-        gnaoh.less = function () {
-            gnaoh.requireCss('gnaoh.less');
-            root.require(['lib/less']);
-        };
+        // root.setInterval(gnaoh.rainbow, 3000);
         gnaoh.init();
         /*****************************************************************************************
          * Misc. DOM event bindings and manipulations
@@ -639,14 +642,11 @@
                 //if there's a hash match, it will be extracted;
                 gnaoh.smoothScroll(undefined, undefined, hash[0]);
             } else if (samePage) {
-                $navList.find('.active').removeClass('active');
                 gnaoh.smoothScroll(undefined, undefined, 'top');
             } else {
-                $navList.find('.active').removeClass('active');
                 gnaoh.getPage(link);
             }
             //mark link active & push page/hash to history
-            $this.addClass('active');
             root.history.pushState({}, "", href);
             return false;
         });

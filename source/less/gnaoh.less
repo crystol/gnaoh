@@ -285,14 +285,14 @@ html {
                 -webkit-transform-origin: @aromatics-size/3 @aromatics-size/6;
 				.transform(rotate, -180deg);
             }
-			&:hover .hoang {
-				opacity: 0;
-				.transform(rotate, -180deg);
-			}
-			&:hover .gnaoh {
-				opacity: 1;
-				.transform(rotate, -360deg);
-			}
+        }
+        &:hover .hoang {
+            opacity: 0;
+            .transform(rotate, -180deg);
+        }
+        &:hover .gnaoh {
+            opacity: 1;
+            .transform(rotate, -360deg);
         }
     }
 	//the list with all of them links
@@ -300,24 +300,23 @@ html {
         .absolute;
         top: @navigator-h*.4;
         right: 1em;
+        text-align: right;
         width: 100%;
         .link {
-            // display: inline;
-            margin:0 0.5em;
-            float: right;
-            // padding:0 1em;
+            display: inline;
+            margin:0 0.1em;
+            padding:0 1.5em;
             // border: 1px solid @bg-color;
-            // background: @bg-color;
-            border-radius: 3px;
-            // &.left {
-            //     float: left;
-            // }
-            // &.right {
-            //     float: right;
-            // }
+            border-radius: 2px;
             a {
                 color: @bg-color;
                 text-decoration: none;
+            }
+            &:hover, &.active {
+                background: @bg-color;
+                a {
+                    color: @color;
+                }
             }
         }
     }
@@ -427,12 +426,17 @@ html {
             }
         }
     }
-    &.flipped {
-        .transform(rotateY, 180deg);
+    &.flipped, &.deppilf {
         position: relative;
         -webkit-transform-style: preserve-3d;
         -webkit-backface-visibility: hidden;
         -webkit-perspective: 1000;
+    }
+    &.flipped {
+        .transform(rotateY, 180deg);
+    }
+    &.deppilf {
+        .transform(rotateY, -180deg);
     }
     #old-post, #new-post {
         max-width: @post-width;

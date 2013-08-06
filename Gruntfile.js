@@ -130,7 +130,6 @@ module.exports = function () {
         nodemon: {
             prod: {
                 options: {
-                    file: 'app.js',
                     watchedFolders: ['build'],
                     ignoredFiles: ['build/**/**'],
                     cwd: __dirname
