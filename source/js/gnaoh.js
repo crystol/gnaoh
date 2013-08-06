@@ -24,7 +24,7 @@
         var $body = $('body');
         var $content = $('#content');
         var $post = $('#post');
-        var $navList = $('#nav-list');
+        var $navList = $('#navlist');
         var $loader = $('#navigator .pyrimidine');
         var $gallery;
         var $video;
@@ -569,7 +569,7 @@
                         if (windowPos >= element.top && windowPos <= element.bottom) {
                             $navList.find('.active').removeClass('active');
                             var activists = $navList.find('a[href*="' + element.id + '"]');
-                            activists = activists.add(activists.parents('.nav-parent').find('a:first'));
+                            activists = activists.add(activists.parents('.link').find('a:first'));
                             activists.addClass('active');
                         }
                     });
