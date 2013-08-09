@@ -130,6 +130,7 @@ module.exports = function () {
         nodemon: {
             prod: {
                 options: {
+                    delayTime: 3,
                     watchedFolders: ['build'],
                     ignoredFiles: ['build/**/**'],
                     cwd: __dirname

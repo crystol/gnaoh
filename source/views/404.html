@@ -1,4 +1,7 @@
-<!-- Hi friend! -->
+<!-- 
+Hi friend! Unfortunately, my page is not ready for public eyes yet. It will soon though!
+Please enjoy the 404 page--that I spent way too much time on--instead.
+-->
 <html>
     <head>
     <title>404</title>
@@ -98,36 +101,36 @@
             <div class='bunk'>We have a little problem with finding the page, so we may experience some slight 404 and then - explode.</div>
         <script src='//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'></script>
 		<script>
-            (function (window, $) {
+            (function (window, document, $) {
                 'use strict';
                 var running = false;
                 var runCount = 0;
                 var $box = $('.box');
                 var oldTextContent = $('.river').text();
-
+                
                 //jquery prototypes
                 //stall function
-                 $.prototype.wait = function (time, callback) {
-                     //need to cache this and pass it to window as context
-                     var $this = this;
-                     var procrastinate = new $.Deferred();
-                     if (typeof time !== 'number') {
-                         time = 500;
-                     }
-                     //if callback exists, perform it after the delay and return jquery object for chaining
-                     if (typeof callback === 'function') {
-                         window.setTimeout(function () {
-                             callback.call($this);
-                         }, time);
-                         return $this;
-                     } else {
-                         //return promise--use withh .done()--if no callbacks are provided
-                         window.setTimeout(function () {
-                             procrastinate.resolveWith($this);
-                         }, time);
-                         return procrastinate;
-                     }
-                 };
+                $.prototype.wait = function (time, callback) {
+                    //need to cache this and pass it to window as context
+                    var $this = this;
+                    var procrastinate = new $.Deferred();
+                    if (typeof time !== 'number') {
+                        time = 500;
+                    }
+                    //if callback exists, perform it after the delay and return jquery object for chaining
+                    if (typeof callback === 'function') {
+                        window.setTimeout(function () {
+                            callback.call($this);
+                        }, time);
+                        return $this;
+                    } else {
+                        //return promise--use withh .done()--if no callbacks are provided
+                        window.setTimeout(function () {
+                            procrastinate.resolveWith($this);
+                        }, time);
+                        return procrastinate;
+                    }
+                };
                 //eats all of the stuffs
                 $.prototype.inTheBox = function () {
                     var $this = this;
@@ -155,7 +158,9 @@
                 //spit the stuff out
                 $.prototype.outTheBox = function () {
                     var $this = $(this);
-                    $box.addClass('firefly').css({height:'1em'});
+                    $box.addClass('firefly').css({
+                        height : '1em'
+                    });
                     $this.css({
                         position : 'relative'
                     });
@@ -186,22 +191,22 @@
                 };
                 function serenity() {
                     var anagrams = [
-                        'Ballad guise wow.',
-                        'Audible swag low.',
-                        'Abseil wag would.',
-                        'Balsa widow glue.',
-                        'Algae build wows.',
-                        'A saw below guild.',
-                        'Bad usage willow.',
-                        'Baa wild glue\'s ow.',
-                        'Beluga las widow.',
-                        'Basal wide lug ow.',
-                        'Nag a ram.',
-
+                    'Ballad guise wow.',
+                    'Audible swag low.',
+                    'Abseil wag would.',
+                    'Balsa widow glue.',
+                    'Algae build wows.',
+                    'A saw below guild.',
+                    'Bad usage willow.',
+                    'Baa wild glue\'s ow.',
+                    'Beluga las widow.',
+                    'Basal wide lug ow.',
+                    'Nag a ram.'
+                    
                     ];
                     var randogram = Math.floor(Math.random() * anagrams.length);
                     var $riverFrags;
-                    var init = function init (newString) {
+                    var init = function init(newString) {
                         var $river = $('.river');
                         var riverText = $river.text().split('');
                         var newriver = $('<div class="river">');
@@ -223,7 +228,8 @@
                         });
                         $river.replaceWith(newriver);
                         return init;
-                    }();
+                    }
+                    ();
                     $riverFrags = $('.river div');
                     $riverFrags.inTheBox().done(function () {
                         if (runCount > 5) {
@@ -240,14 +246,15 @@
                 function cleanup() {
                     $box.animate({
                         left : 0
-                    }, 1500).wait(1700, function () {
+                        }, 1500).wait(1700, function () {
                         $box.css({
                             transform : 'rotate(360deg)'
-                        }).wait(700, function () {
-                            $box.removeClass('firefly').wait(1000, function(){$box.css({
-                            height:0
-                                })
-                            }).wait(600, function () {
+                            }).wait(700, function () {
+                            $box.removeClass('firefly').wait(1000, function () {
+                                $box.css({
+                                    height : 0
+                                });
+                                }).wait(600, function () {
                                 $box.css({
                                     transform : ''
                                 });
@@ -255,7 +262,7 @@
                                 runCount += 1;
                                 running = false;
                             });
-                        })
+                        });
                     });
                 }
                 //trigger bindings
@@ -266,7 +273,7 @@
                     $box.css({
                         height : '4em'
                     });
-                }).on('mouseleave', function () {
+                    }).on('mouseleave', function () {
                     if (running) {
                         return;
                     }
@@ -277,31 +284,32 @@
                     });
                 });
                 $box.on('click', serenity);
-            })(window, jQuery);
-
-            var cookieTray = document.cookie.split(';').sort();
-            var remote;
-            while (cookieTray.length) {
-                remote = cookieTray.pop();
-                if (/^Remote/.test(remote)) {
-                    remote = remote.split('=')[1];
-                    break;
+                
+                var cookieTray = document.cookie.split(';').sort();
+                var remote;
+                while (cookieTray.length) {
+                    remote = cookieTray.pop();
+                    if (/^Remote/.test(remote)) {
+                        remote = remote.split('=')[1];
+                        break;
+                    }
                 }
-            }
-            var _gaq = _gaq || [];
-            var _pagePush =
-            _gaq.push(['_setAccount', 'UA-38948913-1']);
-            _gaq.push(['_trackPageview', document.location.pathname + '?=404&host=' + document.location.hostname],
-            ['_setCustomVar', 1, 'Remote', remote, 1]);
-
-            (function () {
-                var ga = document.createElement('script');
-                ga.type = 'text/javascript';
-                ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0];
-                s.parentNode.insertBefore(ga, s);
-            })();
+                window._gaq = window._gaq || [];
+                window._gaq.push(['_setAccount', 'UA-38948913-1']);
+                window._gaq.push(
+                ['_trackPageview', document.location.pathname + '?=404&host=' + document.location.hostname],
+                ['_setCustomVar', 1, 'Remote', remote, 1]);
+                
+                (function () {
+                    var ga = document.createElement('script');
+                    ga.type = 'text/javascript';
+                    ga.async = true;
+                    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(ga, s);
+                    
+                })();
+            })(window, document, jQuery);
         </script>
      </body>
 </html>

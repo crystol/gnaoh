@@ -191,7 +191,7 @@
                 $post.attr('name', $(data).find('#post').attr('name')).wrapInner('<div id="old-post">').append($postPrep);
                 var $old = $('#old-post');
                 var $new = $('#new-post');
-                var animethod = (Math.round(Math.random())===0) ? 'flipped' : 'deppilf';
+                var animethod = (Math.round(Math.random()) === 0) ? 'flipped' : 'deppilf';
                 //restores the order
 
                 function cleanUp() {
@@ -544,7 +544,7 @@
             activists.addClass('active');
         };
         //divides sections and bind scrolling and nav-list highlighting
-        gnaoh.observer = function(padding) {
+        gnaoh.observer = function (padding) {
             //divides the sections and push them into an array with offset attributes
             var $sections = $('section');
             var sections = [];
@@ -555,7 +555,7 @@
                 return;
             }
             //push the sections with its id, top, and bottom offsets into an array
-            $sections.each(function() {
+            $sections.each(function () {
                 var $this = $(this);
                 var singleSection = {
                     id: this.id,
@@ -572,9 +572,9 @@
                 }
                 //add a cleartimeout to prevent the scroll events from stacking/firing too often/degrading performance
                 root.clearTimeout(spyDelay);
-                spyDelay = root.setTimeout(function() {
+                spyDelay = root.setTimeout(function () {
                     var windowPos = $window.scrollTop() + padding;
-                    sections.forEach(function(element) {
+                    sections.forEach(function (element) {
                         if (!element.id) {
                             return;
                         }
@@ -593,6 +593,7 @@
         gnaoh.rainbow = function () {
             var colors = ['#52a87f', '#EE8080', '#9371b3', '#7C7C7C', '#0EAED6'];
             var randomColor = Math.floor(Math.random() * colors.length);
+
             function modify() {
                 $('link[rel=stylesheet]').remove();
                 $('body *').deanimate();

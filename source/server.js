@@ -34,7 +34,7 @@ app.configure(function () {
 	app.use('/library/', express.static('../library'));
 	// 404 page
 	app.use(function (req, res) {
-		res.status(404).sendfile('views/404.html');
+		res.status(404).sendfile(__dirname + '/views/404.html');
 	});
 });
 // http serve
@@ -49,8 +49,12 @@ var options = {
 spdy.createServer(options, app).listen(app.get('https port'), function () {
 	console.log('Starting a SPDY server listening on port: ' + app.get('https port'));
 });
-// routers
-app.get('/', router.index);
-app.get('/about', router.about);
-app.get('/gallery', router.gallery);
-app.get('/videos', router.videos);
+// getters
+var getters = ['/', 'about', 'gallery', 'videos'];
+getters.forEach(function (value) {
+	if (value === '/') {
+		app.get('/', router['index']);
+	} else {
+		app.get('/' + value, router[value]);
+	}
+});

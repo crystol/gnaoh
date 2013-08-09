@@ -89,18 +89,18 @@
   // font-weight: 400;
   // src: local('Open Sans'), local('OpenSans'), url("@{baseURL}/fonts/opensans.woff") format('woff');
 // }
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Roboto Light'), local('Roboto-Light'), url("@{baseURL}/fonts/roboto300.woff") format('woff');
-}
 // @font-face {
-    // font-family: 'Roboto';
-    // font-style: normal;
-    // font-weight: 300;
-    // src: local('Roboto Light'), local('Roboto-Light'), url(//themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+//   font-family: 'Roboto';
+//   font-style: normal;
+//   font-weight: 300;
+//   src: local('Roboto Light'), local('Roboto-Light'), url("@{baseURL}/fonts/roboto300.woff") format('woff');
 // }
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Roboto Light'), local('Roboto-Light'), url(//themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
 // Page Layout
 //Normalizer
 * {
@@ -492,7 +492,7 @@ html {
                  -webkit-transition-property: -webkit-transform, opacity;
                   -webkit-transition-duration: 0.5s;
                 &.biggie {
-                    max-width:  49.5%;
+                    max-width:  100%;
                     .caption {
                         padding: 1.5% 0 1.5% 1%;
                         opacity: 1;
