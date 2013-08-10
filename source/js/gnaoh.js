@@ -186,9 +186,13 @@
                 url: link
             }).done(function (data) {
                 //wraps the old page and replaces it with the data fetched from ajax request
-                var $data = $(data).find('#post').contents();
-                var $postPrep = $('<div id="new-post">').append($data);
-                $post.attr('name', $(data).find('#post').attr('name')).wrapInner('<div id="old-post">').append($postPrep);
+                var $data = $(data);
+                var name = $data.find('#post').attr('name');
+                var $postPrep = $('<div id="new-post">').append($data.find('#post').contents());
+                //changes page name and title
+                $post.attr('name', name);
+                document.title = name.charAt(0).toUpperCase() + name.substring(1);
+                $post.wrapInner('<div id="old-post">').append($postPrep);
                 var $old = $('#old-post');
                 var $new = $('#new-post');
                 var animethod = (Math.round(Math.random()) === 0) ? 'flipped' : 'deppilf';
@@ -203,6 +207,7 @@
                     root._gaq.push(['_trackPageview', document.location.pathname]);
                 }
                 //animating the pages
+                //skip on mobile devices
                 if (mini) {
                     return cleanUp();
                 }
@@ -310,30 +315,33 @@
                         $foundation.isotope('reloadItems');
                         $foundation.isotope('reLayout');
                     }
-                    //fixes the width on window resizes
+                    //self-invoking function that fixes the width on window resizes
                     var rebrick = (function rebrick() {
                         $foundation.css({
                             width: $content.width(),
                             'max-width': $content.width()
                         }).isotope('option', {
                             masonry: {
-                                columnWidth: calcWidth()
+                                columnWidth: mini ? $post.width() / 2 : $post.width() / 4
                             }
                         });
                         $.wait(cssDelay * 0.5, anotherBrickOnTheWall);
                         return rebrick;
                     })();
+                    //removes the opacity after the gallery is finished loading
                     $.wait(100).done(function () {
                         $foundation.removeClass('mortar');
                     });
                     //add rebrick as a handler for resizing events
                     resizeCallbacks.add(rebrick);
                     //clicking on each image will toggle its enlargement.
+                    //needs a animation delay in order to have accurate positions
+                    var delay = mini ? 0 : 500;
                     $foundation.on('click', '.image', function () {
-                        $(this).toggleClass('biggie top').wait(cssDelay).done(function () {
+                        $(this).addClass('top').toggleClass('biggie').wait(delay*2, function () {
                             this.removeClass('top');
                         });
-                        $.wait(cssDelay * 0.5).done(anotherBrickOnTheWall);
+                        $.wait(delay).done(anotherBrickOnTheWall);
                         return false;
                     });
                 });

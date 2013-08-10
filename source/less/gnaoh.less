@@ -435,17 +435,13 @@ html {
             
         //the resizable gallery
         &.wall {
-            .animated(500ms);
+            .animated(400ms);
             .brick {
-                cursor: cell;
                 max-width: 24.5%;
                 margin: 0.25% 0;
-                transition-property: transform, opacity;
-                transition-duration: 0.5s;
-                 -webkit-transition-property: -webkit-transform, opacity;
-                  -webkit-transition-duration: 0.5s;
+                .animated(400ms);
                 &.biggie {
-                    max-width:  100%;
+                    max-width:  49.5%;
                     .caption {
                         padding: 1.5% 0 1.5% 1%;
                         opacity: 1;
@@ -453,14 +449,13 @@ html {
                 }
                 &.top {
                     z-index: 5 !important;
-                                    .animated(500ms);
+                    .animated(400ms);
                 }
                 &.brick-hidden {
                     pointer-events: none;
                     z-index: 0;
                 }
             }
-            
             //hides the gallery when it's initializing 
             &.mortar {
                 opacity: 0;

@@ -31,7 +31,7 @@ app.configure(function () {
 	// static url for domain wide routing
 	app.use(express.static(__dirname));
 	// static url for developement with /node address
-	app.use('/library/', express.static('../library'));
+	app.use('/library/', express.static('/kadmin/server/www/library'));
 	// 404 page
 	app.use(function (req, res) {
 		res.status(404).sendfile(__dirname + '/views/404.html');
