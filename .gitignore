@@ -1,0 +1,12 @@
+*.jpg
+*.mp4
+*.webm
+*.png
+*.htaccess
+
+.git
+
+node_modules
+npm-debug.log
+build
+source/temp
