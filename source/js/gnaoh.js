@@ -93,6 +93,8 @@
          * ***************************************************************************************/
         //function to initialize the page on first load or ajax loaded sections. this usually deals with the big files.
         gnaoh.init = function () {
+            //clear sticky settings and unbind listeners
+            $window.off();
             gnaoh.activate();
             $loader.addClass('loading').next().addClass('gnidaol');
             //promises and callbacks
@@ -103,7 +105,7 @@
             initCallbacks.add(function () {
                 loading = false;
                 //pagescroll observer
-                gnaoh.observer();
+                gnaoh.scrollspy();
                 //removeloading animation
                 $loader.on('animationiteration webkitAnimationIteration', function (event) {
                     $loader.off().on(event.type, function () {
@@ -117,7 +119,7 @@
                 initCallbacks.fire();
             });
             //add handlers for window's resize events
-            resizeCallbacks.add([gnaoh.observer, gnaoh.size]);
+            resizeCallbacks.add([gnaoh.scrollspy, gnaoh.size]);
             //bind said handlers to window and add a delay to prevent rapid firing
             $window.on('resize', function () {
                 root.clearTimeout(resizeDelay);
@@ -178,8 +180,6 @@
         gnaoh.getPage = function (link) {
             loading = true;
             $loader.addClass('loading').next().addClass('gnidaol');
-            //clear sticky settings and unbind listeners
-            $window.off();
             //sends ajax request for the specific page
             $.ajax({
                 type: 'GET',
@@ -206,7 +206,6 @@
                 if (mini) {
                     return cleanUp();
                 }
-                // $old.css('position', 'absolute');
                 $post.deanimate(null, null, 1100).addClass(animethod).find($old).fadeOut(500).wait(1100, cleanUp);
             });
         };
@@ -293,18 +292,6 @@
         //lay the brick elements from class wall
         gnaoh.layBricks = function () {
             var $foundation = $('.wall');
-
-            function calcWidth() {
-                var columnWidth;
-                if (mini) {
-                    columnWidth = $post.width() / 2;
-                } else if (medium) {
-                    columnWidth = $post.width() / 3;
-                } else {
-                    columnWidth = $post.width() / 4;
-                }
-                return columnWidth;
-            }
             root.require(['lib/isotope'], function () {
                 $foundation.imagesLoaded(function () {
                     $foundation.isotope({
@@ -312,7 +299,7 @@
                         layoutMode: 'masonry',
                         masonry: {
                             //width of the distributed collumns
-                            columnWidth: calcWidth()
+                            columnWidth: mini ? $post.width() / 2 : $post.width() / 4
                         },
                         containerClass: 'wall',
                         itemClass: 'brick',
@@ -535,59 +522,34 @@
         //highlights the current page
         gnaoh.activate = function () {
             var pageName = $post.attr('name');
-            if (pageName === 'index') {
-                pageName = '.';
-            }
             var activists = $navList.find('a[href="' + pageName + '"]');
             activists = activists.add(activists.parent());
             $navList.find('.active').removeClass('active');
             activists.addClass('active');
         };
-        //divides sections and bind scrolling and nav-list highlighting
-        gnaoh.observer = function (padding) {
-            //divides the sections and push them into an array with offset attributes
-            var $sections = $('section');
-            var sections = [];
-            var spyDelay;
-            var initialHeight = document.body.clientHeight;
-            padding = padding || 50;
-            if (!$sections.length) {
-                return;
-            }
-            //push the sections with its id, top, and bottom offsets into an array
-            $sections.each(function () {
-                var $this = $(this);
-                var singleSection = {
-                    id: this.id,
-                    top: $this.offset().top,
-                    bottom: $this.offset().top + $this.height()
-                };
-                sections.push(singleSection);
-            });
+        //actions to perform when the page is at a certain Y position
+        gnaoh.scrollspy = function () {
+            //delay function to prevent scroll event from firing too often
+            var stopDropRoll;
 
-            function spy() {
-                //re-observe if element height has change since last time
-                if (document.body.clientHeight !== initialHeight) {
-                    return gnaoh.observer();
-                }
-                //add a cleartimeout to prevent the scroll events from stacking/firing too often/degrading performance
-                root.clearTimeout(spyDelay);
-                spyDelay = root.setTimeout(function () {
-                    var windowPos = $window.scrollTop() + padding;
-                    sections.forEach(function (element) {
-                        if (!element.id) {
-                            return;
-                        }
-                        if (windowPos >= element.top && windowPos <= element.bottom) {
-                            // $navList.find('.active').removeClass('active');
-                            // var activists = $navList.find('a[href*="' + element.id + '"]');
-                            // activists = activists.add(activists.parents('.nav-parent').find('a:first'));
-                            // activists.addClass('active');
-                        }
-                    });
-                }, 75);
+            function delayer() {
+                root.clearTimeout(stopDropRoll);
+                stopDropRoll = root.setTimeout(function () {
+                    navlistDock();
+                }, 25);
             }
-            $window.off('scroll').on('scroll', spy).trigger('scroll');
+
+            function navlistDock() {
+                var currentY = window.pageYOffset;
+                if (currentY <= 144) {
+                    $navList.removeClass('fixed');
+                } else if (currentY > 144) {
+                    $navList.addClass('fixed');
+                } else {
+                    return;
+                }
+            }
+            $window.off('scroll').on('scroll', delayer).trigger('scroll');
         };
         //changing the colors!
         gnaoh.rainbow = function () {
@@ -608,7 +570,6 @@
                 modify();
             }
         };
-        // root.setInterval(gnaoh.rainbow, 3000);
         gnaoh.init();
         /*****************************************************************************************
          * Misc. DOM event bindings and manipulations

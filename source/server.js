@@ -50,10 +50,11 @@ spdy.createServer(options, app).listen(app.get('https port'), function () {
 	console.log('Starting a SPDY server listening on port: ' + app.get('https port'));
 });
 // getters
-var getters = ['/', 'about', 'gallery', 'videos'];
+var getters = ['/', 'index', 'about', 'gallery', 'videos'];
 getters.forEach(function (value) {
 	if (value === '/') {
-		app.get('/', router['index']);
+		//404 the homepage for now
+		app.get('/', router['404']);
 	} else {
 		app.get('/' + value, router[value]);
 	}
