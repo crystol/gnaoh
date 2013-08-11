@@ -9,8 +9,8 @@ var router = require('./router.js');
 var fs = require('fs');
 // SPDY server 
 var spdyOptions = {
-	key: fs.readFileSync('/kadmin/server/nginx/ssl/server.key'),
-	cert: fs.readFileSync('/kadmin/server/nginx/ssl/server.cert')
+	key: fs.readFileSync('/kadmin/server/nginx/ssl/keys/gnaoh.key'),
+	cert: fs.readFileSync('/kadmin/server/nginx/ssl/certs/gnaoh.crt')
 };
 // export to listen and serve
 module.exports = {
