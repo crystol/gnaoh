@@ -11,8 +11,6 @@ var fs = require('fs');
 var spdyOptions = {
 	key: fs.readFileSync('/kadmin/server/nginx/ssl/keys/gnaoh.key'),
 	cert: fs.readFileSync('/kadmin/server/nginx/ssl/certs/gnaoh.crt'),
-	handshakeTimeout: 15,
-	secureProtocol: 'TLSv1 TLSv1.1 TLSv1.2',
 	ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:HIGH:!EDH:!MD5:!aNULL',
 	honorCipherOrder: true,
 };
@@ -26,8 +24,8 @@ app.configure(function () {
 	app.set('views', __dirname + '/views');
 	app.engine('jade', require('jade').__express);
 	app.set('view engine', 'jade');
-	app.set('http port', 1337);
-	app.set('https port', 1338);
+	app.set('http port', 80);
+	app.set('https port', 443);
 	app.use(express.logger('dev'));
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
@@ -62,9 +60,9 @@ getters.forEach(function (value) {
 	}
 });
 // http serve
-// http.createServer(app).listen(app.get('http port'), function () {
-// console.log('Starting a server on port: ' + app.get('http port'));
-// });
-// spdy.createServer(spdyOptions, app).listen(app.get('https port'), function () {
-// console.log('Starting a SPDY server listening on port: ' + app.get('https port'));
-// });
+http.createServer(app).listen(app.get('http port'), function () {
+	console.log('Starting a server on port: ' + app.get('http port'));
+});
+spdy.createServer(spdyOptions, app).listen(app.get('https port'), function () {
+	console.log('Starting a SPDY server listening on port: ' + app.get('https port'));
+});
