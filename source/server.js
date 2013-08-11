@@ -10,7 +10,11 @@ var fs = require('fs');
 // SPDY server 
 var spdyOptions = {
 	key: fs.readFileSync('/kadmin/server/nginx/ssl/keys/gnaoh.key'),
-	cert: fs.readFileSync('/kadmin/server/nginx/ssl/certs/gnaoh.crt')
+	cert: fs.readFileSync('/kadmin/server/nginx/ssl/certs/gnaoh.crt'),
+	handshakeTimeout: 15,
+	secureProtocol: 'TLSv1 TLSv1.1 TLSv1.2',
+	ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:HIGH:!EDH:!MD5:!aNULL',
+	honorCipherOrder: true,
 };
 // export to listen and serve
 module.exports = {

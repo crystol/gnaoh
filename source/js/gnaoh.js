@@ -150,7 +150,7 @@
                 initPromise.resolve();
             }
         };
-        //media query: will set mini || medium || massive to true appropiately.
+        //media query: will set mini || medium || massive to true appropiately
         gnaoh.size = (function size() {
             var width = document.body.clientWidth;
             mini = medium = massive = false;
@@ -214,7 +214,7 @@
                 $post.deanimate(null, null, 1100).addClass(animethod).find($old).fadeOut(500).wait(1100, cleanUp);
             });
         };
-        //load a css sheet
+        //load a css sheet 
         gnaoh.requireCss = function (name) {
             var stylesheet = document.createElement("link");
             var href = (name === 'gnaoh.less') ? 'css/gnaoh.less' : library + '/css/' + name;
