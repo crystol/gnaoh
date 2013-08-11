@@ -170,7 +170,7 @@ module.exports = function () {
             console.log('Http server on port: ' + 80);
         });
         server.spdy.listen(443, function () {
-            console.log('Http server on port: ' + 443);
+            console.log('Https server on port: ' + 443);
         });
     });
 };
