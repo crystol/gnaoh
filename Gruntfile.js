@@ -162,4 +162,15 @@ module.exports = function () {
     grunt.registerTask('build', ['uglify', 'concat', 'less:production', 'copy']);
     grunt.registerTask('default', ['jshint', 'clean', 'build']);
     grunt.registerTask('live', ['concurrent']);
+    grunt.registerTask('serve', function () {
+        //keep task alive
+        this.async();
+        var server = require('./build/server.js');
+        server.http.listen(80, function () {
+            console.log('Http server on port: ' + 80);
+        });
+        server.spdy.listen(443, function () {
+            console.log('Http server on port: ' + 443);
+        });
+    });
 };

@@ -7,6 +7,16 @@ var express = require('express');
 var app = express();
 var router = require('./router.js');
 var fs = require('fs');
+// SPDY server 
+var spdyOptions = {
+	key: fs.readFileSync('/kadmin/server/nginx/ssl/server.key'),
+	cert: fs.readFileSync('/kadmin/server/nginx/ssl/server.cert')
+};
+// export to listen and serve
+module.exports = {
+	http: http.createServer(app),
+	spdy: spdy.createServer(spdyOptions, app)
+};
 // app settings
 app.configure(function () {
 	app.set('views', __dirname + '/views');
@@ -37,18 +47,6 @@ app.configure(function () {
 		res.status(404).sendfile(__dirname + '/views/404.html');
 	});
 });
-// http serve
-http.createServer(app).listen(app.get('http port'), function () {
-	console.log('Starting a server on port: ' + app.get('http port'));
-});
-// SPDY server 
-var options = {
-	key: fs.readFileSync('/kadmin/server/nginx/ssl/server.key'),
-	cert: fs.readFileSync('/kadmin/server/nginx/ssl/server.cert')
-};
-spdy.createServer(options, app).listen(app.get('https port'), function () {
-	console.log('Starting a SPDY server listening on port: ' + app.get('https port'));
-});
 // getters
 var getters = ['/', 'index', 'about', 'gallery', 'videos'];
 getters.forEach(function (value) {
@@ -59,3 +57,10 @@ getters.forEach(function (value) {
 		app.get('/' + value, router[value]);
 	}
 });
+// http serve
+// http.createServer(app).listen(app.get('http port'), function () {
+// console.log('Starting a server on port: ' + app.get('http port'));
+// });
+// spdy.createServer(spdyOptions, app).listen(app.get('https port'), function () {
+// console.log('Starting a SPDY server listening on port: ' + app.get('https port'));
+// });
