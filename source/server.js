@@ -22,6 +22,7 @@ gnaoh.configure(function () {
     gnaoh.set('views', __dirname + '/views');
     gnaoh.use(express.compress());
     gnaoh.use(express.methodOverride());
+    gnaoh.use(express.express.bodyParser());
     gnaoh.use(express.favicon(__dirname + '/views/misc/favicon.ico'));
     gnaoh.use(express.errorHandler());
     //route stack   
