@@ -10,7 +10,6 @@ var fs = require('fs');
 var httpPort = 1337;
 var httpsPort = 1338;
 var production = process.env.ENV === 'PROD';
-//  http options
 var httpOptions = {
     agent: false
 };
@@ -23,24 +22,26 @@ var spdyOptions = {
     ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:HIGH:!EDH:!MD5:!aNULL',
     honorCipherOrder: true,
 };
-// export to listen and serves
-module.exports = {
-    http: http.createServer(gnaoh),
-    spdy: spdy.createServer(spdyOptions, gnaoh)
-};
 //serving for production on normal ports
 if (production) {
     httpPort = 80;
     httpsPort = 443;
+    //redirects to https
+    http.createServer(function (request, response) {
+        response.writeHead(301, {
+            Location: 'https://' + request.headers.host + request.url
+        });
+        response.end();
+    }).listen(httpPort);
+} else {
+    http.createServer(gnaoh).listen(httpPort);
 }
-http.createServer(gnaoh).listen(httpPort);
 spdy.createServer(spdyOptions, gnaoh).listen(httpsPort);
 // gnaoh settings
 gnaoh.configure(function () {
     gnaoh.set('view engine', 'jade')
         .set('views', __dirname + '/views')
-    // .use(express.logger('dev'))
-    .use(express.bodyParser())
+        .use(express.bodyParser())
         .use(express.methodOverride())
         .use(express.favicon(__dirname + '/views/misc/favicon.ico'));
     // strip slashes
@@ -64,7 +65,7 @@ gnaoh.configure(function () {
     });
     gnaoh.disable('x-powered-by');
 });
-// controllers that will route through express
+// routes through express to render from jade templates
 var getters = ['/', 'index', 'about', 'gallery', 'videos'];
 getters.forEach(function (value) {
     if (value === '/') {
