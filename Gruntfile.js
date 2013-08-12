@@ -129,8 +129,8 @@ module.exports = function () {
             prod: {
                 options: {
                     delayTime: 3,
-                    watchedFolders: ['source/routers'],
-                    ignoredFiles: ['build/**/**'],
+                    watchedFolders: ['source'],
+                    ignoredFiles: ['build/**/**', 'source/**/*.jade', 'source/**/*.less', 'source/js/**'],
                     cwd: __dirname
                 }
             }

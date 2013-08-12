@@ -9,8 +9,14 @@ var router = require('./router.js');
 var fs = require('fs');
 var httpPort = 1337;
 var httpsPort = 1338;
-// SPDY server 
+//  http options
+var httpOptions = {
+    agent: false
+};
+// SPDY options 
 var spdyOptions = {
+    windowSize: 3000,
+    maxChunk: 64000,
     key: fs.readFileSync('/kadmin/server/nginx/ssl/keys/gnaoh.key'),
     cert: fs.readFileSync('/kadmin/server/nginx/ssl/certs/gnaoh.crt'),
     ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:HIGH:!EDH:!MD5:!aNULL',

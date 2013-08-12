@@ -4,6 +4,7 @@
         var $ = root.$ || root.jQuery;
         //an object to wield the burden of responsibilities--it will be the one...
         //..to have a capitalized name like it's a big-shot constructor
+        var developement = true;
         var gnaoh = {};
         //global scope variables
         var mini;
@@ -29,11 +30,13 @@
         var $gallery;
         var $video;
         var $cv;
-        //temporary code for developmental purposes
+        //code for developmental purposes
         //lazy logging
-
-        function log(args) {
-            root.console.log(args);
+        var log = function () {};
+        if (developement) {
+            log = function (args) {
+                root.console.log(args);
+            };
         }
         //exporting functions/variables to global scope as an object with name gnaoh
         var takeout = root.gnaoh || {};
@@ -338,7 +341,7 @@
                     //needs a animation delay in order to have accurate positions
                     var delay = mini ? 0 : 500;
                     $foundation.on('click', '.image', function () {
-                        $(this).addClass('top').toggleClass('biggie').wait(delay*2, function () {
+                        $(this).addClass('top').toggleClass('biggie').wait(delay * 2, function () {
                             this.removeClass('top');
                         });
                         $.wait(delay).done(anotherBrickOnTheWall);
