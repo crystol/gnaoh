@@ -190,10 +190,10 @@
             }).done(function (data) {
                 //wraps the old page and replaces it with the data fetched from ajax request
                 var $data = $(data);
-                var name = $data.find('#post').attr('name');
+                var name = $data.find('#post').data('name');
                 var $postPrep = $('<div id="new-post">').append($data.find('#post').contents());
                 //changes page name and title
-                $post.attr('name', name);
+                $post.data('name', name);
                 document.title = name.charAt(0).toUpperCase() + name.substring(1);
                 $post.wrapInner('<div id="old-post">').append($postPrep);
                 var $old = $('#old-post');
@@ -532,7 +532,7 @@
         };
         //highlights the current page
         gnaoh.activate = function () {
-            var pageName = $post.attr('name');
+            var pageName = $post.data('name');
             var activists = $navList.find('a[href="' + pageName + '"]');
             activists = activists.add(activists.parent());
             $navList.find('.active').removeClass('active');

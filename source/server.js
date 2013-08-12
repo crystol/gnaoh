@@ -7,43 +7,24 @@ var express = require('express');
 var gnaoh = express();
 var router = require('./router.js');
 var fs = require('fs');
-var httpPort = 1337;
-var httpsPort = 1338;
-var production = process.env.ENV === 'PROD';
-var httpOptions = {
-    agent: false
-};
 // SPDY options 
 var spdyOptions = {
     windowSize: 3000,
     maxChunk: 64000,
     key: fs.readFileSync('/kadmin/server/nginx/ssl/keys/gnaoh.key'),
     cert: fs.readFileSync('/kadmin/server/nginx/ssl/certs/gnaoh.crt'),
-    ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:HIGH:!EDH:!MD5:!aNULL',
+    ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:RC4:HIGH:!EDH:!MD5:!aNULL',
     honorCipherOrder: true,
 };
-//serving for production on normal ports
-if (production) {
-    httpPort = 80;
-    httpsPort = 443;
-    //redirects to https
-    http.createServer(function (request, response) {
-        response.writeHead(301, {
-            Location: 'https://' + request.headers.host + request.url
-        });
-        response.end();
-    }).listen(httpPort);
-} else {
-    http.createServer(gnaoh).listen(httpPort);
-}
-spdy.createServer(spdyOptions, gnaoh).listen(httpsPort);
 // gnaoh settings
 gnaoh.configure(function () {
-    gnaoh.set('view engine', 'jade')
-        .set('views', __dirname + '/views')
-        .use(express.bodyParser())
-        .use(express.methodOverride())
-        .use(express.favicon(__dirname + '/views/misc/favicon.ico'));
+    gnaoh.set('view engine', 'jade');
+    gnaoh.set('views', __dirname + '/views');
+    gnaoh.use(express.compress());
+    gnaoh.use(express.methodOverride());
+    gnaoh.use(express.favicon(__dirname + '/views/misc/favicon.ico'));
+    gnaoh.use(express.errorHandler());
+    //route stack   
     // strip slashes
     gnaoh.use(function (req, res, next) {
         if (req.url.substr(-1) === '/' && req.url.length > 1) {
@@ -63,8 +44,27 @@ gnaoh.configure(function () {
             title: '404'
         });
     });
+    //headers
+    gnaoh.set('Server', 'Node');
     gnaoh.disable('x-powered-by');
+    gnaoh.disable('etag');
 });
+//production settings
+gnaoh.configure('production', function () {
+    http.createServer(function (request, response) {
+        response.writeHead(301, {
+            Location: 'https://' + request.headers.host + request.url
+        });
+        response.end();
+    }).listen(80);
+    spdy.createServer(spdyOptions, gnaoh).listen(443);
+});
+//developmental settings
+gnaoh.configure('developmental', function () {
+    http.createServer(gnaoh).listen(1337);
+    spdy.createServer(spdyOptions, gnaoh).listen(1338);
+});
+//developemental settings
 // routes through express to render from jade templates
 var getters = ['/', 'index', 'about', 'gallery', 'videos'];
 getters.forEach(function (value) {

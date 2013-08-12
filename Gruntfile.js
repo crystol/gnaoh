@@ -128,6 +128,9 @@ module.exports = function () {
         nodemon: {
             prod: {
                 options: {
+                    env: {
+                        'NODE_ENV': 'developmental'
+                    },
                     delayTime: 3,
                     watchedFolders: ['source'],
                     ignoredFiles: ['build/**/**', 'source/**/*.jade', 'source/**/*.less', 'source/js/**'],

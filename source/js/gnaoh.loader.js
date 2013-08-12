@@ -4,14 +4,14 @@
     //CDN hosted scripts and their local fallbacks
     var library = '/library/js';
     root.require.config({
-        baseUrl : 'js/',
-        paths : {
-            lib : library,
-            jQuery : [
+        baseUrl: 'js/',
+        paths: {
+            lib: library,
+            jQuery: [
                 '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min',
                 library + '/jQuery'
             ],
-            analytics : [
+            analytics: [
                 ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga'
             ]
         }
@@ -20,17 +20,8 @@
     root.require(['gnaoh']);
     //Google analytics
     root.onload = function () {
-        var cookieTray = document.cookie.split(';').sort();
-        var remote;
-        while (cookieTray.length) {
-            remote = cookieTray.pop();
-            if (/^Remote/.test(remote)) {
-                remote = remote.split('=')[1];
-                break;
-            }
-        }
         var _gaq = root._gaq || [];
-        _gaq.push(['_setAccount', 'UA-38948913-1'], ['_setDomainName', 'none'], ['_trackPageview'], ['_setCustomVar', 1, 'Remote', remote, 1]);
+        _gaq.push(['_setAccount', 'UA-38948913-1'], ['_setDomainName', 'none'], ['_trackPageview']);
         root._gaq = _gaq;
         root.require(['analytics']);
     };
