@@ -103,7 +103,6 @@ module.exports = function () {
                 }]
             }
         },
-        
         //watches for changes within files & perform tasks if found
         watch: {
             options: {
