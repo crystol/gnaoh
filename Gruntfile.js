@@ -2,7 +2,6 @@ module.exports = function () {
     'use strict';
     var grunt = require('grunt');
     grunt.initConfig({
-        port: 1337,
         package: grunt.file.readJSON('package.json'),
         library: '../library',
         // clean directories
@@ -103,7 +102,7 @@ module.exports = function () {
                 }]
             }
         },
-        
+
         //watches for changes within files & perform tasks if found
         watch: {
             options: {
@@ -167,11 +166,11 @@ module.exports = function () {
         //keep task alive
         this.async();
         var server = require('./build/server.js');
-        server.http.listen(80, function () {
-            console.log('Http server on port: ' + 80);
+        server.http.listen(1337, function () {
+            console.log('Http server on port: ' + 1337);
         });
-        server.spdy.listen(443, function () {
-            console.log('Https server on port: ' + 443);
+        server.spdy.listen(1338, function () {
+            console.log('Https server on port: ' + 1338);
         });
     });
 };

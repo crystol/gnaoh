@@ -7,6 +7,8 @@ var express = require('express');
 var app = express();
 var router = require('./router.js');
 var fs = require('fs');
+var httpPort = 1337;
+var httpsPort = 1338;
 // SPDY server 
 var spdyOptions = {
 	key: fs.readFileSync('/kadmin/server/nginx/ssl/keys/gnaoh.key'),
@@ -14,18 +16,22 @@ var spdyOptions = {
 	ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:HIGH:!EDH:!MD5:!aNULL',
 	honorCipherOrder: true,
 };
-// export to listen and serve
+// export to listen and serves
 module.exports = {
 	http: http.createServer(app),
 	spdy: spdy.createServer(spdyOptions, app)
 };
+//serving for production on normal ports
+if (process.env.ENV === 'PROD') {
+	httpPort = 80;
+	httpsPort = 443;
+}
+http.createServer(app).listen(httpPort);
+spdy.createServer(spdyOptions, app).listen(httpsPort);
 // app settings
 app.configure(function () {
 	app.set('views', __dirname + '/views');
-	app.engine('jade', require('jade').__express);
 	app.set('view engine', 'jade');
-	app.set('http port', 80);
-	app.set('https port', 443);
 	app.use(express.logger('dev'));
 	app.use(express.bodyParser());
 	app.use(express.methodOverride());
@@ -58,11 +64,4 @@ getters.forEach(function (value) {
 	} else {
 		app.get('/' + value, router[value]);
 	}
-});
-// http serve
-http.createServer(app).listen(app.get('http port'), function () {
-	console.log('Starting a server on port: ' + app.get('http port'));
-});
-spdy.createServer(spdyOptions, app).listen(app.get('https port'), function () {
-	console.log('Starting a SPDY server listening on port: ' + app.get('https port'));
 });
