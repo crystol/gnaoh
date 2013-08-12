@@ -9,6 +9,7 @@ var router = require('./router.js');
 var fs = require('fs');
 var httpPort = 1337;
 var httpsPort = 1338;
+var production = process.env.ENV === 'PROD';
 //  http options
 var httpOptions = {
     agent: false
@@ -28,7 +29,7 @@ module.exports = {
     spdy: spdy.createServer(spdyOptions, gnaoh)
 };
 //serving for production on normal ports
-if (process.env.ENV === 'PROD') {
+if (production) {
     httpPort = 80;
     httpsPort = 443;
 }
@@ -38,8 +39,8 @@ spdy.createServer(spdyOptions, gnaoh).listen(httpsPort);
 gnaoh.configure(function () {
     gnaoh.set('view engine', 'jade')
         .set('views', __dirname + '/views')
-        .use(express.logger('dev'))
-        .use(express.bodyParser())
+    // .use(express.logger('dev'))
+    .use(express.bodyParser())
         .use(express.methodOverride())
         .use(express.favicon(__dirname + '/views/misc/favicon.ico'));
     // strip slashes
