@@ -65,7 +65,6 @@ module.exports = function () {
             production: {
                 options: {
                     paths: ['source/less'],
-                    report: 'gzip',
                     yuicompress: true,
                 },
                 files: {
@@ -102,7 +101,6 @@ module.exports = function () {
                 }]
             }
         },
-
         //watches for changes within files & perform tasks if found
         watch: {
             options: {
@@ -131,7 +129,7 @@ module.exports = function () {
             prod: {
                 options: {
                     delayTime: 3,
-                    watchedFolders: ['build'],
+                    watchedFolders: ['source/routers'],
                     ignoredFiles: ['build/**/**'],
                     cwd: __dirname
                 }
@@ -157,20 +155,8 @@ module.exports = function () {
     grunt.loadNpmTasks('grunt-nodemon');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    // grunt.loadTasks('tasks');
     //assign tasks
     grunt.registerTask('build', ['uglify', 'concat', 'less:production', 'copy']);
     grunt.registerTask('default', ['jshint', 'clean', 'build']);
     grunt.registerTask('live', ['concurrent']);
-    grunt.registerTask('serve', function () {
-        //keep task alive
-        this.async();
-        var server = require('./build/server.js');
-        server.http.listen(1337, function () {
-            console.log('Http server on port: ' + 1337);
-        });
-        server.spdy.listen(1338, function () {
-            console.log('Https server on port: ' + 1338);
-        });
-    });
 };
