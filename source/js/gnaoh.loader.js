@@ -16,13 +16,13 @@
             ]
         }
     });
-    //load the main scriptd
+    //load the main script
     root.require(['gnaoh']);
     //Google analytics
-    root.onload = function () {
-        var _gaq = root._gaq || [];
-        _gaq.push(['_setAccount', 'UA-38948913-1'], ['_setDomainName', 'none'], ['_trackPageview']);
-        root._gaq = _gaq;
-        root.require(['analytics']);
-    };
+    // root.onload = function () {
+    //     var _gaq = root._gaq || [];
+    //     _gaq.push(['_setAccount', 'UA-38948913-1'], ['_setDomainName', 'none'], ['_trackPageview']);
+    //     root._gaq = _gaq;
+    //     root.require(['analytics']);
+    // };
 })(window, document);

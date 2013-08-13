@@ -10,7 +10,7 @@ var fs = require('fs');
 // SPDY options 
 var spdyOptions = {
     windowSize: 3000,
-    maxChunk: 64000,
+    maxChunk:  32*1024,
     key: fs.readFileSync('/kadmin/server/nginx/ssl/keys/gnaoh.key'),
     cert: fs.readFileSync('/kadmin/server/nginx/ssl/certs/gnaoh.crt'),
     ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:RC4:HIGH:!EDH:!MD5:!aNULL',
@@ -45,13 +45,9 @@ gnaoh.configure(function () {
     });
     gnaoh.use(gnaoh.router);
     // static url for domain wide routing
-    gnaoh.use(express.static(__dirname, {
-        maxAge: 13333333337
-    }));
+    gnaoh.use(express.static(__dirname));
     // static url for developement with /node address
-    gnaoh.use('/library/', express.static('/kadmin/server/www/library', {
-        maxAge: 13333333337
-    }));
+    gnaoh.use('/library/', express.static('/kadmin/server/www/library'));
     // 404 page
     gnaoh.use(function (request, response) {
         response.status(404).render('404', {
