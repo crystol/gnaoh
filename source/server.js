@@ -20,7 +20,6 @@ var spdyOptions = {
 gnaoh.configure(function () {
     gnaoh.set('view engine', 'jade');
     gnaoh.set('views', __dirname + '/views');
-    gnaoh.use(express.compress());
     gnaoh.use(express.methodOverride());
     gnaoh.use(express.bodyParser());
     gnaoh.use(express.favicon(__dirname + '/views/misc/favicon.ico'));
