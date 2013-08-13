@@ -18,6 +18,8 @@ var spdyOptions = {
 };
 // gnaoh settings
 gnaoh.configure(function () {
+    //compress seems to be malfunctioning at the moment
+    //gnaoh.use(express.compress());
     gnaoh.set('view engine', 'jade');
     gnaoh.set('views', __dirname + '/views');
     gnaoh.use(express.methodOverride());
