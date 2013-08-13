@@ -29,12 +29,14 @@ gnaoh.configure(function () {
     // cannonicalizer
     gnaoh.use(function (request, response, next) {
         //strip forward slashes at the end
+        var url;
         if (request.url.substr(-1) === '/' && request.url.length > 1) {
             response.redirect(301, request.url.slice(0, -1));
         }
         //remove wwww 
-        if (request.host.substr(0,4) === 'www.') {
-            response.redirect(301, request.host.slice(4));
+        if (request.url.substr(0, 4) === 'www.') {
+            url = request.protocol + request.host.slice(4) + request.path;
+            response.redirect(301, url);
         }
         console.log(request.host.slice(4));
         //headers
