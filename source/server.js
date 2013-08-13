@@ -25,36 +25,50 @@ gnaoh.configure(function () {
     gnaoh.use(express.favicon(__dirname + '/views/misc/favicon.ico'));
     gnaoh.use(express.errorHandler());
     gnaoh.disable('x-powered-by');
-    
     //route stack   
-    // strip slashes
-    gnaoh.use(function (req, res, next) {
-        if (req.url.substr(-1) === '/' && req.url.length > 1) {
-            res.redirect(301, req.url.slice(0, -1));
-        } else {
-            next();
+    // cannonicalizer
+    gnaoh.use(function (request, response, next) {
+        //headers
+        response.set({
+            Server: 'NodeGnaoh',
+            Cache: 'public, max-age=13333337'
+        });
+        gnaoh.configure('production', function () {
+        if (!request.secure) {
+            response.redirect(301, 'https://' + request.host + request.path);
         }
+        });
+        //strip forward slashes at the end
+        if (request.url.substr(-1) === '/' && request.url.length > 1) {
+            response.redirect(301, request.url.slice(0, -1));
+        }
+        next();
     });
     gnaoh.use(gnaoh.router);
     // static url for domain wide routing
-    gnaoh.use(express.static(__dirname, {maxAge:13333333337}));
+    gnaoh.use(express.static(__dirname, {
+        maxAge: 13333333337
+    }));
     // static url for developement with /node address
-    gnaoh.use('/library/', express.static('/kadmin/server/www/library',  {maxAge:13333333337}));
+    gnaoh.use('/library/', express.static('/kadmin/server/www/library', {
+        maxAge: 13333333337
+    }));
     // 404 page
-    gnaoh.use(function (req, res) {
-        res.status(404).render('404', {
+    gnaoh.use(function (request, response) {
+        response.status(404).render('404', {
             title: '404'
         });
     });
 });
 //production settings
 gnaoh.configure('production', function () {
-    http.createServer(function (request, response) {
-        response.writeHead(301, {
-            Location: 'https://' + request.headers.host + request.url
-        });
-        response.end();
-    }).listen(80);
+    // http.createServer(function (request, response) {
+    //     response.writeHead(301, {
+    //         Location: 'https://' + request.headers.host + request.url
+    //     });
+    //     response.end();
+    // }).listen(80);
+    http.createServer(gnaoh).listen(80);
     spdy.createServer(spdyOptions, gnaoh).listen(443);
 });
 //developmental settings
