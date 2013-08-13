@@ -23,22 +23,19 @@ gnaoh.configure(function () {
     gnaoh.use(express.methodOverride());
     gnaoh.use(express.bodyParser());
     gnaoh.use(express.favicon(__dirname + '/views/misc/favicon.ico'));
-    gnaoh.use(express.errorHandler());
     gnaoh.disable('x-powered-by');
     //route stack   
     // cannonicalizer
     gnaoh.use(function (request, response, next) {
+        //remove wwww 
+        if (request.host.substr(0, 4) === 'www.') {
+            var url = request.protocol + '://' + request.host.slice(4) + request.path;
+            response.redirect(301, url);
+        }
         //strip forward slashes at the end
-        var url;
         if (request.url.substr(-1) === '/' && request.url.length > 1) {
             response.redirect(301, request.url.slice(0, -1));
         }
-        //remove wwww 
-        if (request.url.substr(0, 4) === 'www.') {
-            url = request.protocol + request.host.slice(4) + request.path;
-            response.redirect(301, url);
-        }
-        console.log(request.host.slice(4));
         //headers
         response.set({
             Server: 'NodeGnaoh',
