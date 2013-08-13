@@ -68,7 +68,6 @@ gnaoh.configure('production', function () {
         });
         response.end();
     }).listen(80);
-    http.createServer(gnaoh).listen(80);
     spdy.createServer(spdyOptions, gnaoh).listen(443);
 });
 //developmental settings
