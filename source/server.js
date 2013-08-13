@@ -22,9 +22,11 @@ gnaoh.configure(function () {
     gnaoh.set('views', __dirname + '/views');
     gnaoh.use(express.compress());
     gnaoh.use(express.methodOverride());
-    gnaoh.use(express.express.bodyParser());
+    gnaoh.use(express.bodyParser());
     gnaoh.use(express.favicon(__dirname + '/views/misc/favicon.ico'));
     gnaoh.use(express.errorHandler());
+    gnaoh.disable('x-powered-by');
+    
     //route stack   
     // strip slashes
     gnaoh.use(function (req, res, next) {
@@ -36,19 +38,15 @@ gnaoh.configure(function () {
     });
     gnaoh.use(gnaoh.router);
     // static url for domain wide routing
-    gnaoh.use(express.static(__dirname));
+    gnaoh.use(express.static(__dirname, {maxAge:13333333337}));
     // static url for developement with /node address
-    gnaoh.use('/library/', express.static('/kadmin/server/www/library'));
+    gnaoh.use('/library/', express.static('/kadmin/server/www/library',  {maxAge:13333333337}));
     // 404 page
     gnaoh.use(function (req, res) {
         res.status(404).render('404', {
             title: '404'
         });
     });
-    //headers
-    gnaoh.set('Server', 'Node');
-    gnaoh.disable('x-powered-by');
-    gnaoh.disable('etag');
 });
 //production settings
 gnaoh.configure('production', function () {

@@ -4,7 +4,8 @@ routes.forEach(function (value) {
     //exports a module per route
     module.exports[value] = function (request, response) {
         response.set({
-            Server: 'Node'
+            'Cache-Control': 'must-revalidate, private, max-age=0',
+            'Strict-Transport-Security': 'max-age=13333337'
         });
         response.render(value, {
             title: value,
