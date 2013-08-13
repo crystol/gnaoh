@@ -29,7 +29,7 @@ gnaoh.configure(function () {
     gnaoh.use(function (request, response, next) {
         //remove wwww 
         if (request.host.substr(0, 4) === 'www.') {
-            var url = request.protocol + '://' + request.host.slice(4) + request.path;
+            var url = '//' + request.host.slice(4) + request.path;
             response.redirect(301, url);
         }
         //strip forward slashes at the end

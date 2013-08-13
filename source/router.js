@@ -9,7 +9,6 @@ routes.forEach(function (value) {
         });
         response.render(value, {
             title: value,
-            // pretty: true
         });
     };
 });

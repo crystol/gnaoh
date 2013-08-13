@@ -547,10 +547,11 @@
                 root.clearTimeout(stopDropRoll);
                 stopDropRoll = root.setTimeout(function () {
                     navlistDock();
-                }, 25);
+                }, 10);
             }
 
             function navlistDock() {
+                gnaoh.isMini();
                 var currentY = window.pageYOffset;
                 if (currentY <= 144) {
                     $navList.removeClass('fixed');
