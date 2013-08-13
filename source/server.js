@@ -28,20 +28,20 @@ gnaoh.configure(function () {
     //route stack   
     // cannonicalizer
     gnaoh.use(function (request, response, next) {
-        //headers
-        response.set({
-            Server: 'NodeGnaoh',
-            Cache: 'public, max-age=13333337'
-        });
-        gnaoh.configure('production', function () {
-        if (!request.secure) {
-            response.redirect(301, 'https://' + request.host + request.path);
-        }
-        });
         //strip forward slashes at the end
         if (request.url.substr(-1) === '/' && request.url.length > 1) {
             response.redirect(301, request.url.slice(0, -1));
         }
+        //remove wwww 
+        if (request.host.substr(0,4) === 'www.') {
+            response.redirect(301, request.host.slice(4));
+        }
+        console.log(request.host.slice(4));
+        //headers
+        response.set({
+            Server: 'NodeGnaoh',
+            'Cache-Control': 'public, max-age=13333337'
+        });
         next();
     });
     gnaoh.use(gnaoh.router);
@@ -62,12 +62,12 @@ gnaoh.configure(function () {
 });
 //production settings
 gnaoh.configure('production', function () {
-    // http.createServer(function (request, response) {
-    //     response.writeHead(301, {
-    //         Location: 'https://' + request.headers.host + request.url
-    //     });
-    //     response.end();
-    // }).listen(80);
+    http.createServer(function (request, response) {
+        response.writeHead(301, {
+            Location: 'https://' + request.headers.host + request.url
+        });
+        response.end();
+    }).listen(80);
     http.createServer(gnaoh).listen(80);
     spdy.createServer(spdyOptions, gnaoh).listen(443);
 });
