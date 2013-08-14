@@ -487,9 +487,6 @@ body {
     .grid-10 {
         .grid-50;
         }
-    .auto {
-        .show !important;
-    }
     #navigator {
         // width: 100%;
         height: auto;
@@ -497,11 +494,11 @@ body {
         top: 0;
         position: fixed;
     }
-        // .logo {
-            // width: 100%;
-            // height: @topbar-height;
+        .logo {
+            width: 0;
+            height: 0;
             // right: 0;
-        // }
+        }
                 .aromatics {
                     top : 5%;
                     left : auto;
@@ -540,39 +537,37 @@ body {
             }
         #navlist {
             .absolute;
-            .hide;
             padding-top: 4.1em;
             top: 0;
-            right: 0;
+            right: -100px;
             width: auto;
-            background: fadeout(@bg-color, 15%);
+            .animated(400ms);
+            background: fadeout(darken(@bg-color, 5%), 20%);
             .link {
                 display: block;
                 margin: 0;
-                a{
+                a {
                     padding: 2em 0.6em;
                 }
+            }
+            &.show {
+                right:0 !important;
             }
         }
     #content {
         margin:  @topbar-height*1.5 0.5em;
         padding: 0;
-        #post {
-            .cv {
-                max-width: 100%;
+    }
+            .gallery.wall, .gallery .brick {
+                .animated(0ms);
             }
-            .gallery {
-                &.wall {
-                    .animated(0ms);
-                     .brick, li {
-                        .animated(0ms);
-                        max-width: 49.5%;
-                        &.biggie {
-                            max-width:  100%;
-                        }
+                .gallery.wall .brick {
+                    max-width: 49.5%;
+                    &.biggie {
+                        max-width:  100%;
                     }
                 }
-            }
+            
             .video {
                 width: 100% !important;
                 margin-bottom: 0.5em;
@@ -580,8 +575,6 @@ body {
                     max-width: 100%;
                 }
             }
-        }
-    }
 }
 //Phones in portrait layout
 @media (max-width:480px) {

@@ -320,6 +320,7 @@
                     }
                     //self-invoking function that fixes the width on window resizes
                     var rebrick = (function rebrick() {
+                        var delay = mini ? 0 : 500;
                         $foundation.css({
                             width: $content.width(),
                             'max-width': $content.width()
@@ -328,24 +329,23 @@
                                 columnWidth: mini ? $post.width() / 2 : $post.width() / 4
                             }
                         });
-                        $.wait(cssDelay * 0.5, anotherBrickOnTheWall);
+                        //clicking on each image will toggle its enlargement.
+                        //needs a animation delay in order to have accurate positions
+                        $foundation.off().on('click', '.image', function () {
+                            $.wait(delay).done(anotherBrickOnTheWall);
+                            $(this).addClass('top').toggleClass('biggie').wait(delay * 2, function () {
+                                this.removeClass('top');
+                            });
+                            return false;
+                        });
+                        $.wait(cssDelay*0.5, anotherBrickOnTheWall);
                         return rebrick;
                     })();
+                    //add rebrick as a handler for resizing events
+                    resizeCallbacks.add(rebrick);
                     //removes the opacity after the gallery is finished loading
                     $.wait(100).done(function () {
                         $foundation.removeClass('mortar');
-                    });
-                    //add rebrick as a handler for resizing events
-                    resizeCallbacks.add(rebrick);
-                    //clicking on each image will toggle its enlargement.
-                    //needs a animation delay in order to have accurate positions
-                    var delay = mini ? 0 : 500;
-                    $foundation.on('click', '.image', function () {
-                        $(this).addClass('top').toggleClass('biggie').wait(delay * 2, function () {
-                            this.removeClass('top');
-                        });
-                        $.wait(delay).done(anotherBrickOnTheWall);
-                        return false;
                     });
                 });
             });
@@ -631,7 +631,7 @@
             $this.css({
                 transform: rotation
             });
-            $navList.toggleClass('auto');
+            $navList.toggleClass('show');
         });
     });
 })(window, document);
