@@ -11,7 +11,8 @@ module.exports = function () {
         //javascript minimizer/obfuscater 
         uglify: {
             options: {
-                report: 'gzip'
+                report: 'gzip',
+                // mangle: false
             },
             javascript: {
                 files: {
