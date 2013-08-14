@@ -1,13 +1,15 @@
 // module to start the server
 'use strict';
-// dependencies
+//dependencies
 var http = require('http');
 var spdy = require('spdy');
 var express = require('express');
-var gnaoh = express();
 var router = require('./router.js');
 var fs = require('fs');
-// SPDY options 
+//init express
+process.chdir('/kadmin/server/www/gnaoh');
+var gnaoh = express();
+//SPDY options 
 var spdyOptions = {
     windowSize: 3000,
     maxChunk:  32*1024,
@@ -41,7 +43,8 @@ gnaoh.configure(function () {
         //headers
         response.set({
             Server: 'NodeGnaoh',
-            'Cache-Control': 'public, max-age=13333337'
+            'Cache-Control': 'public, max-age=13333337',
+            'Transfer-Encoding' :'chunked'
         });
         next();
     });

@@ -7,8 +7,7 @@ routes.forEach(function (value) {
         response.set({
             'Cache-Control': 'must-revalidate, private, max-age=0',
             'Strict-Transport-Security': 'max-age=13333337'
-        });
-        response.render(value, {
+        }).render(value, {
             title: value,
             css: css
         });
