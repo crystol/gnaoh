@@ -16,7 +16,7 @@ module.exports = function () {
             javascript: {
                 files: {
                     'build/js/<%= package.name %>.js': 'source/js/<%= package.name %>.js',
-                    'source/.temp/<%= package.name %>.loader.js': 'source/js/<%= package.name %>.loader.js',
+                    'build/.temp/<%= package.name %>.loader.js': 'source/js/<%= package.name %>.loader.js',
                 }
             }
         },
@@ -24,7 +24,7 @@ module.exports = function () {
         concat: {
             javascript: {
                 files: {
-                    'build/js/loader.js': ['<%= library %>/js/require.js', 'source/.temp/<%= package.name %>.loader.js'],
+                    'build/js/loader.js': ['<%= library %>/js/require.js', 'build/.temp/<%= package.name %>.loader.js'],
                 }
             },
         },
@@ -59,7 +59,8 @@ module.exports = function () {
                     paths: ['source/less']
                 },
                 files: {
-                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less'
+                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less',
+                    'build/views/style.jade': 'source/less/<%= package.name %>.less'
                 }
             },
             production: {
@@ -68,7 +69,8 @@ module.exports = function () {
                     yuicompress: true,
                 },
                 files: {
-                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less'
+                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less',
+                    'build/views/style.jade': 'source/less/<%= package.name %>.less'
                 }
             }
         },

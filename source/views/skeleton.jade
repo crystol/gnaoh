@@ -1,6 +1,8 @@
 //-JS stuff hoisted up top
 - var properTitle = title.charAt(0).toUpperCase() + title.substring(1);
 - properTitle = (properTitle === 'Index') ? 'Kenny Hoang' : properTitle;
+- var styleOpen = '<style>';
+- var styleClose = '</style>';
 doctype 5
 html
     head
@@ -10,7 +12,9 @@ html
         meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0')
         //- link(rel='stylesheet', href='css/gnaoh.css')
         link(rel='author', href='humans.txt')
-        include style
+        != '<style>'
+            include style
+        != '</style>'
     body
         include blocks/navigator
         #content

@@ -7,7 +7,6 @@ var express = require('express');
 var router = require('./router.js');
 var fs = require('fs');
 //init express
-process.chdir('/kadmin/server/www/gnaoh');
 var gnaoh = express();
 //SPDY options 
 var spdyOptions = {
@@ -20,8 +19,7 @@ var spdyOptions = {
 };
 // gnaoh settings
 gnaoh.configure(function () {
-    //compress seems to be malfunctioning at the moment
-    //gnaoh.use(express.compress());
+    gnaoh.use(express.compress());
     gnaoh.set('view engine', 'jade');
     gnaoh.set('views', __dirname + '/views');
     gnaoh.use(express.methodOverride());

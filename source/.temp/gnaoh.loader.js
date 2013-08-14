@@ -1,1 +1,0 @@
-!function(a,b){"use strict";var c="/library/js";a.require.config({baseUrl:"js/",paths:{lib:c,jQuery:["//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min",c+"/jQuery"],analytics:[("https:"===b.location.protocol?"https://ssl":"http://www")+".google-analytics.com/ga"]}}),a.require(["gnaoh"])}(window,document);

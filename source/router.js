@@ -9,7 +9,8 @@ routes.forEach(function (value) {
             'Strict-Transport-Security': 'max-age=13333337'
         }).render(value, {
             title: value,
-            css: css
+            css: css,
+            pretty:true
         });
     };
 });
