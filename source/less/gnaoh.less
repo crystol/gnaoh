@@ -402,7 +402,7 @@ body {
         margin: 10px 0;
         overflow: hidden;
         .image {
-            // position: relative;
+            position: relative;
             margin: 10px 0;
             img{
                 max-width: 100%;
@@ -475,35 +475,35 @@ body {
 
 
 //tablets
-@media (max-width:1024px) {
-}
+// @media (max-width:1024px) {
+    //nothing to see here
+// }
 //Phones in landscape & Tablets in portrait
 @media (max-width:768px) {
     @topbar-height: 2.5em;
-    html {
     // converts the smaller grids to be 50%
     .grid-25,
     .grid-20,
     .grid-10 {
         .grid-50;
         }
-    }
     .auto {
         .show !important;
     }
     #navigator {
-        width: 100%;
+        // width: 100%;
         height: auto;
         z-index: 5;
         top: 0;
         position: fixed;
-        .logo {
-            width: 100%;
-            height: @topbar-height;
-            z-index: 10;
-            right: 0;
+    }
+        // .logo {
+            // width: 100%;
+            // height: @topbar-height;
+            // right: 0;
+        // }
                 .aromatics {
-                    top : auto;
+                    top : 5%;
                     left : auto;
                     right : @aromatics-size*0.75;
                     .absolute;
@@ -514,49 +514,46 @@ body {
                  & >:not(.pyrimidine) {
                     .hide;
                  }
-                .pyrimidine {
-                    .flipper {
-                        .show;
-                        width: 55%;
-                        height: 15%;
-                        margin: 0 auto;
-                        position: relative;
-                        top: 45%;
-                        background: @bg-color;
-                    }
-                    .flipper:before {
-                        content: '';
-                        width: 100%;
-                        height: 100%;
-                        position: absolute;
-                        top: -200%;
-                        background: @bg-color;
-                    }
-                    .flipper:after {
-                        content: '';
-                        width: 100%;
-                        height: 100%;
-                        position: absolute;
-                        top: 200%;
-                        background: @bg-color;
-                    }
+                .flipper {
+                    .show;
+                    width: 55%;
+                    height: 15%;
+                    margin: 0 auto;
+                    position: relative;
+                    top: 45%;
+                    background: @bg-color;
+                }
+                .flipper:before, .flipper:after {
+                    content: '';
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    background: @bg-color;
+                }
+               
+                .flipper:before {
+                    top: -200%;
+                }
+                .flipper:after {
+                    top: 200%;
                 }
             }
-        }
         #navlist {
+            .absolute;
             .hide;
-            padding-top: 3.5em;
+            padding-top: 4.1em;
             top: 0;
+            right: 0;
+            width: auto;
             background: fadeout(@bg-color, 15%);
             .link {
                 display: block;
                 margin: 0;
                 a{
-                    padding: 1em;
+                    padding: 2em 0.6em;
                 }
             }
         }
-    }
     #content {
         margin:  @topbar-height*1.5 0.5em;
         padding: 0;

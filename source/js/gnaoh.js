@@ -2,9 +2,9 @@
     define(['jQuery'], function () {
         'use strict';
         var $ = root.$ || root.jQuery;
+        var developement = true;
         //an object to wield the burden of responsibilities--it will be the one...
         //..to have a capitalized name like it's a big-shot constructor
-        var developement = true;
         var gnaoh = {};
         //global scope variables
         var mini;
