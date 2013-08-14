@@ -626,7 +626,7 @@
                 return;
             }
             //return if link is already active or page is currently loading
-            if (gnaoh.loading || $this.hasClass('active')) {
+            if ( $this.hasClass('active')) {
                 return false;
             }
             var href = this.href;
