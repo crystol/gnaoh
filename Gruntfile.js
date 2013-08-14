@@ -119,7 +119,7 @@ module.exports = function () {
             },
             less: {
                 files: ['source/less/*.less'],
-                tasks: ['less:development']
+                tasks: ['less:production']
             },
             lint: {
                 files: ['source/**/*.js'],
