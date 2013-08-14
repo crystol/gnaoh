@@ -46,11 +46,13 @@ gnaoh.configure(function () {
         });
         next();
     });
-    gnaoh.use(gnaoh.router);
     // static url for domain wide routing
-    gnaoh.use(express.static(__dirname));
+    gnaoh.use('/css/',express.static(__dirname+'/css/'));
+    gnaoh.use('/js/',express.static(__dirname+'/js/'));
     // static url for developement with /node address
     gnaoh.use('/library/', express.static('/kadmin/server/www/library'));
+    //views router
+    gnaoh.use(gnaoh.router);
     // 404 page
     gnaoh.use(function (request, response) {
         response.status(404).render('404', {

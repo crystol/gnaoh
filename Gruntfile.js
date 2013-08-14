@@ -133,7 +133,7 @@ module.exports = function () {
                     env: {
                         'NODE_ENV': 'developmental'
                     },
-                    delayTime: 3,
+                    delayTime: 4,
                     watchedFolders: ['source'],
                     ignoredFiles: ['build/**/**', 'source/**/*.jade', 'source/**/*.less', 'source/js/**'],
                     cwd: __dirname
