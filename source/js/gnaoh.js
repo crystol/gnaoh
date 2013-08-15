@@ -1,17 +1,14 @@
-(function (root, document) {
+(function (win, doc) {
     define(['jQuery'], function () {
         'use strict';
-        var $ = root.jQuery;
+        var $ = win.jQuery;
         var developement = true;
-        //lazy logging
-        var log = function () {};
-        if (developement) {
-            log = function (args) {
-                root.console.log(args);
-            };
-        }
-        //common jquery selectors cache to speed things up
-        var $window = $(root);
+        //lazy logging--if devleopement is false, it won't console log anything.
+        var log = developement ? function (args) {
+                win.console.log(args);
+            } : function () {};
+        //common jquery selectors cache
+        var $window = $(win);
         var $body = $('body');
         var $content = $('#content');
         var $post = $('#post');
@@ -31,13 +28,13 @@
             }
             //if callback exists, perform it after the delay and return jquery object for chaining
             if (typeof callback === 'function') {
-                root.setTimeout(function () {
+                win.setTimeout(function () {
                     callback.call($this);
                 }, time);
                 return $this;
             } else {
                 //return promise--use withh .done()--if no callbacks are provided
-                root.setTimeout(function () {
+                win.setTimeout(function () {
                     procrastinate.resolveWith($this);
                 }, time);
                 return procrastinate;
@@ -56,6 +53,7 @@
             return this;
         };
         //an object to wield the burden of responsibilities--it will be the one...
+
         function Gnaoh() {
             //global scope variables
             this.mini = 0;
@@ -109,8 +107,8 @@
                 this.resizeCallbacks.add([that.scrollspy, that.size]);
                 //bind said handlers to window and add a delay to prevent rapid firing
                 $window.on('resize', function () {
-                    root.clearTimeout(that.resizeDelay);
-                    that.resizeDelay = root.setTimeout(function () {
+                    win.clearTimeout(that.resizeDelay);
+                    that.resizeDelay = win.setTimeout(function () {
                         that.resizeCallbacks.fire.call(that);
                     }, 200);
                 });
@@ -120,8 +118,8 @@
                 $cv = $('#post .cv');
                 //update currentpage for navigation
                 this.currentPage = {
-                    path: document.location.pathname,
-                    href: document.location.href
+                    path: doc.location.pathname,
+                    href: doc.location.href
                 };
                 //load cv if it exists
                 if ($cv.length) {
@@ -142,7 +140,7 @@
             },
             //media query: will set mini || medium || massive to true appropiately
             size: function () {
-                var width = document.body.clientWidth;
+                var width = doc.body.clientWidth;
                 this.mini = this.medium = this.massive = false;
                 if (width <= 768) {
                     this.mini = true;
@@ -182,7 +180,7 @@
                     var $postPrep = $('<div id="new-post">').append($data.find('#post').contents());
                     //changes page name and title
                     $post.data('name', name);
-                    document.title = name.charAt(0).toUpperCase() + name.substring(1);
+                    doc.title = name.charAt(0).toUpperCase() + name.substring(1);
                     $post.wrapInner('<div id="old-post">').append($postPrep);
                     var $old = $('#old-post');
                     var $new = $('#new-post');
@@ -195,7 +193,7 @@
                         $post.removeClass(animethod);
                         //push new page to analytics and browser history
                         that.init();
-                        root._gaq.push(['_trackPageview', document.location.pathname]);
+                        win._gaq.push(['_trackPageview', doc.location.pathname]);
                     }
                     //animating the pages
                     //skip on mobile devices
@@ -207,11 +205,11 @@
             },
             //load a css sheet 
             requireCss: function (name) {
-                var stylesheet = document.createElement("link");
+                var stylesheet = doc.createElement("link");
                 var href = (name === 'gnaoh.less') ? 'css/gnaoh.less' : this.static + '/css/' + name;
                 stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
                 stylesheet.href = href;
-                document.getElementsByTagName("head")[0].appendChild(stylesheet);
+                doc.getElementsByTagName("head")[0].appendChild(stylesheet);
             },
             //load a  gallery from a specified directory. sample html code <div class='gallery' id='dirName' start='1' amount='10'></div>
             loadGallery: function () {
@@ -266,14 +264,13 @@
                     }
                     //creates a div, append the appropiate image to itself, and then pushes to the array of images
                     for (var i = options.start; i < options.amount; i++) {
-                        var image = document.createElement('img');
-                        var imageWrapper = document.createElement('div');
+                        var image = doc.createElement('img');
+                        var imageWrapper = doc.createElement('div');
                         //load smaller images for mobile devices
-                        if (that.mini) {
-                            image.src = that.static + '/img/gallery/' + options.id + '/' + i + 's.jpg';
-                        } else {
-                            image.src = that.static + '/img/gallery/' + options.id + '/' + i + '.jpg';
-                        }
+                        // if (that.mini) {
+                        //     image.src = that.static + '/img/gallery/' + options.id + '/' + i + 's.jpg';
+                        // } 
+                        image.src = that.static + '/img/gallery/' + options.id + '/' + i + '.jpg';
                         imageWrapper.className = 'image';
                         imageWrapper.id = options.id + '-' + i;
                         imageWrapper.appendChild(image);
@@ -293,7 +290,7 @@
             layBricks: function () {
                 var that = this;
                 var $foundation = $('.wall');
-                root.require(['static/isotope'], function () {
+                win.require(['static/isotope'], function () {
                     $foundation.imagesLoaded(function () {
                         $foundation.isotope({
                             itemSelector: '.image',
@@ -304,6 +301,7 @@
                             },
                             containerClass: 'wall',
                             itemClass: 'brick',
+                            sortBy: 'random',
                             resizable: false
                         });
 
@@ -357,13 +355,13 @@
                         height: $wrapper.width() * (9 / 16)
                     });
                     //create the video tag and apply attributes
-                    var video = document.createElement('video');
+                    var video = doc.createElement('video');
                     //create the mp4 source tag
-                    var mp4 = document.createElement('source');
+                    var mp4 = doc.createElement('source');
                     mp4.type = 'video/mp4';
                     mp4.src = vidSrc + '.mp4';
                     //create the webm source tag
-                    var webm = document.createElement('source');
+                    var webm = doc.createElement('source');
                     webm.type = 'video/webm';
                     webm.src = vidSrc + '.webm';
                     //append the sources to the video tag and stick it into the div
@@ -457,19 +455,19 @@
                     mouseenter: function () {
                         that.isMini();
                         var $this = $(this);
-                        var countdown = root.setTimeout(function () {
+                        var countdown = win.setTimeout(function () {
                             $cv.find('.active').removeClass('active');
                             $this.addClass(' active ');
                         }, 1000);
                         $this.on(' mouseleave ', function (event) {
-                            root.clearTimeout(countdown);
+                            win.clearTimeout(countdown);
                             $this.off(event);
                         });
                     }
                 });
                 $("#coolio").on('click', function () {
                     that.requireCss('fancybox/fancybox.css');
-                    root.require(['static/fancybox'], function () {
+                    win.require(['static/fancybox'], function () {
                         $.fancybox({
                             padding: 3,
                             closeClick: true,
@@ -541,8 +539,8 @@
                 var stopDropRoll;
 
                 function delayer() {
-                    root.clearTimeout(stopDropRoll);
-                    stopDropRoll = root.setTimeout(function () {
+                    win.clearTimeout(stopDropRoll);
+                    stopDropRoll = win.setTimeout(function () {
                         navlistDock();
                     }, 10);
                 }
@@ -568,22 +566,22 @@
                 function modify() {
                     $('link[rel=stylesheet]').remove();
                     $('body *').deanimate();
-                    root.less.modifyVars({
+                    win.less.modifyVars({
                         '@color': colors[randomColor]
                     });
                 }
-                if (!root.less) {
+                if (!win.less) {
                     this.requireCss('gnaoh.less');
-                    root.require(['static/less'], modify);
+                    win.require(['static/less'], modify);
                 } else {
                     modify();
                 }
             }
         };
-        //initializing everything and exporting it to the outside
+        //initializing everything and exporting it to the global scope
         var gnaoh = new Gnaoh().init();
-        root.gnaoh = gnaoh;
-        root.Gnaoh = function () {
+        win.gnaoh = gnaoh;
+        win.Gnaoh = function () {
             return new Gnaoh();
         };
         // /*****************************************************************************************
@@ -591,9 +589,9 @@
         //  * ****************************************************************************************
         // //history navigation (back/forward buttons) for ajax loaded pages
         try {
-            root.onpopstate = function () {
-                if (gnaoh.popState && gnaoh.currentPage.path !== document.location.pathname) {
-                    gnaoh.getPage(document.location);
+            win.onpopstate = function () {
+                if (gnaoh.popState && gnaoh.currentPage.path !== doc.location.pathname) {
+                    gnaoh.getPage(doc.location);
                 }
                 gnaoh.popState = true;
             };
@@ -624,7 +622,7 @@
                 gnaoh.getPage(link);
             }
             //mark link active & push page/hash to history
-            root.history.pushState({}, "", href);
+            win.history.pushState({}, "", href);
             return false;
         });
         //navlist toggle for smaller devices

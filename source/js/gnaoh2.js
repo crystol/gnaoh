@@ -1,3 +1,5 @@
 (function (root, document) {
-     define(['static/backbone'], function () {});
+     define(['static/backbone'], function () {
+        
+     });
 })(window, document);
