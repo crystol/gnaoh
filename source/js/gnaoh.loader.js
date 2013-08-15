@@ -2,14 +2,14 @@
 (function (root, document) {
     'use strict';
     //CDN hosted scripts and their local fallbacks
-    var library = '/library/js';
+    var staticLocation = '/static/js';
     root.require.config({
         baseUrl: 'js/',
         paths: {
-            lib: library,
+            static: staticLocation,
             jQuery: [
                 '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min',
-                library + '/jQuery'
+                staticLocation + '/jQuery'
             ],
             analytics: [
                 ('https:' === document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga'
@@ -18,6 +18,7 @@
     });
     //load the main script
     root.require(['gnaoh']);
+    root.require(['gnaoh2']);
     //Google analytics
     root.onload = function () {
         var _gaq = root._gaq || [];

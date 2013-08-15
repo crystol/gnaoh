@@ -1,7 +1,7 @@
 (function (root, document) {
     define(['jQuery'], function () {
         'use strict';
-        var $ = root.$ || root.jQuery;
+        var $ = root.jQuery;
         var developement = true;
         //lazy logging
         var log = function () {};
@@ -20,10 +20,7 @@
         var $gallery;
         var $video;
         var $cv;
-        //code for developmental purposes
-        /*****************************************************************************************
-         * Extending jQuery functions
-         * *****************************************************************************************/
+        //Extending jQuery functions
         //stall function that can be used more versitile from $().delay()
         $.prototype.wait = $.wait = function (time, callback) {
             //need to cache this and pass it to window as context
@@ -59,8 +56,6 @@
             return this;
         };
         //an object to wield the burden of responsibilities--it will be the one...
-        //..to have a capitalized name like it's a big-shot constructor
-
         function Gnaoh() {
             //global scope variables
             this.mini = 0;
@@ -75,24 +70,8 @@
             this.initCallbacks = 0;
             this.resizeCallbacks = 0;
             this.cssDelay = 1000;
-            this.library = '/library';
+            this.static = '/static';
         }
-        //exporting functions/variables to global scope as an object with name gnaoh
-        // var takeout = root.gnaoh || {};
-        // takeout = {
-        //     fn: gnaoh,
-        //     lib: library,
-        //     vars: function () {
-        //         return {
-        //             initPromise: initPromise,
-        //             initCallbacks: initCallbacks,
-        //             resizeCallbacks: resizeCallbacks,
-        //             cssDelay: cssDelay,
-        //             currentPage: currentPage
-        //         };
-        //     }
-        // };
-        // root.gnaoh = takeout;
         /*****************************************************************************************
          * Functionality
          * ***************************************************************************************/
@@ -229,7 +208,7 @@
             //load a css sheet 
             requireCss: function (name) {
                 var stylesheet = document.createElement("link");
-                var href = (name === 'gnaoh.less') ? 'css/gnaoh.less' : this.library + '/css/' + name;
+                var href = (name === 'gnaoh.less') ? 'css/gnaoh.less' : this.static + '/css/' + name;
                 stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
                 stylesheet.href = href;
                 document.getElementsByTagName("head")[0].appendChild(stylesheet);
@@ -272,7 +251,7 @@
                     if (options.captions) {
                         var captions;
                         $.ajax({
-                            url: that.library + '/img/gallery/' + options.id + '/captions.JSON',
+                            url: that.static + '/img/gallery/' + options.id + '/captions.JSON',
                             success: function (data) {
                                 captions = data;
                                 //the text will match with corresonponding image wrapper and insert a captions div
@@ -291,9 +270,9 @@
                         var imageWrapper = document.createElement('div');
                         //load smaller images for mobile devices
                         if (that.mini) {
-                            image.src = that.library + '/img/gallery/' + options.id + '/' + i + 's.jpg';
+                            image.src = that.static + '/img/gallery/' + options.id + '/' + i + 's.jpg';
                         } else {
-                            image.src = that.library + '/img/gallery/' + options.id + '/' + i + '.jpg';
+                            image.src = that.static + '/img/gallery/' + options.id + '/' + i + '.jpg';
                         }
                         imageWrapper.className = 'image';
                         imageWrapper.id = options.id + '-' + i;
@@ -314,7 +293,7 @@
             layBricks: function () {
                 var that = this;
                 var $foundation = $('.wall');
-                root.require(['lib/isotope'], function () {
+                root.require(['static/isotope'], function () {
                     $foundation.imagesLoaded(function () {
                         $foundation.isotope({
                             itemSelector: '.image',
@@ -371,9 +350,9 @@
                     var $wrapper = $(this); //the parent container for the videos
                     var id = this.id;
                     var options = this.dataset;
-                    var vidSrc = that.library + '/vid/' + id;
+                    var vidSrc = that.static + '/vid/' + id;
                     //placeholder while the video loads (the poster tag kinda sucks) and adjust the height for 16:9 ratio of 720p movies
-                    var poster = $('<img src="' + that.library + '/vid/posters/' + id + '.jpg" class="poster">');
+                    var poster = $('<img src="' + that.static + '/vid/posters/' + id + '.jpg" class="poster">');
                     $wrapper.css({
                         height: $wrapper.width() * (9 / 16)
                     });
@@ -490,11 +469,11 @@
                 });
                 $("#coolio").on('click', function () {
                     that.requireCss('fancybox/fancybox.css');
-                    root.require(['lib/fancybox'], function () {
+                    root.require(['static/fancybox'], function () {
                         $.fancybox({
                             padding: 3,
                             closeClick: true,
-                            href: that.library + '/img/misc/coolio.jpg',
+                            href: that.static + '/img/misc/coolio.jpg',
                             title: 'Hanging out in g-paradise with Coolio.'
                         });
                     });
@@ -567,6 +546,7 @@
                         navlistDock();
                     }, 10);
                 }
+
                 function navlistDock() {
                     that.isMini();
                     var currentY = window.pageYOffset;
@@ -594,7 +574,7 @@
                 }
                 if (!root.less) {
                     this.requireCss('gnaoh.less');
-                    root.require(['lib/less'], modify);
+                    root.require(['static/less'], modify);
                 } else {
                     modify();
                 }
@@ -626,7 +606,7 @@
                 return;
             }
             //return if link is already active or page is currently loading
-            if ( $this.hasClass('active')) {
+            if ($this.hasClass('active')) {
                 return false;
             }
             var href = this.href;

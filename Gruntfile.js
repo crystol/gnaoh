@@ -3,7 +3,7 @@ module.exports = function () {
     var grunt = require('grunt');
     grunt.initConfig({
         package: grunt.file.readJSON('package.json'),
-        library: '../library',
+        static: '../static',
         // clean directories
         clean: {
             build: ['build/']
@@ -17,6 +17,7 @@ module.exports = function () {
             javascript: {
                 files: {
                     'build/js/<%= package.name %>.js': 'source/js/<%= package.name %>.js',
+                    'build/js/<%= package.name %>2.js': 'source/js/<%= package.name %>2.js',
                     'build/.temp/<%= package.name %>.loader.js': 'source/js/<%= package.name %>.loader.js',
                 }
             }
@@ -25,7 +26,7 @@ module.exports = function () {
         concat: {
             javascript: {
                 files: {
-                    'build/js/loader.js': ['<%= library %>/js/require.js', 'build/.temp/<%= package.name %>.loader.js'],
+                    'build/js/loader.js': ['<%= static %>/js/require.js', 'build/.temp/<%= package.name %>.loader.js'],
                 }
             },
         },
@@ -60,8 +61,7 @@ module.exports = function () {
                     paths: ['source/less']
                 },
                 files: {
-                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less',
-                    'build/views/style.jade': 'source/less/<%= package.name %>.less'
+                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less'
                 }
             },
             production: {
@@ -71,7 +71,6 @@ module.exports = function () {
                 },
                 files: {
                     'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less',
-                    'build/views/style.jade': 'source/less/<%= package.name %>.less'
                 }
             }
         },

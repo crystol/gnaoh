@@ -50,7 +50,7 @@ gnaoh.configure(function () {
     gnaoh.use('/css/',express.static(__dirname+'/css/'));
     gnaoh.use('/js/',express.static(__dirname+'/js/'));
     // static url for developement with /node address
-    gnaoh.use('/library/', express.static('/kadmin/server/www/library'));
+    gnaoh.use('/static/', express.static('/kadmin/server/www/static'));
     //views router
     gnaoh.use(gnaoh.router);
     // 404 page
