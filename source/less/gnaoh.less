@@ -27,7 +27,7 @@
 @color: #9371B3;                                                                //highlighted color
 @color-dark: darken(@color,5%);                                                                //highlighted color
 @selection: #7E7E7E;                                                    //selection color
-@highlight: #7E7E7E;
+@highlight: #666;
 @bg-color: #fff;                                                                //background color
 @navigator-h: 175px;                                                            //height of sidebar
 @navigator-w: 100%;                                                             //with of sidebar
@@ -43,7 +43,7 @@
 //common mixinables
 .animated (@time: @cssTransitionTime; @type: all) {
     transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    -webkit-transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    // -webkit-transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 //arguments as follows: name, duration, easing, delay, iteration count, direction, fill
 .key-animated (@name; @duration: 2s; @iteration: infinite; @easing: cubic-bezier(1,1,1,1); @delay: 0ms; @direction: normal; @fill: both) {
@@ -304,11 +304,12 @@ body {
             }
         }
         &.fixed {
-            position: fixed !important;
             top:0;
-            padding: 0.25em 0;
-            background: rgba(255, 255, 255, 0.85);
             z-index: 5;
+            padding: 0.25em 0;
+            position: fixed !important;
+            box-shadow: 1px 1px 3px #888888; 
+            background: rgba(255, 255, 255, 0.85);
         }
     }
 //content page
@@ -320,12 +321,11 @@ body {
     perspective:1000;
 }
 #post {
-    // h1,h2,h3,h4 {
-    //     color: @color-dark;
-    // }
     h1 {
         color: @color;
         margin: 10px 0;
+        font-weight: normal;
+        font-size: 1.7em;
     }
     a {
         color: @color;
@@ -357,7 +357,10 @@ body {
         .transform(rotateY, -180deg);
     }
 }   
-    .cv {
+    .about {
+        .self {
+            margin-bottom: 1em;
+        }
         .category {
             margin: 0.75em 0;
             font-size: @font-size*1.75;
@@ -365,12 +368,24 @@ body {
             padding-bottom: 5px;
             border-bottom: 1px solid @color-dark;
         }
+        .head {
+            margin: 0.5em 0;
+            font-size: @font-size*1.5;
+            // color: @color-dark;
+            padding-bottom: 5px;
+            text-decoration: underline;
+        }
         .position {
             transform-origin: left top;
             -webkit-transform-origin: left top;
             margin-bottom: 2em;
             .animated(150ms, all);
-            
+            &.active {
+                .transform(scale, 1.3);
+                border-left: 5px solid @color-dark;
+                padding-left: 1em;
+                margin-bottom: 4.5em;
+            }
             .title {
                 font-size: @font-size*1.2;
             }
@@ -386,21 +401,13 @@ body {
             .genus-species {
                 font-style: italic;
             }
-            &.active {
-                .transform(scale, 1.3);
-                border-left: 5px solid @color-dark;
-                padding-left: 1em;
-                margin-bottom: 4.5em;
-                .title {
-                    text-decoration: underline;
-                }
-            }
         }
     }
     //image galleries
     .gallery {
         margin: 10px 0;
         overflow: hidden;
+        }
         .image {
             position: relative;
             margin: 10px 0;
@@ -408,11 +415,12 @@ body {
                 max-width: 100%;
                 height: 100%;
             }
+            //displays captions on hover
             .caption {
                 width: 100%;
                 position: absolute;
                 bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
+                background: rgba(0, 0, 0, 0.75);
                 color: #fff;
                 opacity: 0;
                 padding: 0 0 0 1%;
@@ -454,7 +462,6 @@ body {
                 .animated(0) !important;
             }
         }
-    }
     //video wrapper and UI
     .video {
         .relative;

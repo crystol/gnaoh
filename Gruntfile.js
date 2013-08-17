@@ -10,23 +10,35 @@ module.exports = function () {
         },
         //javascript minimizer/obfuscater 
         uglify: {
-            options: {
-                report: 'gzip',
-                // mangle: false
-            },
-            javascript: {
+            production: {
                 files: {
                     'build/js/<%= package.name %>.js': 'source/js/<%= package.name %>.js',
-                    'build/js/<%= package.name %>2.js': 'source/js/<%= package.name %>2.js',
-                    'build/.temp/<%= package.name %>.loader.js': 'source/js/<%= package.name %>.loader.js',
+                    'build/.temp/loader.js': 'source/js/loader.js',
+                }
+            },
+            development: {
+                options: {
+                    report: 'gzip',
+                    mangle: false
+                },
+                files: {
+                    'build/.temp/<%= package.name %>.js': 'source/js/<%= package.name %>.js',
+                    'build/.temp/<%= package.name %>2.js': 'source/js/<%= package.name %>2.js',
+                    'build/.temp/loader.js': 'source/js/loader.js',
                 }
             }
         },
         //stringing scripts and stylesheets
         concat: {
-            javascript: {
+            production: {
                 files: {
-                    'build/js/loader.js': ['<%= static %>/js/require.js', 'build/.temp/<%= package.name %>.loader.js'],
+                    'build/js/loader.js': ['<%= static %>/js/require.js', 'build/.temp/loader.js'],
+                }
+            },
+            development: {
+                files: {
+                    'build/js/<%= package.name %>.js': ['build/.temp/<%= package.name %>*.js'],
+                    'build/js/loader.js': ['<%= static %>/js/require.js', 'build/.temp/loader.js'],
                 }
             },
         },
@@ -109,13 +121,17 @@ module.exports = function () {
                 spawn: false,
                 livereload: 35729
             },
-            copy: {
-                files: ['source/views/**', 'source/*.js'],
-                tasks: ['copy']
+            server: {
+                files: ['source/*.js'],
+                tasks: ['copy:root']
+            },
+            views: {
+                files: ['source/views/**'],
+                tasks: ['copy:express']
             },
             js: {
                 files: ['source/js/*.js'],
-                tasks: ['uglify', 'concat']
+                tasks: ['uglify:development', 'concat']
             },
             less: {
                 files: ['source/less/*.less'],
@@ -134,8 +150,8 @@ module.exports = function () {
                         'NODE_ENV': 'developmental'
                     },
                     delayTime: 4,
-                    watchedFolders: ['source'],
-                    ignoredFiles: ['build/**/**', 'source/**/*.jade', 'source/**/*.less', 'source/js/**'],
+                    watchedFolders: ['build/'],
+                    ignoredFiles: ['build/**/**'],
                     cwd: __dirname
                 }
             }
@@ -161,7 +177,8 @@ module.exports = function () {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     //assign tasks
-    grunt.registerTask('build', ['uglify', 'concat', 'less:production', 'copy']);
-    grunt.registerTask('default', ['jshint', 'clean', 'build']);
+    grunt.registerTask('default', ['build']);
+    grunt.registerTask('dev', ['clean','uglify:development', 'concat:development', 'less:development', 'copy']);
+    grunt.registerTask('build', ['clean','uglify:production', 'concat:production', 'less:production', 'copy']);
     grunt.registerTask('live', ['concurrent']);
 };

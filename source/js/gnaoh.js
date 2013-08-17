@@ -1,7 +1,6 @@
 (function (win, doc) {
-    define(['jQuery'], function () {
+    define(['jquery'], function ($) {
         'use strict';
-        var $ = win.jQuery;
         var developement = true;
         //lazy logging--if devleopement is false, it won't console log anything.
         var log = developement ? function (args) {
@@ -16,7 +15,7 @@
         var $loader = $('#navigator .pyrimidine');
         var $gallery;
         var $video;
-        var $cv;
+        var $about;
         //Extending jQuery functions
         //stall function that can be used more versitile from $().delay()
         $.prototype.wait = $.wait = function (time, callback) {
@@ -115,15 +114,15 @@
                 //loading additional sections on the page
                 $gallery = $('#post .gallery');
                 $video = $('#post .video');
-                $cv = $('#post .cv');
+                $about = $('#post .about');
                 //update currentpage for navigation
                 this.currentPage = {
                     path: doc.location.pathname,
                     href: doc.location.href
                 };
-                //load cv if it exists
-                if ($cv.length) {
-                    this.loadCV();
+                //load about section if it exists
+                if ($about.length) {
+                    this.loadAbout();
                 }
                 //loads videos if they exist
                 if ($video.length) {
@@ -164,10 +163,11 @@
                 }
             },
             //ajax loading of pages
-            getPage: function (link) {
+            getPage: function (link, skipAnimation) {
                 //need to save context of this to pass to jquery callbacks
                 var that = this;
                 this.loading = true;
+                gnaoh.smoothScroll(null, null, 'navigator');
                 $loader.addClass('loading').next().addClass('gnidaol');
                 //sends ajax request for the specific page
                 $.ajax({
@@ -197,7 +197,7 @@
                     }
                     //animating the pages
                     //skip on mobile devices
-                    if (that.mini) {
+                    if (that.mini || skipAnimation) {
                         return cleanUp();
                     }
                     $post.deanimate(null, null, 1100).addClass(animethod).find($old).fadeOut(500).wait(1100, cleanUp);
@@ -444,19 +444,19 @@
                 });
             },
             //curriculum vitae section
-            loadCV: function () {
+            loadAbout: function () {
                 var that = this;
-                $cv.find('.position:not(.active)').on({
+                $about.find('.position:not(.active)').on({
                     click: function () {
                         that.isMini();
-                        $cv.find('.active ').removeClass(' active ');
+                        $about.find('.active ').removeClass(' active ');
                         $(this).addClass(' active ');
                     },
                     mouseenter: function () {
                         that.isMini();
                         var $this = $(this);
                         var countdown = win.setTimeout(function () {
-                            $cv.find('.active').removeClass('active');
+                            $about.find('.active').removeClass('active');
                             $this.addClass(' active ');
                         }, 1000);
                         $this.on(' mouseleave ', function (event) {
@@ -591,7 +591,7 @@
         try {
             win.onpopstate = function () {
                 if (gnaoh.popState && gnaoh.currentPage.path !== doc.location.pathname) {
-                    gnaoh.getPage(doc.location);
+                    gnaoh.getPage(doc.location, true);
                 }
                 gnaoh.popState = true;
             };
@@ -616,8 +616,6 @@
             if (hash && samePage) {
                 //if there's a hash match, it will be extracted;
                 gnaoh.smoothScroll(undefined, undefined, hash[0]);
-            } else if (samePage) {
-                gnaoh.smoothScroll(undefined, undefined, 'top');
             } else {
                 gnaoh.getPage(link);
             }

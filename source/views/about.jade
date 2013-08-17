@@ -1,13 +1,18 @@
 extends skeleton
 block content
-    .cv
-        p
-            | Grumpy wizards make toxic brew for the evil Queen and Jack. One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked.
-            | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc in fermentum dolor. Nulla facilisi. Morbi vel rutrum mi. Nullam ante felis, iaculis dignissim consectetur at, euismod et purus. Vestibulum et lorem ac est molestie tincidunt. Aenean sodales sagittis eros, et tincidunt ante luctus ornare. Integer purus nibh, pharetra vel varius sit amet, fringilla rutrum elit. Mauris vel tellus erat, in interdum orci. Aenean vehicula dui in leo pretium vitae accumsan odio rutrum. Praesent bibendum semper nunc sed pharetra. Duis lobortis adipiscing lacus, nec porta tellus dictum id. Integer in laoreet mauris.
-            | Duis quis lectus et massa sodales dignissim ut a arcu. Aliquam volutpat dapibus orci, in porta augue elementum ac. Suspendisse tempus vehicula turpis vel adipiscing. Proin hendrerit, risus fringilla iaculis venenatis, est lectus fermentum metus, sit amet rutrum enim massa id risus. Suspendisse eget justo vitae ipsum volutpat tempus eu id tellus. Maecenas sed pulvinar augue. Pellentesque mollis blandit libero, eget feugiat diam aliquam id. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas rhoncus felis vitae lacus placerat blandit.
-        br br
-        img(src='/static/img/gallery/twelve/4.jpg')
+    .about
+        .category Kenny Hoang
+        .self
+            p   Welcome to my corner of the collective human information network. I am an aspiring web developer.
+            p   In my free time, I enjoy brainstorming and writing apt self-descriptions.
+        .position
+            .description
+                | Contact information
+                ul
+                    li Email: 
+                        a(href='mailto:kenny@gnaoh.com?subject=Hi%20Kenny') kenny@gnaoh.com
         .category Curriculum Vitae
+        .head Experience
         .position
             .title Center for Drug Design, University of Minnesota - Research Assistant
             .date December 2009 – May 2010
@@ -65,9 +70,11 @@ block content
             .date 2003 - 2009
             .description
                 | Assisted in the process of teaching the Vietnamese language as a second language to the youth.
-    .education
         .category Education
         .position
             .title University of Minnesota
             .date 2007 - 2011
             .description B.S. Biochemistry
+        .image
+            img(src='/static/img/gallery/twelve/4.jpg', alt='Venturing circa Amlies grocercy store in Montmartre.')
+            .caption Venturing circa Amélie's grocercy store in Montmartre.

@@ -1,13 +1,13 @@
 //loading configuration & analytics
-(function (root, document) {
+(function (win, document) {
     'use strict';
     //CDN hosted scripts and their local fallbacks
     var staticLocation = '/static/js';
-    root.require.config({
+    win.require.config({
         baseUrl: 'js/',
         paths: {
             static: staticLocation,
-            jQuery: [
+            jquery: [
                 '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min',
                 staticLocation + '/jQuery'
             ],
@@ -17,13 +17,12 @@
         }
     });
     //load the main script
-    root.require(['gnaoh']);
-    root.require(['gnaoh2']);
+    win.require(['gnaoh']);
     //Google analytics
-    root.onload = function () {
-        var _gaq = root._gaq || [];
-    //     _gaq.push(['_setAccount', 'UA-38948913-1'], ['_setDomainName', 'none'], ['_trackPageview']);
-        root._gaq = _gaq;
-    //     root.require(['analytics']);
+    win.onload = function () {
+        var _gaq = win._gaq || [];
+        _gaq.push(['_setAccount', 'UA-38948913-1'], ['_setDomainName', 'none'], ['_trackPageview']);
+        win._gaq = _gaq;
+        win.require(['analytics']);
     };
 })(window, document);
