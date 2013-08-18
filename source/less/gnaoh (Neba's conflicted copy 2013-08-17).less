@@ -1,0 +1,592 @@
+/*
+ * This file contains the styling behind gnaoh.com.
+ * Less.js is required to compile this stylesheet into browser CSS.
+ *
+ *  Map!
+ * - Variables
+ * - Mixins
+ * - Page
+ *      - Typography
+ *      - Resets
+ *      - Universials (e.g, responsive fluid grid, transitions)
+ *      - HTML & Body level styling.
+ *      - Navigator (Sidebar)
+ *          - Logo 
+ *              - Pyrimidine and Benzene aromatic rings
+ *          - Navigation Links
+ *      - Content & Post
+ *          - Paragraphs, Headings, Sections
+ *          - Videos
+ *          - Image Galleries
+ *              - Wall/Brick Styling
+ *      - Media Queries for Responsive functionality.
+ */
+//variables
+@font: 'Roboto', sans-serif;                                //default font
+@font-size: 15px;                                                               //default font size
+@color: #9371B3;                                                                //highlighted color
+@color-dark: darken(@color,5%);                                                                //highlighted color
+@selection: #7E7E7E;                                                    //selection color
+@highlight: #666;
+@bg-color: #fff;                                                                //background color
+@navigator-h: 175px;                                                            //height of sidebar
+@navigator-w: 100%;                                                             //with of sidebar
+@navigator-fc: #BBB;                                                            //font color of nav links
+@post-width: 1000px;                                                            //max width of main post
+@gallery-w: @post-width;                                                        //image gallery's width
+@aromatics-size: 70px;                                                          //side of logo
+@cssTransitionTime: 900ms;                                                      //default time for css transitions
+
+@nl:`'\n'`;                                                                     //newline shorthand
+@baseURL: '/library';                                        //URL for compilation
+
+//common mixinables
+.animated (@time: @cssTransitionTime; @type: all) {
+    transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    // -webkit-transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+//arguments as follows: name, duration, easing, delay, iteration count, direction, fill
+.key-animated (@name; @duration: 2s; @iteration: infinite; @easing: cubic-bezier(1,1,1,1); @delay: 0ms; @direction: normal; @fill: both) {
+    animation: @name @duration @easing @delay @iteration @direction @fill;
+    -webkit-animation: @name @duration @easing @delay @iteration @direction @fill;
+}
+//keyframe mixin. this is a really really ugly mixin hack. it's not possible until LESS implements mixins from variables.
+.keyframes(@name; @from: none; @to: 'none;';  @vendor:~'';){
+     @open: ~'@@{vendor}keyframes @{name} {@{nl}  from {@{nl}    @{vendor}@{from}@{nl}  }@{nl}  to {@{nl}    @{vendor}@{to}@{nl}  }@{nl}}@{nl}.@{name}';
+ 	@{open} {
+      .key-animated(@name);
+    }
+}
+.transform(@type; @value){
+    @mixin: ~'@{type}(@{value})';
+    transform: @mixin;
+    -webkit-transform: @mixin;
+}
+.noselect (){
+    -webkit-user-select: none;
+    -moz-user-select: none;    
+    -ms-user-select: none;   
+}
+.hide (){
+    display: none;
+}
+.show (){
+    display: block;
+}
+.fixed (){
+    position: fixed;
+}
+.relative (){
+    position: relative;
+}
+.absolute (){
+    position: absolute;
+}
+// Typography
+// @font-face {
+//   font-family: 'Roboto';
+//   font-style: normal;
+//   font-weight: 300;
+//   src: local('Roboto Light'), local('Roboto-Light'), url('@{baseURL}/fonts/roboto300.woff') format('woff');
+// }
+@font-face {
+    font-family: 'Roboto';
+    src: local('Roboto Light'), local('Roboto-Light'), url(//themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
+// Page Layout
+//Normalizer
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    text-rendering: optimizeLegibility;
+}
+table {
+    border-collapse:collapse;
+    border-spacing: 0;
+}
+li {
+    list-style: none;
+}
+img, video {
+    width: 100%;
+    vertical-align: middle;
+    .noselect;
+}
+//responsive fluid grids
+[class *= 'grid-'] {
+    display: inline;
+    float: left;
+    padding: 0 0.5%;
+}
+//the parent wrappers of grid elements
+.gridlock {
+    float: none;
+    & >:first-child {
+        padding-left: 0;
+    }
+    & >:last-child {
+        padding-right: 0;
+    }
+    .clearfix;
+}
+//grid widths
+.grid-100   {width: 100% !important;}
+.grid-80    {width:80% !important;}
+.grid-75    {width:75% !important;}
+.grid-66    {width:66.6% !important;}
+.grid-60    {width:60% !important;}
+.grid-50    {width:50% !important;}
+.grid-40    {width:40% !important;}
+.grid-33    {width:33.3% !important;}
+.grid-25    {width:25% !important;}
+.grid-20    {width:20% !important;}
+.grid-10    {width:10% !important;}
+
+//grid blank offsets
+.grid-offset-80    {margin-left:80%;}
+.grid-offset-75    {margin-left:75%;}
+.grid-offset-66    {margin-left:66%;}
+.grid-offset-60    {margin-left:60%;}
+.grid-offset-50    {margin-left:50%;}
+.grid-offset-40    {margin-left:40%;}
+.grid-offset-33    {margin-left:33%;}
+.grid-offset-25    {margin-left:25%;}
+.grid-offset-20    {margin-left:20%;}
+.grid-offset-10    {margin-left:10%;}
+
+//universials
+//.loading class will rotate the object continuously
+.keyframes(loading, 'transform:none;', 'transform:rotate(360deg);');
+.keyframes(loading, 'transform:none;', 'transform:rotate(360deg);', -webkit-);
+.keyframes(gnidaol, 'transform:none;', 'transform:rotate(-360deg);');
+.keyframes(gnidaol, 'transform:none;', 'transform:rotate(-360deg);', -webkit-);
+ //default transition animation
+.animated {
+    .animated();
+}
+
+.collapse {
+	@collapsed-w: -@navigator-w*0.85;
+	.transform(translate, '@{collapsed-w}, 0');
+}
+.clearfix {
+    &:before, &:after {
+        content:' ';
+        display:table;
+    }
+     &:before, &:after {
+        clear:both;
+    }
+}
+html {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+body {
+    font-family: @font;
+    background: @bg-color;
+    font-size: @font-size;
+    line-height: 20px;
+}
+//selection colors
+::-moz-selection {
+    background: @selection;
+    color: #fff;
+    text-shadow: none;
+}
+::selection {
+    background: @selection;
+    color: #fff;
+    text-shadow: none;
+}
+#navigator {
+    .noselect;
+    height: @navigator-h;
+    width: @navigator-w;
+}
+   //Branding Logo
+    .logo {
+        // .relative;
+        margin:0 auto;
+        width: @navigator-h - 25px;
+        height: @navigator-h - 25px;
+        &:hover .hoang {
+            opacity: 0;
+            .transform(rotate, -180deg);
+        }
+        &:hover .gnaoh {
+            opacity: 1;
+            .transform(rotate, -360deg);
+        }
+    }
+        //G (gangsta) Molecule
+        .aromatics {
+            position: relative;
+            left: 13%;
+            top: 1%;
+            .pyrimidine, .benzene {
+                position: absolute;
+                .top {
+                    width: 0;
+                    border-bottom: round(@aromatics-size/4, 1) solid @highlight;
+                    border-left: round(@aromatics-size/2 * 0.866, 1) solid transparent;
+                    border-right: round(@aromatics-size/2 * 0.866, 1) solid transparent;
+                }
+                .middle {
+                    width: round(@aromatics-size * 0.866, 1);   //width to heigh ratio is root(3) to 1
+                    height: round(@aromatics-size/2, 1);
+                    background: @highlight;
+                }
+                .bottom {
+                    width: 0;
+                    border-top: round(@aromatics-size/4, 1) solid @highlight;
+                    border-left: round(@aromatics-size/2 * 0.866, 1) solid transparent;
+                    border-right: round(@aromatics-size/2 * 0.866, 1) solid transparent;
+                }
+            }
+            .benzene {
+                left: round(@aromatics-size*0.43,1);
+                top: round(@aromatics-size*0.755,1);
+            }
+            .flipper {
+                .hide;
+            }
+            .kenny, .hoang, .gnaoh {
+                color: @bg-color;
+                .absolute;
+				.animated(500ms);
+                // height: 0;
+                // width: 0;
+            }
+            .kenny {
+                left: round(@aromatics-size/7, 1);
+                top: round(@aromatics-size/3 , 1);
+            }
+            .hoang {
+                left: round(@aromatics-size/1.8, 1);
+                top: round(@aromatics-size*1.1, 1);
+                // transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6,1);
+                // -webkit-transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6, 1);
+            }
+           .gnaoh {
+				opacity: 0;
+                left: round(@aromatics-size*0.55, 1);
+                top: round(@aromatics-size*1.1, 1);
+                // transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6,1);
+                // -webkit-transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6, 1);
+				.transform(rotate, -180deg);
+            }
+        }
+	//the list with all of them links
+    #navlist {
+        text-align: center;
+        // .absolute;
+        width: 100%;
+        .link {
+            display: inline-block;
+            margin:0 1em;
+            a {
+                color: #000;
+                text-decoration: none;
+                display: block;
+                padding:0 1.0em;
+                border-radius: 1px;
+            }
+            &:hover, &.active {
+                background: @highlight;
+                a {
+                    color: @bg-color;
+                }
+            }
+        }
+        &.fixed {
+            top:0;
+            z-index: 5;
+            padding: 0.25em 0;
+            position: fixed !important;
+            box-shadow: 1px 1px 3px #888888; 
+            background: rgba(255, 255, 255, 0.85);
+        }
+    }
+//content page
+#content {
+    max-width: @post-width;
+    margin: 0 auto;
+    padding: 2em 1em;
+    -webkit-perspective: 1000;
+    perspective:1000;
+}
+#post {
+    h1 {
+        color: @color;
+        margin: 10px 0;
+        font-weight: normal;
+        font-size: 1.7em;
+    }
+    a {
+        color: @color;
+        text-decoration: underline;
+    }
+    //ajax page switching
+    #old-post, #new-post {
+        max-width: @post-width;
+        .animated;
+        -webkit-backface-visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    #new-post{
+        .transform(rotateY, -180deg);
+    }
+    //rotates the pages as they switch
+    &.flipped, &.deppilf {
+        position: relative;
+        -webkit-transform-style: preserve-3d;
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1000;
+    }
+    &.flipped {
+        .transform(rotateY, 180deg);
+    }
+    &.deppilf {
+        .transform(rotateY, -180deg);
+    }
+}   
+    .about {
+        .self {
+            margin-bottom: 1em;
+        }
+        .category {
+            margin: 0.75em 0;
+            font-size: @font-size*1.75;
+            color: @color-dark;
+            padding-bottom: 5px;
+            border-bottom: 1px solid @color-dark;
+        }
+        .head {
+            margin: 0.5em 0;
+            font-size: @font-size*1.5;
+            // color: @color-dark;
+            padding-bottom: 5px;
+            text-decoration: underline;
+        }
+        .position {
+            transform-origin: left top;
+            -webkit-transform-origin: left top;
+            margin-bottom: 2em;
+            .animated(150ms, all);
+            &.active {
+                .transform(scale, 1.3);
+                border-left: 5px solid @color-dark;
+                padding-left: 1em;
+                margin-bottom: 4.5em;
+            }
+            .title {
+                font-size: @font-size*1.2;
+            }
+            .date {
+                color: @color-dark;
+                margin-bottom: 0.5em;
+            }
+            .description {
+                 li { 
+                    list-style: circle inside;
+                 }
+            }
+            .genus-species {
+                font-style: italic;
+            }
+        }
+    }
+    //image galleries
+    .gallery {
+        margin: 10px 0;
+        overflow: hidden;
+        }
+        .image {
+            position: relative;
+            margin: 10px 0;
+            img{
+                max-width: 100%;
+            }
+            //displays captions on hover
+            .caption {
+                width: 100%;
+                position: absolute;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.75);
+                color: #fff;
+                opacity: 0;
+                padding: 0 0 0 1%;
+                .animated(300ms);
+            }
+            //displays captions on hover
+            &:hover > .caption {
+                padding: 1.5% 0 1.5% 1%;
+                opacity: 1;
+            }
+        }
+            
+        //the resizable gallery
+        &.wall, .brick,  {
+            .animated(400ms);
+        }
+        &.wall {
+            .brick {
+                max-width: 24.5%;
+                margin: 0.25% 0;
+                &.biggie {
+                    max-width:  49.5%;
+                    .caption {
+                        padding: 1.5% 0 1.5% 1%;
+                        opacity: 1;
+                    }
+                }
+                &.top {
+                    z-index: 5 !important;
+                }
+                &.brick-hidden {
+                    pointer-events: none;
+                    z-index: 0;
+                }
+            }
+            //hides the gallery when it's initializing to ensure proper positioning
+            &.mortar, .mortar .brick {
+                opacity: 0;
+                .animated(0) !important;
+            }
+        }
+    //video wrapper and UI
+    .video {
+        .relative;
+        width: 100%;
+        margin-bottom: 1em;
+        overflow: hidden;
+        .poster {
+            .absolute;
+            width: 100%;
+            background-size:100%;
+            background-repeat: no-repeat;
+            background-clip: content-box;
+        }
+        video {
+            max-width: 100%;
+        }
+    }
+
+
+//tablets
+// @media (max-width:1024px) {
+    //nothing to see here
+// }
+//Phones in landscape & Tablets in portrait
+@media (max-width:768px) {
+    @topbar-height: 2.5em;
+    // converts the smaller grids to be 50%
+    .grid-25,
+    .grid-20,
+    .grid-10 {
+        .grid-50;
+        }
+    #navigator {
+        // width: 100%;
+        height: auto;
+        z-index: 5;
+        top: 0;
+        position: fixed;
+    }
+        .logo {
+            width: 0;
+            height: 0;
+            // right: 0;
+        }
+                .aromatics {
+                    top : 5%;
+                    left : auto;
+                    right : @aromatics-size*0.75;
+                    .absolute;
+                    opacity: .85;
+                    z-index: 10;
+                    .transform(scale, 0.75);
+                //hides everything but pyrimidine ring
+                 & >:not(.pyrimidine) {
+                    .hide;
+                 }
+                .flipper {
+                    .show;
+                    width: 55%;
+                    height: 15%;
+                    margin: 0 auto;
+                    position: relative;
+                    top: 45%;
+                    background: @bg-color;
+                }
+                .flipper:before, .flipper:after {
+                    content: '';
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    background: @bg-color;
+                }
+               
+                .flipper:before {
+                    top: -200%;
+                }
+                .flipper:after {
+                    top: 200%;
+                }
+            }
+        #navlist {
+            .absolute;
+            padding-top: 4.1em !important;
+            top: 0;
+            right: -100px;
+            width: auto;
+            .animated(400ms);
+            background: fadeout(darken(@bg-color, 5%), 20%);
+            .link {
+                display: block;
+                margin: 0;
+                a {
+                    padding: 2em 0.6em;
+                }
+            }
+            &.show {
+                right:0 !important;
+            }
+        }
+    #content {
+        margin:  @topbar-height*1.5 0.5em;
+        padding: 0;
+    }
+            .gallery.wall, .gallery .brick {
+                .animated(0ms);
+            }
+                .gallery.wall .brick {
+                    max-width: 49.5%;
+                    &.biggie {
+                        max-width:  100%;
+                    }
+                }
+            
+            .video {
+                width: 100% !important;
+                margin-bottom: 0.5em;
+                video {
+                    max-width: 100%;
+                }
+            }
+}
+//Phones in portrait layout
+@media (max-width:480px) {
+    //makes all grid items turn into 100% width
+     [class *= 'grid-'] {
+        width:100% !important;
+        margin: auto 0;
+    }
+}
