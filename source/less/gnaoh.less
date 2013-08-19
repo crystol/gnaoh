@@ -83,17 +83,10 @@
     position: absolute;
 }
 // Typography
-// @font-face {
-//   font-family: 'Roboto';
-//   font-style: normal;
-//   font-weight: 300;
-//   src: local('Roboto Light'), local('Roboto-Light'), url('@{baseURL}/fonts/roboto300.woff') format('woff');
-// }
 @font-face {
     font-family: 'Roboto';
     src: local('Roboto Light'), local('Roboto-Light'), url(//themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
 }
-// Page Layout
 //Normalizer
 * {
     margin: 0;
@@ -112,7 +105,8 @@ li {
     list-style: none;
 }
 img, video {
-    width: 100%;
+    max-width: 100%;
+    height: auto;
     vertical-align: middle;
     .noselect;
 }
@@ -168,7 +162,6 @@ img, video {
 .animated {
     .animated();
 }
-
 .collapse {
 	@collapsed-w: -@navigator-w*0.85;
 	.transform(translate, '@{collapsed-w}, 0');
@@ -182,6 +175,8 @@ img, video {
         clear:both;
     }
 }
+
+// Page Layout
 html {
     overflow-y: scroll;
     overflow-x: hidden;
@@ -203,14 +198,14 @@ body {
     color: #fff;
     text-shadow: none;
 }
+//navigation bar
 #navigator {
     .noselect;
     height: @navigator-h;
     width: @navigator-w;
 }
-   //Branding Logo
+   //Logo
     .logo {
-        // .relative;
         margin:0 auto;
         width: @navigator-h - 25px;
         height: @navigator-h - 25px;
@@ -411,10 +406,10 @@ body {
         .image {
             position: relative;
             margin: 10px 0;
-            img{
-                max-width: 100%;
-                height: 100%;
-            }
+            // img {
+            //     max-width: 100%;
+            //     height: 100%;
+            // }
             //displays captions on hover
             .caption {
                 width: 100%;

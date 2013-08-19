@@ -16,7 +16,7 @@
         var $gallery;
         var $video;
         var $about;
-        //Extending jQuery functions
+        /******Extending jQuery functions******/
         //stall function that can be used more versitile from $().delay()
         $.prototype.wait = $.wait = function (time, callback) {
             //need to cache this and pass it to window as context
@@ -55,23 +55,11 @@
 
         function Gnaoh() {
             //global scope variables
-            this.mini = 0;
-            this.medium = 0;
-            this.massive = 0;
-            this.loading = 0;
-            this.popState = 0;
             this.scrolling = false;
-            this.currentPage = 0;
-            this.resizeDelay = 0;
-            this.initPromise = 0;
-            this.initCallbacks = 0;
-            this.resizeCallbacks = 0;
             this.cssDelay = 1000;
             this.static = '/static';
         }
-        /*****************************************************************************************
-         * Functionality
-         * ***************************************************************************************/
+        /******Functionality*****/
         Gnaoh.prototype = {
             //function to initialize the page on first load or ajax loaded sections. this usually deals with the big files.
             init: function () {
