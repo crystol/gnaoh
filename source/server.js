@@ -51,6 +51,7 @@ gnaoh.configure(function () {
     gnaoh.use('/js/',express.static(__dirname+'/js/'));
     // static url for developement with /node address
     gnaoh.use('/static/', express.static('/kadmin/server/www/static'));
+    gnaoh.use('/misc/', express.static('/kadmin/server/www/static/misc'));
     //views router
     gnaoh.use(gnaoh.router);
     // 404 page
@@ -77,7 +78,7 @@ gnaoh.configure('developmental', function () {
 });
 //developemental settings
 // routes through express to render from jade templates
-var getters = ['/', 'index', 'about', 'gallery', 'videos'];
+var getters = ['/', 'index', 'about', 'gallery', 'videos', 'devdev'];
 getters.forEach(function (value) {
     if (value === '/') {
         //404 the root for now
