@@ -11,10 +11,17 @@ module.exports = function () {
         //javascript minimizer/obfuscater 
         uglify: {
             production: {
-                files: {
-                    'build/js/<%= package.name %>.js': 'source/js/<%= package.name %>.js',
-                    'build/.temp/loader.js': 'source/js/loader.js',
-                }
+                // files: {
+                //     'build/js/<%= package.name %>.js': 'source/js/<%= package.name %>.js',
+                //     'build/.temp/loader.js': 'source/js/loader.js',
+                // }
+                files: [{
+                    expand: true,
+                    cwd: 'source/js/',
+                    src: ['**/*.js'],
+                    dest: 'build/',
+                    ext: '.min.js'
+                }]
             },
             development: {
                 options: {
@@ -60,7 +67,10 @@ module.exports = function () {
                 jquery: true,
                 unused: true,
                 globals: {
-                    'define': true
+                    'define': true,
+                    "d3": true,
+                    "topojson": true,
+                    "gnaoh": true
                 },
                 force: true
             },
@@ -74,6 +84,7 @@ module.exports = function () {
                 },
                 files: {
                     'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less'
+                    'build/css/devdev.css': 'source/less/devdev.less'
                 }
             },
             production: {
@@ -82,7 +93,7 @@ module.exports = function () {
                     yuicompress: true,
                 },
                 files: {
-                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less',
+                    'build/css/devdev.css': 'devdev.less',
                 }
             }
         },
@@ -103,6 +114,15 @@ module.exports = function () {
                     cwd: 'source/',
                     src: ['views/**'],
                     dest: 'build/'
+                }]
+            },
+            js: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    cwd: 'source/',
+                    src: ['js/*.js'],
+                    dest: 'build/js/'
                 }]
             },
             css: {
@@ -131,7 +151,7 @@ module.exports = function () {
             },
             js: {
                 files: ['source/js/*.js'],
-                tasks: ['uglify:development', 'concat']
+                tasks: ['copy:js', 'uglify:development', 'concat']
             },
             less: {
                 files: ['source/less/*.less'],
@@ -178,7 +198,7 @@ module.exports = function () {
     grunt.loadNpmTasks('grunt-contrib-watch');
     //assign tasks
     grunt.registerTask('default', ['build']);
-    grunt.registerTask('dev', ['clean','uglify:development', 'concat:development', 'less:development', 'copy']);
-    grunt.registerTask('build', ['clean','uglify:production', 'concat:production', 'less:production', 'copy']);
-    grunt.registerTask('live', ['concurrent']);
+    grunt.registerTask('dev', ['clean', 'copy', 'uglify:development', 'concat:development', 'less:development']);
+    grunt.registerTask('build', ['clean', 'copy', 'uglify:production', 'concat:production', 'less:production']);
+    grunt.registerTask('live', ['dev', 'concurrent']);
 };
