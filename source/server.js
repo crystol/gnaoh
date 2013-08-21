@@ -11,7 +11,7 @@ var gnaoh = express();
 //SPDY options 
 var spdyOptions = {
     windowSize: 3000,
-    maxChunk:  32*1024,
+    maxChunk: 32 * 1024,
     key: fs.readFileSync('/kadmin/server/shared/ssl/keys/gnaoh.key'),
     cert: fs.readFileSync('/kadmin/server/shared/ssl/certs/gnaoh.crt'),
     ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:RC4:HIGH:!EDH:!MD5:!aNULL',
@@ -42,16 +42,21 @@ gnaoh.configure(function () {
         response.set({
             Server: 'NodeGnaoh',
             'Cache-Control': 'public, max-age=13333337',
-            'Transfer-Encoding' :'chunked'
+            'Transfer-Encoding': 'chunked'
         });
         next();
     });
     // static url for domain wide routing
-    gnaoh.use('/css/',express.static(__dirname+'/css/'));
-    gnaoh.use('/js/',express.static(__dirname+'/js/'));
+    gnaoh.use('/css/', express.static(__dirname + '/css/'));
+    gnaoh.use('/js/', express.static(__dirname + '/js/'));
     // static url for developement with /node address
     gnaoh.use('/static/', express.static('/kadmin/server/www/static'));
     gnaoh.use('/misc/', express.static('/kadmin/server/www/static/misc'));
+    gnaoh.use('/assets/', express.static('/kadmin/server/www/static/misc'));
+    // logs requests in dev mode
+    gnaoh.configure('development', function () {
+        gnaoh.use(express.logger('dev'));
+    });
     //views router
     gnaoh.use(gnaoh.router);
     // 404 page
@@ -72,7 +77,7 @@ gnaoh.configure('production', function () {
     spdy.createServer(spdyOptions, gnaoh).listen(443);
 });
 //developmental settings
-gnaoh.configure('developmental', function () {
+gnaoh.configure('development', function () {
     http.createServer(gnaoh).listen(1337);
     spdy.createServer(spdyOptions, gnaoh).listen(1338);
 });

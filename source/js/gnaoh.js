@@ -191,10 +191,13 @@
                     $post.deanimate(null, null, 1100).addClass(animethod).find($old).fadeOut(500).wait(1100, cleanUp);
                 });
             },
-            //load a css sheet 
-            requireCss: function (name) {
+            //load a css file 
+            requireCss: function (name, staticLib) {
+                if(!name){
+                    return;
+                }
                 var stylesheet = doc.createElement("link");
-                var href = (name === 'gnaoh.less') ? 'css/gnaoh.less' : this.static + '/css/' + name;
+                var href = (staticLib) ? this.static + '/css/' + name : 'css/' + name;
                 stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
                 stylesheet.href = href;
                 doc.getElementsByTagName("head")[0].appendChild(stylesheet);
@@ -454,7 +457,7 @@
                     }
                 });
                 $("#coolio").on('click', function () {
-                    that.requireCss('fancybox/fancybox.css');
+                    that.requireCss('fancybox/fancybox.css', true);
                     win.require(['static/fancybox'], function () {
                         $.fancybox({
                             padding: 3,
@@ -555,7 +558,8 @@
                     $('link[rel=stylesheet]').remove();
                     $('body *').deanimate();
                     win.less.modifyVars({
-                        '@color': colors[randomColor]
+                        '@color': colors[randomColor],
+                        '@highlight' : colors[randomColor]
                     });
                 }
                 if (!win.less) {
