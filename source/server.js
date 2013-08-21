@@ -54,7 +54,7 @@ gnaoh.configure(function () {
     gnaoh.use('/misc/', express.static('/kadmin/server/www/static/misc'));
     gnaoh.use('/assets/', express.static('/kadmin/server/www/static/misc'));
     // logs requests in dev mode
-    gnaoh.configure('developmental', function () {
+    gnaoh.configure('development', function () {
         gnaoh.use(express.logger('dev'));
     });
     //views router
@@ -77,7 +77,7 @@ gnaoh.configure('production', function () {
     spdy.createServer(spdyOptions, gnaoh).listen(443);
 });
 //developmental settings
-gnaoh.configure('developmental', function () {
+gnaoh.configure('development', function () {
     http.createServer(gnaoh).listen(1337);
     spdy.createServer(spdyOptions, gnaoh).listen(1338);
 });

@@ -6,47 +6,44 @@ module.exports = function () {
         static: '../static',
         // clean directories
         clean: {
-            build: ['build/']
+            start: ['build/'],
+            finish: ['build/.temp/', 'build/less/']
         },
-        //javascript minimizer/obfuscater 
-        uglify: {
-            production: {
-                // files: {
-                //     'build/js/<%= package.name %>.js': 'source/js/<%= package.name %>.js',
-                //     'build/.temp/loader.js': 'source/js/loader.js',
-                // }
+        //clone source tree to build
+        copy: {
+            everything: {
                 files: [{
                     expand: true,
-                    cwd: 'source/js/',
-                    src: ['**/*.js'],
+                    cwd: 'source/',
+                    src: ['**/**'],
                     dest: 'build/',
-                    ext: '.min.js'
                 }]
             },
-            development: {
-                options: {
-                    report: 'gzip',
-                    mangle: false
-                },
-                files: {
-                    'build/.temp/<%= package.name %>.js': 'source/js/<%= package.name %>.js',
-                    'build/.temp/<%= package.name %>2.js': 'source/js/<%= package.name %>2.js',
-                    'build/.temp/loader.js': 'source/js/loader.js',
-                }
-            }
-        },
-        //stringing scripts and stylesheets
-        concat: {
-            production: {
-                files: {
-                    'build/js/loader.js': ['<%= static %>/js/require.js', 'build/.temp/loader.js'],
-                }
+            js: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    cwd: 'source/',
+                    src: ['js/*.js'],
+                    dest: 'build/js/'
+                }]
             },
-            development: {
-                files: {
-                    'build/js/<%= package.name %>.js': ['build/.temp/<%= package.name %>*.js'],
-                    'build/js/loader.js': ['<%= static %>/js/require.js', 'build/.temp/loader.js'],
-                }
+            views: {
+                files: [{
+                    expand: true,
+                    cwd: 'source/',
+                    src: ['views/**'],
+                    dest: 'build/'
+                }]
+            },
+            less: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    cwd: 'source/',
+                    src: ['less/*.less'],
+                    dest: 'build/css/'
+                }]
             },
         },
         //javascript linting
@@ -76,62 +73,63 @@ module.exports = function () {
             },
             source: ['Gruntfile.js', 'source/**/*.js']
         },
+        //javascript minimizer/obfuscater 
+        uglify: {
+            main: {
+                options: {
+                    banner: '/*\nThis is the file that makes me tick! \nYou\'re probably not a robot (or are you?) and would most likely prefer looking at this version: https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js\n*/ \n',
+                    report: 'gzip'
+                },
+                src: 'source/js/<%= package.name %>.js',
+                dest: 'build/js/<%= package.name %>.js'
+            },
+            assets: {
+                options: {
+                    report: 'gzip'
+                },
+                files: [{
+                    expand: true,
+                    cwd: 'source/js',
+                    src: ['*', '!gnaoh.js'],
+                    dest: 'build/js/',
+                    ext: '.js'
+                }]
+            }
+        },
+        //stringing scripts and stylesheets
+        concat: {
+            all: {
+                files: [{
+                    src: ['<%= static %>/js/require.js', 'build/js/loader.js'],
+                    dest: 'build/js/loader.js'
+                }]
+            }
+        },
         //less css preprocessor
         less: {
             development: {
                 options: {
                     paths: ['source/less']
                 },
-                files: {
-                    'build/css/<%= package.name %>.css': 'source/less/<%= package.name %>.less'
-                    'build/css/devdev.css': 'source/less/devdev.less'
-                }
+                files: [{
+                    expand: true,
+                    cwd: 'source/less',
+                    src: ['*.less'],
+                    dest: 'build/css/',
+                    ext: '.css'
+                }]
             },
             production: {
                 options: {
                     paths: ['source/less'],
                     yuicompress: true,
                 },
-                files: {
-                    'build/css/devdev.css': 'devdev.less',
-                }
-            }
-        },
-        //copy assets to build 
-        copy: {
-            root: {
                 files: [{
                     expand: true,
-                    cwd: 'source/',
-                    src: ['*'],
-                    dest: 'build/',
-                    filter: 'isFile'
-                }]
-            },
-            express: {
-                files: [{
-                    expand: true,
-                    cwd: 'source/',
-                    src: ['views/**'],
-                    dest: 'build/'
-                }]
-            },
-            js: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'source/',
-                    src: ['js/*.js'],
-                    dest: 'build/js/'
-                }]
-            },
-            css: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'source/',
-                    src: ['less/*.less'],
-                    dest: 'build/css/'
+                    cwd: 'source/less',
+                    src: ['*.less'],
+                    dest: 'build/css/',
+                    ext: '.css'
                 }]
             }
         },
@@ -139,27 +137,24 @@ module.exports = function () {
         watch: {
             options: {
                 spawn: false,
+                interrupt: true,
                 livereload: 35729
             },
             server: {
                 files: ['source/*.js'],
-                tasks: ['copy:root']
-            },
-            views: {
-                files: ['source/views/**'],
-                tasks: ['copy:express']
+                tasks: ['copy']
             },
             js: {
                 files: ['source/js/*.js'],
-                tasks: ['copy:js', 'uglify:development', 'concat']
+                tasks: ['jshint', 'copy:js', 'concat']
+            },
+            views: {
+                files: ['source/views/**'],
+                tasks: ['copy:views']
             },
             less: {
                 files: ['source/less/*.less'],
-                tasks: ['less:production']
-            },
-            lint: {
-                files: ['source/**/*.js'],
-                tasks: ['jshint']
+                tasks: ['less:development']
             }
         },
         //auto restart the server if conditions meet
@@ -167,11 +162,11 @@ module.exports = function () {
             prod: {
                 options: {
                     env: {
-                        'NODE_ENV': 'developmental'
+                        'NODE_ENV': 'development'
                     },
                     delayTime: 4,
-                    watchedFolders: ['build/'],
-                    ignoredFiles: ['build/**/**'],
+                    watchedFolders: ['source/'],
+                    ignoredFiles: ['source/**/**'],
                     cwd: __dirname
                 }
             }
@@ -197,8 +192,8 @@ module.exports = function () {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     //assign tasks
-    grunt.registerTask('default', ['build']);
-    grunt.registerTask('dev', ['clean', 'copy', 'uglify:development', 'concat:development', 'less:development']);
-    grunt.registerTask('build', ['clean', 'copy', 'uglify:production', 'concat:production', 'less:production']);
-    grunt.registerTask('live', ['dev', 'concurrent']);
+    grunt.registerTask('default', ['production']);
+    grunt.registerTask('live', ['development', 'concurrent']);
+    grunt.registerTask('development', ['jshint', 'clean:start', 'copy:everything', 'copy:less', 'concat', 'less:development']);
+    grunt.registerTask('production', ['clean:start', 'copy:everything', 'copy:less', 'uglify', 'concat', 'less:production', 'clean:finish']);
 };

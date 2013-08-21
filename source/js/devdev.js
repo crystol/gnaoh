@@ -1,4 +1,5 @@
 define(['jquery','static/d3', 'static/topojson', 'gnaoh'], function () {
+    gnaoh.requireCss('devdev.css');
     (function (doc, $, d3, topojson) {
         'use strict';
         var win = this;

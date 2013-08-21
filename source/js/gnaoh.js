@@ -191,8 +191,11 @@
                     $post.deanimate(null, null, 1100).addClass(animethod).find($old).fadeOut(500).wait(1100, cleanUp);
                 });
             },
-            //load a css sheet 
+            //load a css file 
             requireCss: function (name, staticLib) {
+                if(!name){
+                    return;
+                }
                 var stylesheet = doc.createElement("link");
                 var href = (staticLib) ? this.static + '/css/' + name : 'css/' + name;
                 stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
