@@ -193,7 +193,7 @@
             },
             //load a css file 
             requireCss: function (name, staticLib) {
-                if(!name){
+                if (!name) {
                     return;
                 }
                 var stylesheet = doc.createElement("link");
@@ -559,7 +559,7 @@
                     $('body *').deanimate();
                     win.less.modifyVars({
                         '@color': colors[randomColor],
-                        '@highlight' : colors[randomColor]
+                        '@highlight': colors[randomColor]
                     });
                 }
                 if (!win.less) {
