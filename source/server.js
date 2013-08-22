@@ -53,10 +53,7 @@ gnaoh.configure(function () {
     gnaoh.use('/static/', express.static('/kadmin/server/www/static'));
     gnaoh.use('/misc/', express.static('/kadmin/server/www/static/misc'));
     gnaoh.use('/assets/', express.static('/kadmin/server/www/static/misc'));
-    // logs requests in dev mode
-    gnaoh.configure('development', function () {
-        gnaoh.use(express.logger('dev'));
-    });
+    gnaoh.use(express.logger('dev'));
     //views router
     gnaoh.use(gnaoh.router);
     // 404 page
