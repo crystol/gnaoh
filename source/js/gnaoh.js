@@ -63,7 +63,7 @@
         Gnaoh.prototype = {
             //function to initialize the page on first load or ajax loaded sections. this usually deals with the big files.
             init: function () {
-                var that = this;
+                var This = this;
                 //clear sticky settings and unbind listeners
                 $window.off();
                 this.activate();
@@ -75,9 +75,9 @@
                 this.resizeCallbacks = $.Callbacks();
                 //add functions post-init callbacks list
                 this.initCallbacks.add(function () {
-                    that.loading = false;
+                    This.loading = false;
                     //pagescroll observer
-                    that.scrollspy();
+                    This.scrollspy();
                     //removeloading animation
                     $loader.on('animationiteration webkitAnimationIteration', function (event) {
                         $loader.off().on(event.type, function () {
@@ -88,15 +88,15 @@
                 });
                 //exectue the callbacks after init is finished
                 this.initPromise.done(function () {
-                    that.initCallbacks.fire();
+                    This.initCallbacks.fire();
                 });
                 //add handlers for window's resize events
-                this.resizeCallbacks.add([that.scrollspy, that.size]);
+                this.resizeCallbacks.add([This.scrollspy, This.size]);
                 //bind said handlers to window and add a delay to prevent rapid firing
                 $window.on('resize', function () {
-                    win.clearTimeout(that.resizeDelay);
-                    that.resizeDelay = win.setTimeout(function () {
-                        that.resizeCallbacks.fire.call(that);
+                    win.clearTimeout(This.resizeDelay);
+                    This.resizeDelay = win.setTimeout(function () {
+                        This.resizeCallbacks.fire.call(This);
                     }, 200);
                 });
                 //loading additional sections on the page
@@ -153,7 +153,7 @@
             //ajax loading of pages
             getPage: function (link, skipAnimation) {
                 //need to save context of this to pass to jquery callbacks
-                var that = this;
+                var This = this;
                 this.loading = true;
                 gnaoh.smoothScroll(null, null, 'navigator');
                 $loader.addClass('loading').next().addClass('gnidaol');
@@ -180,12 +180,12 @@
                         $new.contents().unwrap();
                         $post.removeClass(animethod);
                         //push new page to analytics and browser history
-                        that.init();
+                        This.init();
                         win._gaq.push(['_trackPageview', doc.location.pathname]);
                     }
                     //animating the pages
                     //skip on mobile devices
-                    if (that.mini || skipAnimation) {
+                    if (This.mini || skipAnimation) {
                         return cleanUp();
                     }
                     $post.deanimate(null, null, 1100).addClass(animethod).find($old).fadeOut(500).wait(1100, cleanUp);
@@ -204,7 +204,7 @@
             },
             //load a  gallery from a specified directory. sample html code <div class='gallery' id='dirName' start='1' amount='10'></div>
             loadGallery: function () {
-                var that = this;
+                var This = this;
                 $gallery.each(function (element) {
                     var $this = $(this);
                     var options = {};
@@ -225,22 +225,22 @@
                     // if a wall gallery exists, it will be added to the init callback queue
                     if (options.wall) {
                         $this.addClass('mortar');
-                        that.initCallbacks.add(function () {
+                        This.initCallbacks.add(function () {
                             //have to call laybricks because $.Callbacks forces this context to itself
-                            that.layBricks.call(that);
+                            This.layBricks.call(This);
                         });
                     }
                     //if it's the last gallery to load, it will resolve the init promise
                     if (options.lastOne) {
                         galleryPromise.done(function () {
-                            that.initPromise.resolve();
+                            This.initPromise.resolve();
                         });
                     }
                     // grab the JSON captions file if provided
                     if (options.captions) {
                         var captions;
                         $.ajax({
-                            url: that.static + '/img/gallery/' + options.id + '/captions.JSON',
+                            url: This.static + '/img/gallery/' + options.id + '/captions.JSON',
                             success: function (data) {
                                 captions = data;
                                 //the text will match with corresonponding image wrapper and insert a captions div
@@ -258,10 +258,10 @@
                         var image = doc.createElement('img');
                         var imageWrapper = doc.createElement('div');
                         //load smaller images for mobile devices
-                        // if (that.mini) {
-                        //     image.src = that.static + '/img/gallery/' + options.id + '/' + i + 's.jpg';
+                        // if (This.mini) {
+                        //     image.src = This.static + '/img/gallery/' + options.id + '/' + i + 's.jpg';
                         // } 
-                        image.src = that.static + '/img/gallery/' + options.id + '/' + i + '.jpg';
+                        image.src = This.static + '/img/gallery/' + options.id + '/' + i + '.jpg';
                         imageWrapper.className = 'image';
                         imageWrapper.id = options.id + '-' + i;
                         imageWrapper.appendChild(image);
@@ -273,13 +273,13 @@
                 });
                 //if not mobile nor wall gallery, it will do a fancy scroll upon click
                 $gallery.filter(':not(.wall)').on('click', '.image', function (event) {
-                    that.isMini();
-                    that.smoothScroll.call(this, event);
+                    This.isMini();
+                    This.smoothScroll.call(this, event);
                 });
             },
             //lay the brick elements from class wall
             layBricks: function () {
-                var that = this;
+                var This = this;
                 var $foundation = $('.wall');
                 win.require(['static/isotope'], function () {
                     $foundation.imagesLoaded(function () {
@@ -288,7 +288,7 @@
                             layoutMode: 'masonry',
                             masonry: {
                                 //width of the distributed collumns
-                                columnWidth: that.mini ? $post.width() / 2 : $post.width() / 4
+                                columnWidth: This.mini ? $post.width() / 2 : $post.width() / 4
                             },
                             containerClass: 'wall',
                             itemClass: 'brick',
@@ -302,13 +302,13 @@
                         }
                         //self-invoking function that fixes the width on window resizes
                         var rebrick = (function rebrick() {
-                            var delay = that.mini ? 0 : 500;
+                            var delay = This.mini ? 0 : 500;
                             $foundation.css({
                                 width: $content.width(),
                                 'max-width': $content.width()
                             }).isotope('option', {
                                 masonry: {
-                                    columnWidth: that.mini ? $post.width() / 2 : $post.width() / 4
+                                    columnWidth: This.mini ? $post.width() / 2 : $post.width() / 4
                                 }
                             });
                             //clicking on each image will toggle its enlargement.
@@ -320,11 +320,11 @@
                                 });
                                 return false;
                             });
-                            $.wait(that.cssDelay * 0.5, anotherBrickOnTheWall);
+                            $.wait(This.cssDelay * 0.5, anotherBrickOnTheWall);
                             return rebrick;
                         })();
                         //add rebrick as a handler for resizing events
-                        that.resizeCallbacks.add(rebrick);
+                        This.resizeCallbacks.add(rebrick);
                         //removes the opacity after the gallery is finished loading
                         $.wait(100).done(function () {
                             $foundation.removeClass('mortar');
@@ -334,14 +334,14 @@
             },
             //loads html5 video content from div tags with .video class.
             loadVideo: function () {
-                var that = this;
+                var This = this;
                 $video.each(function () {
                     var $wrapper = $(this); //the parent container for the videos
                     var id = this.id;
                     var options = this.dataset;
-                    var vidSrc = that.static + '/vid/' + id;
+                    var vidSrc = This.static + '/vid/' + id;
                     //placeholder while the video loads (the poster tag kinda sucks) and adjust the height for 16:9 ratio of 720p movies
-                    var poster = $('<img src="' + that.static + '/vid/posters/' + id + '.jpg" class="poster">');
+                    var poster = $('<img src="' + This.static + '/vid/posters/' + id + '.jpg" class="poster">');
                     $wrapper.css({
                         height: $wrapper.width() * (9 / 16)
                     });
@@ -423,11 +423,11 @@
                     });
                 });
                 //resolve init promise if it's hanging
-                if (that.initPromise.state() === 'pending' || !$gallery.length) {
-                    $.wait(1000, that.initPromise.resolve);
+                if (This.initPromise.state() === 'pending' || !$gallery.length) {
+                    $.wait(1000, This.initPromise.resolve);
                 }
                 //on window resize, the video heights will adjust
-                that.resizeCallbacks.add(function () {
+                This.resizeCallbacks.add(function () {
                     $video.each(function () {
                         var $this = $(this);
                         $this.css('height', $this.width() * (9 / 16));
@@ -436,15 +436,15 @@
             },
             //curriculum vitae section
             loadAbout: function () {
-                var that = this;
+                var This = this;
                 $about.find('.position:not(.active)').on({
                     click: function () {
-                        that.isMini();
+                        This.isMini();
                         $about.find('.active ').removeClass(' active ');
                         $(this).addClass(' active ');
                     },
                     mouseenter: function () {
-                        that.isMini();
+                        This.isMini();
                         var $this = $(this);
                         var countdown = win.setTimeout(function () {
                             $about.find('.active').removeClass('active');
@@ -457,12 +457,12 @@
                     }
                 });
                 $("#coolio").on('click', function () {
-                    that.requireCss('fancybox/fancybox.css', true);
+                    This.requireCss('fancybox/fancybox.css', true);
                     win.require(['static/fancybox'], function () {
                         $.fancybox({
                             padding: 3,
                             closeClick: true,
-                            href: that.static + '/img/misc/coolio.jpg',
+                            href: This.static + '/img/misc/coolio.jpg',
                             title: 'Hanging out in g-paradise with Coolio.'
                         });
                     });
@@ -471,7 +471,7 @@
             },
             //animated smoothScroll to next sibbling element or specified target
             smoothScroll: function (event, direction, customTarget) {
-                var that = this;
+                var This = this;
                 var $this = $(this);
                 //prevent stacking scroll animations
                 if (this.scrolling) {
@@ -505,7 +505,7 @@
                     //portrait oriented photos will scroll at 1s and landscape will be .5s
                     duration: ($this.find('img').height() < 1000) ? 200 : 800,
                     complete: function () {
-                        that.scrolling = false;
+                        This.scrolling = false;
                     }
                 };
                 //executes the scroll
@@ -526,7 +526,7 @@
             //actions to perform when the page is at a certain Y position
             scrollspy: function () {
                 //delay function to prevent scroll event from firing too often
-                var that = this;
+                var This = this;
                 var stopDropRoll;
 
                 function delayer() {
@@ -537,7 +537,7 @@
                 }
 
                 function navlistDock() {
-                    that.isMini();
+                    This.isMini();
                     var currentY = window.pageYOffset;
                     if (currentY <= 144) {
                         $navList.removeClass('fixed');

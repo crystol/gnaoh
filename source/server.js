@@ -8,15 +8,6 @@ var router = require('./router.js');
 var fs = require('fs');
 //init express
 var gnaoh = express();
-//SPDY options 
-var spdyOptions = {
-    windowSize: 3000,
-    maxChunk: 32 * 1024,
-    key: fs.readFileSync('/kadmin/server/shared/ssl/keys/gnaoh.key'),
-    cert: fs.readFileSync('/kadmin/server/shared/ssl/certs/gnaoh.crt'),
-    ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:RC4:HIGH:!EDH:!MD5:!aNULL',
-    honorCipherOrder: true,
-};
 // gnaoh settings
 gnaoh.configure(function () {
     gnaoh.use(express.compress());
@@ -65,6 +56,15 @@ gnaoh.configure(function () {
 });
 //production settings
 gnaoh.configure('production', function () {
+    //SPDY options 
+    var spdyOptions = {
+        windowSize: 3000,
+        maxChunk: 32 * 1024,
+        key: fs.readFileSync('/kadmin/server/shared/ssl/keys/gnaoh.key'),
+        cert: fs.readFileSync('/kadmin/server/shared/ssl/certs/gnaoh.crt'),
+        ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:RC4:HIGH:!EDH:!MD5:!aNULL',
+        honorCipherOrder: true,
+    };
     http.createServer(function (request, response) {
         response.writeHead(301, {
             Location: 'https://' + request.headers.host + request.url
@@ -76,7 +76,6 @@ gnaoh.configure('production', function () {
 //developmental settings
 gnaoh.configure('development', function () {
     http.createServer(gnaoh).listen(1337);
-    spdy.createServer(spdyOptions, gnaoh).listen(1338);
 });
 //developemental settings
 // routes through express to render from jade templates
