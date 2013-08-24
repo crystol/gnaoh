@@ -14,7 +14,8 @@ var spdyOptions = {
     maxChunk: 32 * 1024,
     key: fs.readFileSync('/kadmin/server/shared/ssl/keys/gnaoh.key'),
     cert: fs.readFileSync('/kadmin/server/shared/ssl/certs/gnaoh.crt'),
-    ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:RC4:HIGH:!EDH:!MD5:!aNULL',
+    //leaving ECDHE ciphers if for future node versions
+    ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:AES128-GCM-SHA256:RC4-SHA:HIGH:!EDH:!MD5:!aNULL',
     honorCipherOrder: true,
 };
 // gnaoh settings
