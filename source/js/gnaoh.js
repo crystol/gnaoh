@@ -172,7 +172,6 @@
                     $post.wrapInner('<div id="old-post">').append($postPrep);
                     var $old = $('#old-post');
                     var $new = $('#new-post');
-                    var animethod = (Math.round(Math.random()) === 0) ? 'flipped' : 'deppilf';
                     //restores the order
 
                     function cleanUp() {
@@ -184,10 +183,12 @@
                         win._gaq.push(['_trackPageview', doc.location.pathname]);
                     }
                     //animating the pages
-                    //skip on mobile devices
-                    if (This.mini || skipAnimation) {
+                    //skip on mobile devices and browsers that isn't chrome
+                    var notChrome = !/Chrome/.test(win.navigator.userAgent);
+                    if (This.mini || skipAnimation || notChrome) {
                         return cleanUp();
                     }
+                    var animethod = (Math.round(Math.random()) === 0) ? 'flipped' : 'deppilf';
                     $post.deanimate(null, null, 1100).addClass(animethod).find($old).fadeOut(500).wait(1100, cleanUp);
                 });
             },

@@ -142,7 +142,7 @@ module.exports = function () {
             },
             server: {
                 files: ['source/*.js'],
-                tasks: ['copy']
+                tasks: ['copy', 'concat']
             },
             js: {
                 files: ['source/js/*.js'],

@@ -13,11 +13,10 @@ gnaoh.configure(function () {
     gnaoh.use(express.compress());
     gnaoh.set('view engine', 'jade');
     gnaoh.set('views', __dirname + '/views');
-    gnaoh.use(express.methodOverride());
-    gnaoh.use(express.bodyParser());
-    gnaoh.use(express.favicon(__dirname + '/views/misc/favicon.ico'));
     gnaoh.disable('x-powered-by');
     //route stack   
+    gnaoh.use(express.methodOverride());
+    gnaoh.use(express.bodyParser());
     // cannonicalizer
     gnaoh.use(function (request, response, next) {
         //remove wwww 
@@ -38,12 +37,13 @@ gnaoh.configure(function () {
         next();
     });
     // static url for domain wide routing
+    gnaoh.use(express.favicon(__dirname + '/views/misc/favicon.ico'));
     gnaoh.use('/css/', express.static(__dirname + '/css/'));
     gnaoh.use('/js/', express.static(__dirname + '/js/'));
     // static url for developement with /node address
-    gnaoh.use('/static/', express.static('/kadmin/server/www/static'));
-    gnaoh.use('/misc/', express.static('/kadmin/server/www/static/misc'));
-    gnaoh.use('/assets/', express.static('/kadmin/server/www/static/misc'));
+    gnaoh.use('/static/', express.static(__dirname + '/../../static'));
+    gnaoh.use('/misc/', express.static(__dirname + '/../../static/misc'));
+    gnaoh.use('/assets/', express.static(__dirname + '/../../static/misc'));
     // enable logging for requested routes
     gnaoh.use(express.logger('dev'));
     // views router
@@ -78,7 +78,6 @@ gnaoh.configure('production', function () {
 gnaoh.configure('development', function () {
     http.createServer(gnaoh).listen(1337);
 });
-//developemental settings
 // routes through express to render from jade templates
 var getters = ['/', 'index', 'about', 'gallery', 'videos', 'devdev'];
 getters.forEach(function (value) {
