@@ -8,19 +8,6 @@ var router = require('./router.js');
 var fs = require('fs');
 //init express
 var gnaoh = express();
-<<<<<<< HEAD
-//SPDY options 
-var spdyOptions = {
-    windowSize: 3000,
-    maxChunk: 32 * 1024,
-    key: fs.readFileSync('/kadmin/server/shared/ssl/keys/gnaoh.key'),
-    cert: fs.readFileSync('/kadmin/server/shared/ssl/certs/gnaoh.crt'),
-    //leaving ECDHE ciphers if for future node versions
-    ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:AES128-GCM-SHA256:RC4-SHA:HIGH:!EDH:!MD5:!aNULL',
-    honorCipherOrder: true,
-};
-=======
->>>>>>> developement
 // gnaoh settings
 gnaoh.configure(function () {
     gnaoh.use(express.compress());
@@ -57,8 +44,9 @@ gnaoh.configure(function () {
     gnaoh.use('/static/', express.static('/kadmin/server/www/static'));
     gnaoh.use('/misc/', express.static('/kadmin/server/www/static/misc'));
     gnaoh.use('/assets/', express.static('/kadmin/server/www/static/misc'));
+    // enable logging for requested routes
     gnaoh.use(express.logger('dev'));
-    //views router
+    // views router
     gnaoh.use(gnaoh.router);
     // 404 page
     gnaoh.use(function (request, response) {

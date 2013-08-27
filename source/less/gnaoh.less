@@ -22,7 +22,7 @@
  *      - Media Queries for Responsive functionality.
  */
 //variables
-@font: 'Roboto', sans-serif;                                //default font
+@font: 'Roboto', 'Helvetica Neue', sans-serif;                                //default font
 @font-size: 15px;                                                               //default font size
 @color: #9371B3;                                                                //highlighted color
 @color-dark: darken(@color,5%);                                                                //highlighted color
@@ -40,7 +40,7 @@
 @nl:`'\n'`;                                                                     //newline shorthand
 @baseURL: '/library';                                        //URL for compilation
 
-//common mixinables
+//common mixins
 .animated (@time: @cssTransitionTime; @type: all) {
     transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
     // -webkit-transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -128,17 +128,17 @@ img, video {
     .clearfix;
 }
 //grid widths
-.grid-100   {width: 100% !important;}
-.grid-80    {width:80% !important;}
-.grid-75    {width:75% !important;}
-.grid-66    {width:66.6% !important;}
-.grid-60    {width:60% !important;}
-.grid-50    {width:50% !important;}
-.grid-40    {width:40% !important;}
-.grid-33    {width:33.3% !important;}
-.grid-25    {width:25% !important;}
-.grid-20    {width:20% !important;}
-.grid-10    {width:10% !important;}
+.grid-100   {width: 100%    !important;}
+.grid-80    {width:80%      !important;}
+.grid-75    {width:75%      !important;}
+.grid-66    {width:66.6%    !important;}
+.grid-60    {width:60%      !important;}
+.grid-50    {width:50%      !important;}
+.grid-40    {width:40%      !important;}
+.grid-33    {width:33.3%    !important;}
+.grid-25    {width:25%      !important;}
+.grid-20    {width:20%      !important;}
+.grid-10    {width:10%      !important;}
 
 //grid blank offsets
 .grid-offset-80    {margin-left:80%;}
@@ -181,23 +181,23 @@ html {
     overflow-y: scroll;
     overflow-x: hidden;
 }
-body {
-    font-family: @font;
-    background: @bg-color;
-    font-size: @font-size;
-    line-height: 20px;
-}
-//selection colors
-::-moz-selection {
-    background: @selection;
-    color: #fff;
-    text-shadow: none;
-}
-::selection {
-    background: @selection;
-    color: #fff;
-    text-shadow: none;
-}
+    body {
+        font-family: @font;
+        background: @bg-color;
+        font-size: @font-size;
+        line-height: 20px;
+    }
+    //selection colors
+    ::-moz-selection {
+        background: @selection;
+        color: #fff;
+        text-shadow: none;
+    }
+    ::selection {
+        background: @selection;
+        color: #fff;
+        text-shadow: none;
+    }
 //navigation bar
 #navigator {
     .noselect;
@@ -286,10 +286,10 @@ body {
             margin:0 1em;
             a {
                 color: #000;
-                text-decoration: none;
                 display: block;
                 padding:0 1.0em;
                 border-radius: 1px;
+                text-decoration: none;
             }
             &:hover, &.active {
                 background: @highlight;
