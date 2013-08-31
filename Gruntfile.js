@@ -157,21 +157,22 @@ module.exports = function () {
                 tasks: ['less:development']
             }
         },
-        //auto restart the server if conditions meet
+        // Auto restart the server if conditions meet
         nodemon: {
             prod: {
                 options: {
+                    // Sets the environment for node to dev
                     env: {
                         'NODE_ENV': 'development'
                     },
-                    delayTime: 4,
+                    delayTime: 5,
                     watchedFolders: ['source/'],
                     ignoredFiles: ['source/**/**'],
                     cwd: __dirname
                 }
             }
         },
-        //run watch and nodemon at the same time
+        // Run watch and nodemon at the same time
         concurrent: {
             target: {
                 tasks: ['nodemon', 'watch'],
@@ -181,7 +182,7 @@ module.exports = function () {
             }
         }
     });
-    //load tasks
+    // Load tasks
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-concurrent');
@@ -191,7 +192,7 @@ module.exports = function () {
     grunt.loadNpmTasks('grunt-nodemon');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    //assign tasks
+    // Assign tasks
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);
     grunt.registerTask('development', ['jshint', 'clean:start', 'copy:everything', 'copy:less', 'concat', 'less:development']);

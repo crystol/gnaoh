@@ -1,23 +1,24 @@
-define(['jquery','static/d3', 'static/topojson', 'gnaoh'], function () {
+require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     gnaoh.requireCss('devdev.css');
-    (function (doc, $, d3, topojson) {
+    (function (doc, $, d3) {
         'use strict';
-        var win = this;
+        var window = this;
+        // Constructor function for the maps.
 
-        function Map(json) {
+        function Map() {
             // Define with of the map as the size of the container
             this.width = $('.map').width();
-            this.height = this.width * 0.5;
+            this.height = this.width * 0.75;
             this.centered = undefined;
-            this.data = json;
         }
         Map.prototype = {
             // Define the d3 projection for the map.
-            init: function () {
+            init: function (json) {
                 // Referencing the instance in order to be able to pass it to other callbacks
                 var This = this;
+                This.data = json;
                 var projection = d3.geo.albersUsa()
-                    .scale(This.width)
+                    .scale(This.width * 1.25)
                     .translate([This.width / 2, This.height / 2]);
                 This.path = d3.geo.path()
                     .projection(projection);
@@ -36,15 +37,12 @@ define(['jquery','static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('id', function (obj) {
                         return obj.properties.STUSPS10;
                     })
-                        .attr('class', function (obj) {
-                            var data = This.data[obj.properties.STUSPS10];
-                            var language = data ? data['dominant language'] : '';
-                            return language;
-                        })
                         .on('click', function (data) {
                             This.click.call(this, data, This);
                         })
                         .attr('d', This.path);
+                    // Calls colorize when the map has been initialized.
+                    This.colorize();
                 });
                 return This;
             },
@@ -76,14 +74,12 @@ define(['jquery','static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')')
                     .style('stroke-width', 1 / k + 'px');
             },
-            colorize: function (data) {
-                this.data = data;
-                for (var language in this.data) {
-                    var states = this.data[language];
-                    for (var i = 0; i < states.length; i++) {
-                        var state = states[i];
-                        $('#' + state).attr('class', language);
-                    }
+            // Color code states depending on which language is most popular.
+            colorize: function () {
+                // Loops through the JSON object and uses the key value for state and language.
+                for (var state in this.data) {
+                    var language = this.data[state]['dominant language'];
+                    $('#' + state).attr('class', language);
                 }
             }
         };
@@ -97,7 +93,8 @@ define(['jquery','static/d3', 'static/topojson', 'gnaoh'], function () {
             }
         };
         if ($('.map')[0]) {
-            win.x = new Map(statesData).init();
+            // Call the constructor.
+            new Map().init(statesData);
         }
     }).call(this, document, jQuery, d3, topojson);
 });

@@ -1,4 +1,17 @@
 extend skeleton
 block content
+    h1 Map
     .map
-    script(data-main='devdev')
+    .legend
+        .box.ruby
+        span Ruby
+        .box.javascript
+        span Javascript
+        .box.cpp
+        span C++
+        .box.java
+        span Java
+        .box.dotnet
+        span .Net
+    script(src='js/devdev.js')
+

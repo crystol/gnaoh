@@ -10,9 +10,10 @@ html
         meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0')
         link(rel='author', href='humans.txt')
         link(rel='stylesheet', href='css/gnaoh.css')
+        script(src='js/loader.js')
     body
         include blocks/navigator
         #content
             #post(data-name='#{title}')
                 block content
-        script(src='js/loader.js')
+        
