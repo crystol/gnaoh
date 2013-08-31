@@ -7,7 +7,7 @@ module.exports = function () {
         // clean directories
         clean: {
             start: ['build/'],
-            finish: ['build/.temp/', 'build/less/']
+            finish: ['build/.temp/', 'build/less/', 'build/private/']
         },
         //clone source tree to build
         copy: {
@@ -15,7 +15,7 @@ module.exports = function () {
                 files: [{
                     expand: true,
                     cwd: 'source/',
-                    src: ['**/**'],
+                    src: '**/**',
                     dest: 'build/',
                 }]
             },
@@ -24,7 +24,7 @@ module.exports = function () {
                     expand: true,
                     flatten: true,
                     cwd: 'source/',
-                    src: ['js/*.js'],
+                    src: 'js/*.js',
                     dest: 'build/js/'
                 }]
             },
@@ -32,7 +32,7 @@ module.exports = function () {
                 files: [{
                     expand: true,
                     cwd: 'source/',
-                    src: ['views/**'],
+                    src: 'views/**',
                     dest: 'build/'
                 }]
             },
@@ -41,10 +41,25 @@ module.exports = function () {
                     expand: true,
                     flatten: true,
                     cwd: 'source/',
-                    src: ['less/*.less'],
+                    src: 'less/*.less',
                     dest: 'build/css/'
                 }]
             },
+            private: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    cwd: 'source/',
+                    src: 'private/*.js',
+                    dest: 'build/'
+                }, {
+                    expand: true,
+                    flatten: true,
+                    cwd: 'source/',
+                    src: 'private/views/*.jade',
+                    dest: 'build/views/'
+                }],
+            }
         },
         //javascript linting
         jshint: {
@@ -141,7 +156,7 @@ module.exports = function () {
                 livereload: 35729
             },
             server: {
-                files: ['source/*.js'],
+                files: ['source/*.js', 'source/private/*.js'],
                 tasks: ['copy', 'concat']
             },
             js: {
@@ -195,6 +210,6 @@ module.exports = function () {
     // Assign tasks
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);
-    grunt.registerTask('development', ['jshint', 'clean:start', 'copy:everything', 'copy:less', 'concat', 'less:development']);
-    grunt.registerTask('production', ['clean:start', 'copy:everything', 'copy:less', 'uglify', 'concat', 'less:production', 'clean:finish']);
+    grunt.registerTask('development', ['jshint', 'clean:start', 'copy', 'concat', 'less:development']);
+    grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat', 'less:production', 'clean:finish']);
 };

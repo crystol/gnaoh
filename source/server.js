@@ -79,8 +79,8 @@ gnaoh.configure(function () {
     });
 });
 // Routes through express to render from jade templates
-var getters = ['/', 'index', 'about', 'gallery', 'videos', 'devdev'];
-getters.forEach(function (value) {
+var routes = router.routes;
+routes.forEach(function (value) {
     if (value === '/') {
         // 404 the root for now
         gnaoh.get('/', router['404']);
