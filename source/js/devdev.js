@@ -83,18 +83,10 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 }
             }
         };
-        // Mock example of how it would work
-        var statesData = {
-            "MN": {
-                "dominant language": "ruby"
-            },
-            "CA": {
-                "dominant language": "javascript"
-            }
-        };
-        if ($('.map')[0]) {
+        // Query server for json data and initialize the map
+        d3.json('/assets/sampledata.json', function (data) {
             // Call the constructor.
-            new Map().init(statesData);
-        }
+            new Map().init(data.states);
+        });
     }).call(this, document, jQuery, d3, topojson);
 });

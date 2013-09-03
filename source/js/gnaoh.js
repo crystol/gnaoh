@@ -171,7 +171,7 @@
                     doc.title = name.charAt(0).toUpperCase() + name.substring(1);
                     $post.wrapInner('<div id="old-post">').append($postPrep);
                     var $old = $('#old-post');
-                    var $new = $('#new-post');
+                    var $new = $('#new-post').css('width',$post.width());
                     //restores the order
 
                     function cleanUp() {
