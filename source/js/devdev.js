@@ -1,5 +1,8 @@
 require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     gnaoh.requireCss('devdev.css');
+    var log = function (args) {
+        window.console.log(args);
+    };
     (function (doc, $, d3) {
         'use strict';
         var window = this;
@@ -84,9 +87,48 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             }
         };
         // Query server for json data and initialize the map
-        d3.json('/assets/sampledata.json', function (data) {
+        d3.json('/assets/sampledata.json', function (error, data) {
+            if (error) {
+                throw error;
+            }
             // Call the constructor.
             new Map().init(data.states);
         });
+        // Pie distribution
+        var color = d3.scale.category20();
+
+        function Pi(path, city) {
+            var This = this;
+            this.width = $('.pi').width();
+            this.height = this.width * 0.75;
+            this.radius = Math.min(this.width, this.height) / 2;
+            this.layout = d3.layout.pie()
+                .value(function (data) {
+                    return data.count;
+                })
+                .sort(null);
+            this.arc = d3.svg.arc()
+                .innerRadius(this.radius - 100)
+                .outerRadius(this.radius - 20);
+            // Request data from the server
+            d3.json(path, function (error, data) {
+                if (error) {
+                    throw error;
+                }
+                This.init(data.cities[city].distribution);
+            });
+        }
+        Pi.prototype = {
+            init: function (data) {
+                this.svg = d3.select('.pi').append('svg')
+                    .attr('width', this.width)
+                    .attr('height', this.height)
+                    .append('g')
+                    .attr('transform', 'translate(' + this.width / 2 + ',' + this.height / 2 + ')')
+                    .data([data]);
+                // this.path = this.svg.datum(data).selectAll('path');
+            }
+        };
+        window.x = new Pi('/assets/sampledata.json', 'minneapolis');
     }).call(this, document, jQuery, d3, topojson);
 });
