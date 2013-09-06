@@ -4,8 +4,8 @@
         var developement = true;
         //lazy logging--if devleopement is false, it won't console log anything.
         var log = developement ? function (args) {
-                win.console.log(args);
-            } : function () {};
+                window.console.log(arguments);
+            } : function () {}; 
         //common jquery selectors cache
         var $window = $(win);
         var $body = $('body');

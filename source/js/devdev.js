@@ -6,9 +6,9 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     (function (doc, $, d3) {
         'use strict';
         var window = this;
+        var DevDev = window.DevDev || {};
         // Constructor function for the maps.
-
-        function Map() {
+        var Map = DevDev.Map = function () {
             var This = this;
             // Define with of the map as the size of the container
             this.width = $('.map')
@@ -22,7 +22,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 }
                 This.init(data.states);
             });
-        }
+        };
         Map.prototype = {
             // Define the d3 projection for the map.
             init: function (json) {
@@ -99,23 +99,45 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 }
             }
         };
-        // Call the constructor.
-        new Map();
-        // Pie distribution
-
-        function Pi(city, element, tweenTime) {
+        // Pi chart constructor
+        var Pi = DevDev.Pi = function (city, element, tweenTime) {
             // Cache 'this' to pass into callbacks.
             var This = this;
-            This.city = city || 'init';
+            This.city = city || 'minneapolis';
             // Transition duration
             This.tweenTime = tweenTime || 1000;
             // Appends to a specific element or defaults to class 'pi'
             This.element = element || '.pi';
             This.width = $(This.element).width();
             This.height = This.width * 0.5;
-            This.radius = Math.min(This.width, This.height) / 2;
+            This.radius = Math.min(This.width, This.height) / 2.5;
+            This.thickness = This.radius * 0.75;
             // Collection of D3 specific methods 
-            This.d3 = {};
+            This.d3 = {
+                // Helper functions from the D3 library
+                // Pie graph layout engine
+                pie: d3.layout.pie()
+                    .value(function (data) {
+                        return data.share;
+                    })
+                    .sort(null),
+                // Arc construction function.    
+                arc: d3.svg.arc()
+                    .startAngle(function (data) {
+                        return data.startAngle;
+                    })
+                    .endAngle(function (data) {
+                        return data.endAngle;
+                    })
+                // Radii of the chart. OuterRadius determines oversize of the graph (default is determined by This.radius)
+                // Inner radius determines whitespace of the chart. Set inner to 0 for no whitespace. 
+                .innerRadius(This.thickness)
+                    .outerRadius(This.radius),
+                svg: d3.select(This.element)
+                    .append('svg')
+                    .attr('width', This.width)
+                    .attr('height', This.height)
+            };
             // Request data from the server and draw the pi chart
             d3.json('/assets/sampledata.json', function (error, data) {
                 if (error) {
@@ -124,28 +146,10 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Parse incoming JSON data and call init function
                 This.init(This.parseData(data.cities[This.city]));
             });
-        }
+        };
         Pi.prototype = {
             init: function (data) {
                 var This = this;
-                This.d3.pie = d3.layout.pie()
-                    .value(function (data) {
-                        return data.share;
-                    })
-                    .sort(null);
-                This.d3.arc = d3.svg.arc()
-                    .startAngle(function (data) {
-                        return data.startAngle;
-                    })
-                    .endAngle(function (data) {
-                        return data.endAngle;
-                    })
-                    .innerRadius(This.radius - 100)
-                    .outerRadius(This.radius - 40);
-                This.d3.svg = d3.select(This.element)
-                    .append('svg')
-                    .attr('width', This.width)
-                    .attr('height', This.height);
                 // Main group for the pie graph
                 This.d3.graph = This.d3.svg.append('g')
                     .attr('class', 'pi-svg')
@@ -181,12 +185,15 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                         return 'rotate(' + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ')';
                     });
             },
-            // Parsing function into an array format that's D3-friendly
+            // Parsing function into an array format that's D3-friendly. This normalizes the pi slices.
             parseData: function (data) {
+                // Array of languages in the API's library. Add to this array when adding new languages.
                 var languagesLibrary = ['cpp', 'dotnet', 'java', 'javascript', 'ruby'];
+                // Maps and returns an array of objects for D3  
                 return languagesLibrary.map(function (language) {
                     return {
                         "language": language,
+                        // Append share data if it exists. Defaults to 0 if not. 
                         "share": data.languages[language] ? data.languages[language].share : 0
                     };
                 });
@@ -219,11 +226,15 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 });
             }
         };
-        // Sample graph. This is bound to change event for radio forms for fake cities.
-        var samplePi = new Pi($('.pi input:checked')[0].value);
+        // Exporting the DevDev object to window scope
+        window.DevDev = DevDev;
+    }).call(this, document, jQuery, d3, topojson);
+    var DevDev = window.DevDev || {};
+    // Sample Map
+    var sampleMap = new DevDev.Map();
+    // Sample Pi chart. Call the constructor with 'new DevDev.Pi("city (string)", "appending DOM element (string)", "animation time (nubmer)")'
+    var samplePi = new DevDev.Pi($('.pi input:checked')[0].value);
         $('.pi input').on('change', function () {
             samplePi.changeCity(this.value);
         });
-        window.Pi = Pi;
-    }).call(this, document, jQuery, d3, topojson);
 });
