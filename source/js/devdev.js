@@ -1,18 +1,25 @@
 require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     gnaoh.requireCss('devdev.css');
-    var log = function (args) {
+    var log = window.log = function (args) {
         window.console.log(args);
     };
     (function (doc, $, d3) {
         'use strict';
         var window = this;
         // Constructor function for the maps.
-
         function Map() {
+            var This = this;
             // Define with of the map as the size of the container
             this.width = $('.map').width();
             this.height = this.width * 0.75;
             this.centered = undefined;
+            // Query server for json data and initialize the map
+            d3.json('/assets/sampledata.json', function (error, data) {
+                if (error) {
+                    throw error;
+                }
+                This.init(data.states);
+            });
         }
         Map.prototype = {
             // Define the d3 projection for the map.
@@ -86,32 +93,31 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 }
             }
         };
-        // Query server for json data and initialize the map
-        d3.json('/assets/sampledata.json', function (error, data) {
-            if (error) {
-                throw error;
-            }
-            // Call the constructor.
-            new Map().init(data.states);
-        });
+        // Call the constructor.
+        new Map();
         // Pie distribution
-        var color = d3.scale.category20();
 
-        function Pi(path, city) {
+        function Pi(city) {
             var This = this;
             this.width = $('.pi').width();
-            this.height = this.width * 0.75;
+            this.height = this.width * 0.5;
             this.radius = Math.min(this.width, this.height) / 2;
-            this.layout = d3.layout.pie()
+            this.pi = d3.layout.pie()
                 .value(function (data) {
-                    return data.count;
+                    return data.value;
                 })
                 .sort(null);
             this.arc = d3.svg.arc()
+                .startAngle(function (data) {
+                    return data.startAngle;
+                })
+                .endAngle(function (data) {
+                    return data.endAngle;
+                })
                 .innerRadius(this.radius - 100)
-                .outerRadius(this.radius - 20);
+                .outerRadius(this.radius - 40);
             // Request data from the server
-            d3.json(path, function (error, data) {
+            d3.json('/assets/sampledata.json', function (error, data) {
                 if (error) {
                     throw error;
                 }
@@ -120,15 +126,66 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         }
         Pi.prototype = {
             init: function (data) {
-                this.svg = d3.select('.pi').append('svg')
-                    .attr('width', this.width)
-                    .attr('height', this.height)
-                    .append('g')
-                    .attr('transform', 'translate(' + this.width / 2 + ',' + this.height / 2 + ')')
-                    .data([data]);
-                // this.path = this.svg.datum(data).selectAll('path');
+                var This = this;
+                This.svg = d3.select('.pi').append('svg')
+                    .attr('width', This.width)
+                    .attr('height', This.height);
+                // Main group for the pi graph
+                This.graph = This.svg.append('g')
+                    .attr('class', 'pi-svg')
+                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')')
+                    .datum(data);
+                This.path = This.svg.select('g')
+                    .selectAll('path')
+                    .data(This.pi)
+                    .enter().append("path")
+                    .attr("class", function (arc) {
+                        return arc.data.language;
+                    })
+                    .attr("d", This.arc)
+                    .each(function (d) {
+                        This._current = d;
+                    });
+                // Line marks for labels.
+                This.label = This.svg.append('g')
+                    .attr('class', 'pi-labels')
+                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
+                This.lines = This.label.selectAll('line');
+                This.lines.append('line')
+                    .attr("x1", 0)
+                    .attr("x2", 0)
+                    .attr("y1", -This.radius - 3)
+                    .attr("y2", -This.radius - 15)
+                    .attr("stroke", "gray")
+                    .attr("transform", function (d) {
+                        return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
+                    });
+            },
+            changeCity: function (city) {
+                var This = this;
+                d3.json('/assets/sampledata.json', function (error, data) {
+                    if (error) {
+                        throw error;
+                    }
+                    log(data.cities[city].distribution);
+                    This.pi.value(function () {
+                        return data.cities[city].distribution;
+                    });
+                    This.path = This.path.data(This.pi);
+                    This.path.transition().duration(750).attrTween('d', function () {
+                        This.redraw.call(this, arguments, This);
+                    });
+                });
+            },
+            redraw: function (a, This) {
+                var i = d3.interpolate(this._current, a[0]);
+                this._current = i(0);
+                return function (t) {
+                    return this.arc(i(t));
+                };
             }
         };
-        window.x = new Pi('/assets/sampledata.json', 'minneapolis');
+        window.x = new Pi('minneapolis');
+        window.Pi = Pi;
     }).call(this, document, jQuery, d3, topojson);
 });

@@ -15,6 +15,14 @@ block content
             span .Net
     .pi
         h1 Pie Distribution
-        
+        form(class='city-select', name='city-select')
+            input(type='radio', name='city-select', value='minneapolis', checked)
+            | Minneapolis
+            input(type='radio', name='city-select', value='san francisco')
+            | San Francisco
+            input(type='radio', name='city-select', value='new york city')
+            | New York City
+
+
     script(src='js/devdev.js')
 
