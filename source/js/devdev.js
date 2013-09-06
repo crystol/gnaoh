@@ -110,7 +110,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             This.element = element || '.pi';
             This.width = $(This.element).width();
             This.height = This.width * 0.5;
-            This.radius = Math.min(This.width, This.height) / 2.5;
+            This.radius = Math.min(This.width, This.height) * 0.4;
             This.thickness = This.radius * 0.75;
             // Collection of D3 specific methods 
             This.d3 = {
@@ -133,6 +133,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Inner radius determines whitespace of the chart. Set inner to 0 for no whitespace. 
                 .innerRadius(This.thickness)
                     .outerRadius(This.radius),
+                // Groups within the SVG
                 svg: d3.select(This.element)
                     .append('svg')
                     .attr('width', This.width)
@@ -152,51 +153,39 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 var This = this;
                 // Main group for the pie graph
                 This.d3.graph = This.d3.svg.append('g')
-                    .attr('class', 'pi-svg')
+                    .attr('class', 'graph')
                     .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
                 // Adds a path element for each language.
-                This.d3.path = This.d3.svg.select('g')
+                This.d3.path = This.d3.graph
                     .selectAll('path')
                     .data(This.d3.pie(data))
                     .enter()
                     .append('path')
-                // Adds the language as a class respectively 
+                // Draw path for each pi section using the d3's arc function
+                .attr('d', This.d3.arc)
+                // Adds the language as a class respectively. This enables css color coding.
                 .attr('class', function (arc) {
                     return arc.data.language;
                 })
-                    .attr('d', This.d3.arc)
                 // Stores current path value in 'current'. Used to interpolate with new data.
                 .each(function (arc) {
                     this.currentArc = arc;
                 });
-                // Line marks for labels.
-                This.d3.label = This.d3.svg.append('g')
-                    .attr('class', 'pi-labels')
-                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
-                This.d3.lines = This.d3.label.selectAll('line')
-                    .data(data)
-                    .append('line')
-                    .attr('x1', 0)
-                    .attr('x2', 0)
-                    .attr('y1', -This.radius - 3)
-                    .attr('y2', -This.radius - 15)
-                    .attr('stroke', 'red')
-                    .attr('transform', function (d) {
-                        return 'rotate(' + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ')';
-                    });
+                This.label(data);
             },
             // Parsing function into an array format that's D3-friendly. This normalizes the pi slices.
             parseData: function (data) {
                 // Array of languages in the API's library. Add to this array when adding new languages.
                 var languagesLibrary = ['cpp', 'dotnet', 'java', 'javascript', 'ruby'];
                 // Maps and returns an array of objects for D3  
-                return languagesLibrary.map(function (language) {
+                var parsedJSON = this.parsedJSON = languagesLibrary.map(function (language) {
                     return {
                         "language": language,
                         // Append share data if it exists. Defaults to 0 if not. 
                         "share": data.languages[language] ? data.languages[language].share : 0
                     };
                 });
+                return parsedJSON;
             },
             changeCity: function (city) {
                 var This = this;
@@ -223,7 +212,44 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attrTween('d', function (data) {
                         return redraw.call(this, data, This);
                     });
+                    This.d3.label.lines.transition()
+                        .duration(1000)
+                        .attr("transform", function (d) {
+                            return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
+                        });
                 });
+            },
+            // Add text labels to the chart
+            label: function (data) {
+                var This = this;
+                // Filter language objects from the array that are null    
+                var filteredData = This.d3.pie(This.parsedJSON).filter(function (data) {
+                    return data.value > 0 ? data : null;
+                });
+                // Add a label super-group
+                This.d3.label = This.d3.svg.append('g')
+                    .attr('class', 'labels')
+                    .attr('width', This.height)
+                    .attr('height', This.height)
+                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
+                This.d3.label.name = This.d3.label
+                    .append('text')
+                    .attr('value', 'aasdsd');
+                // Add lines next to the arcs for text labels
+                This.d3.label.lines = This.d3.label.selectAll('line')
+                    .data(filteredData)
+                    .enter()
+                    .append('line')
+                    // Line extends 10 pixels long
+                .attr('x1', 0)
+                    .attr('x2', 0)
+                    .attr('y1', -This.radius - 5)
+                    .attr('y2', -This.radius - 15)
+                    .attr('class', 'line')
+                    .attr('transform', function (data) {
+                        // Rotate the line to the midpoint of the arc (perdendicular to the tangent)
+                        return 'rotate(' + (data.startAngle + data.endAngle) / 2 * (180 / Math.PI) + ')';
+                    });
             }
         };
         // Exporting the DevDev object to window scope
@@ -234,7 +260,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     var sampleMap = new DevDev.Map();
     // Sample Pi chart. Call the constructor with 'new DevDev.Pi("city (string)", "appending DOM element (string)", "animation time (nubmer)")'
     var samplePi = new DevDev.Pi($('.pi input:checked')[0].value);
-        $('.pi input').on('change', function () {
-            samplePi.changeCity(this.value);
-        });
+    $('.pi input').on('change', function () {
+        samplePi.changeCity(this.value);
+    });
 });
