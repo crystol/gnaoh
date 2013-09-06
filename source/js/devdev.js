@@ -212,19 +212,18 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attrTween('d', function (data) {
                         return redraw.call(this, data, This);
                     });
-                    This.d3.label.lines.transition()
-                        .duration(1000)
-                        .attr("transform", function (d) {
-                            return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
-                        });
                 });
             },
             // Add text labels to the chart
-            label: function (data) {
+            label: function () {
                 var This = this;
                 // Filter language objects from the array that are null    
                 var filteredData = This.d3.pie(This.parsedJSON).filter(function (data) {
                     return data.value > 0 ? data : null;
+                });
+                // Adding a midpoint value in degrees of the arc to aid calculations
+                filteredData.forEach(function (element) {
+                    element.midpoint = (element.startAngle + element.endAngle) / 2 * 180 / Math.PI;
                 });
                 // Add a label super-group
                 This.d3.label = This.d3.svg.append('g')
@@ -232,24 +231,73 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('width', This.height)
                     .attr('height', This.height)
                     .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
+                // /dev/deviation brand
                 This.d3.label.name = This.d3.label
                     .append('text')
-                    .attr('value', 'aasdsd');
+                    .text('/dev/deviation')
+                    .attr('class', 'title')
+                // Offset its x position by half its length
+                .attr('dx', function () {
+                    return -this.scrollWidth * 0.5;
+                })
+                    .attr('dy', function () {
+                        return -this.scrollHeight * 0.75;
+                    });
+                // City name
+                This.d3.label.city = This.d3.label
+                    .append('text')
+                    .text(This.city)
+                    .attr('class', 'city')
+                // Offset its x position by half its length
+                .attr('dx', function () {
+                    return -this.scrollWidth / 2;
+                });
                 // Add lines next to the arcs for text labels
                 This.d3.label.lines = This.d3.label.selectAll('line')
                     .data(filteredData)
                     .enter()
                     .append('line')
-                    // Line extends 10 pixels long
+                // Line extends 10 pixels long
                 .attr('x1', 0)
                     .attr('x2', 0)
                     .attr('y1', -This.radius - 5)
                     .attr('y2', -This.radius - 15)
                     .attr('class', 'line')
-                    .attr('transform', function (data) {
+                    .attr('transform', function (arc) {
                         // Rotate the line to the midpoint of the arc (perdendicular to the tangent)
-                        return 'rotate(' + (data.startAngle + data.endAngle) / 2 * (180 / Math.PI) + ')';
+                        return 'rotate(' + arc.midpoint + ')';
                     });
+                // Add language text labels
+                This.d3.label.languages = This.d3.label.selectAll('text.language')
+                    .data(filteredData)
+                    .enter()
+                    .append('text')
+                    .attr('class', function (arc) {
+                        return 'language ' + arc.data.language;
+                    })
+                    .attr('text-anchor', function (arc) {
+                        var position;
+                        if (arc.midpoint > 20 && arc.midpoint < 160) {
+                            position = 'begining';
+                        } else if (arc.midpoint > 200 && arc.midpoint < 340) {
+                            position = 'end';
+                        } else {
+                           position = 'middle';
+                        }
+                        return position;
+                    })
+                    .attr('dx', function (arc) {
+                        return This.radius * 1.15 * Math.sin(arc.midpoint * Math.PI / 180);
+                    })
+                    .attr('dy', function (arc) {
+                        return This.radius * -1.2 * Math.cos(arc.midpoint * Math.PI / 180);
+                    })
+                // .attr("transform", function (arc) {
+                // return "translate(" + arc.midpoint + ")";
+                // })
+                .text(function (arc) {
+                    return arc.data.language;
+                });
             }
         };
         // Exporting the DevDev object to window scope
@@ -257,7 +305,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     }).call(this, document, jQuery, d3, topojson);
     var DevDev = window.DevDev || {};
     // Sample Map
-    var sampleMap = new DevDev.Map();
+    // var sampleMap = new DevDev.Map();
     // Sample Pi chart. Call the constructor with 'new DevDev.Pi("city (string)", "appending DOM element (string)", "animation time (nubmer)")'
     var samplePi = new DevDev.Pi($('.pi input:checked')[0].value);
     $('.pi input').on('change', function () {
