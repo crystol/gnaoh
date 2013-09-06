@@ -3,25 +3,27 @@ block content
     .map
         h1 Map
         .legend
-            .box.ruby
-            span Ruby
-            .box.javascript
-            span Javascript
             .box.cpp
             span C++
-            .box.java
-            span Java
             .box.dotnet
             span .Net
+            .box.java
+            span Java
+            .box.javascript
+            span Javascript
+            .box.ruby
+            span Ruby
     .pi
         h1 Pie Distribution
         form(class='city-select', name='city-select')
-            input(type='radio', name='city-select', value='minneapolis', checked)
+            input(type='radio', name='city-select', value='chicago', checked)
+            | Chicago 
+            input(type='radio', name='city-select', value='minneapolis')
             | Minneapolis
-            input(type='radio', name='city-select', value='san francisco')
-            | San Francisco
             input(type='radio', name='city-select', value='new york city')
             | New York City
+            input(type='radio', name='city-select', value='san francisco')
+            | San Francisco
 
 
     script(src='js/devdev.js')

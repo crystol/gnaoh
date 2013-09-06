@@ -103,89 +103,104 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         new Map();
         // Pie distribution
 
-        function Pi(city, element) {
+        function Pi(city, element, tweenTime) {
+            // Cache 'this' to pass into callbacks.
             var This = this;
-            element = element || '.pi';
-            this.width = $(element)
-                .width();
-            this.height = this.width * 0.5;
-            this.radius = Math.min(this.width, this.height) / 2;
+            This.city = city || 'init';
+            // Transition duration
+            This.tweenTime = tweenTime || 1000;
+            // Appends to a specific element or defaults to class 'pi'
+            This.element = element || '.pi';
+            This.width = $(This.element).width();
+            This.height = This.width * 0.5;
+            This.radius = Math.min(This.width, This.height) / 2;
+            // Collection of D3 specific methods 
+            This.d3 = {};
             // Request data from the server and draw the pi chart
             d3.json('/assets/sampledata.json', function (error, data) {
                 if (error) {
                     throw error;
                 }
-                This._data = {
-                    city: city,
-                    distribution: data.cities[city].distribution
-                };
-                This.init(data.cities[city].distribution);
+                // Parse incoming JSON data and call init function
+                This.init(This.parseData(data.cities[This.city]));
             });
         }
         Pi.prototype = {
             init: function (data) {
                 var This = this;
-                This.pi = d3.layout.pie()
+                This.d3.pie = d3.layout.pie()
                     .value(function (data) {
-                        return data.value;
+                        return data.share;
                     })
                     .sort(null);
-                This.arc = d3.svg.arc()
+                This.d3.arc = d3.svg.arc()
                     .startAngle(function (data) {
                         return data.startAngle;
                     })
                     .endAngle(function (data) {
                         return data.endAngle;
                     })
-                    .innerRadius(this.radius - 100)
-                    .outerRadius(this.radius - 40);
-                This.svg = d3.select('.pi')
+                    .innerRadius(This.radius - 100)
+                    .outerRadius(This.radius - 40);
+                This.d3.svg = d3.select(This.element)
                     .append('svg')
                     .attr('width', This.width)
                     .attr('height', This.height);
-                // Main group for the pi graph
-                This.graph = This.svg.append('g')
+                // Main group for the pie graph
+                This.d3.graph = This.d3.svg.append('g')
                     .attr('class', 'pi-svg')
-                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')')
-                    .datum(data);
-                This.path = This.svg.select('g')
+                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
+                // Adds a path element for each language.
+                This.d3.path = This.d3.svg.select('g')
                     .selectAll('path')
-                    .data(This.pi)
+                    .data(This.d3.pie(data))
                     .enter()
-                    .append("path")
-                    .attr("class", function (arc) {
-                        // Adds the language as a class respectively 
-                        return arc.data.language;
-                    })
-                    .attr("d", This.arc)
-                    .each(function (arc) {
-                        // Stores current path value in 'current'. Used to interpolate with new data.
-                        this._current = arc;
-                    });
+                    .append('path')
+                // Adds the language as a class respectively 
+                .attr('class', function (arc) {
+                    return arc.data.language;
+                })
+                    .attr('d', This.d3.arc)
+                // Stores current path value in 'current'. Used to interpolate with new data.
+                .each(function (arc) {
+                    this.currentArc = arc;
+                });
                 // Line marks for labels.
-                This.label = This.svg.append('g')
+                This.d3.label = This.d3.svg.append('g')
                     .attr('class', 'pi-labels')
                     .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
-                This.lines = This.label.selectAll('line');
-                This.lines.append('line')
-                    .attr("x1", 0)
-                    .attr("x2", 0)
-                    .attr("y1", -This.radius - 3)
-                    .attr("y2", -This.radius - 15)
-                    .attr("stroke", "gray")
-                    .attr("transform", function (d) {
-                        return "rotate(" + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ")";
+                This.d3.lines = This.d3.label.selectAll('line')
+                    .data(data)
+                    .append('line')
+                    .attr('x1', 0)
+                    .attr('x2', 0)
+                    .attr('y1', -This.radius - 3)
+                    .attr('y2', -This.radius - 15)
+                    .attr('stroke', 'red')
+                    .attr('transform', function (d) {
+                        return 'rotate(' + (d.startAngle + d.endAngle) / 2 * (180 / Math.PI) + ')';
                     });
+            },
+            // Parsing function into an array format that's D3-friendly
+            parseData: function (data) {
+                var languagesLibrary = ['cpp', 'dotnet', 'java', 'javascript', 'ruby'];
+                return languagesLibrary.map(function (language) {
+                    return {
+                        "language": language,
+                        "share": data.languages[language] ? data.languages[language].share : 0
+                    };
+                });
             },
             changeCity: function (city) {
                 var This = this;
+                This.city = city;
                 // Function to redraw and animate the graph to reflect new data
-                var redraw = function (newData, This) {
-                    var interpolate = d3.interpolate(this._current, newData);
+                var redraw = function (newArc, This) {
+                    var interpolate = d3.interpolate(this.currentArc, newArc);
                     // Update current path data for the next interpolations
-                    this._current = interpolate(0);
+                    this.currentArc = interpolate(0);
                     return function (time) {
-                        return This.arc(interpolate(time));
+                        return This.d3.arc(interpolate(time));
                     };
                 };
                 // XHR for new data. 
@@ -193,21 +208,10 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     if (error) {
                         throw error;
                     }
-                    // Update object metadata
-                    This._data = {
-                        city: city,
-                        distribution: data.cities[city].distribution
-                    };
-                    // Update the graph with new data
-                    This.graph.datum(data.cities[city].distribution);
-                    This.pi.value(function (data) {
-                        return data.value;
-                    })
-                        .sort(null);
-                    // Redraw the graph with new data
-                    This.path.data(This.pi)
+                    // Parse new data and update the graph with redraw function
+                    This.d3.path.data(This.d3.pie(This.parseData(data.cities[This.city])))
                         .transition()
-                        .duration(1000)
+                        .duration(This.tweenTime)
                     // Tween between old and new data. Has to return as a function to animate with transition time.
                     .attrTween('d', function (data) {
                         return redraw.call(this, data, This);
@@ -215,8 +219,11 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 });
             }
         };
-        var samplePi = new Pi('minneapolis');
-       
-    })
-        .call(this, document, jQuery, d3, topojson);
+        // Sample graph. This is bound to change event for radio forms for fake cities.
+        var samplePi = new Pi($('.pi input:checked')[0].value);
+        $('.pi input').on('change', function () {
+            samplePi.changeCity(this.value);
+        });
+        window.Pi = Pi;
+    }).call(this, document, jQuery, d3, topojson);
 });
