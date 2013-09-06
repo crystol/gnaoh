@@ -1,16 +1,18 @@
 require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     gnaoh.requireCss('devdev.css');
-    var log = window.log = function (args) {
-        window.console.log(args);
+    var log = window.log = function () {
+        window.console.log(arguments);
     };
     (function (doc, $, d3) {
         'use strict';
         var window = this;
         // Constructor function for the maps.
+
         function Map() {
             var This = this;
             // Define with of the map as the size of the container
-            this.width = $('.map').width();
+            this.width = $('.map')
+                .width();
             this.height = this.width * 0.75;
             this.centered = undefined;
             // Query server for json data and initialize the map
@@ -32,7 +34,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .translate([This.width / 2, This.height / 2]);
                 This.path = d3.geo.path()
                     .projection(projection);
-                This.svg = d3.select('.map').append('svg')
+                This.svg = d3.select('.map')
+                    .append('svg')
                     .attr('width', This.width)
                     .attr('height', This.height);
                 This.states = This.svg.append('g');
@@ -41,8 +44,10 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     This.states.append('g')
                         .attr('class', 'states')
                         .selectAll('path')
-                        .data(topojson.feature(data, data.objects.state).features)
-                        .enter().append('path')
+                        .data(topojson.feature(data, data.objects.state)
+                            .features)
+                        .enter()
+                        .append('path')
                     // Marks the ID of each path as the state abbreviation
                     .attr('id', function (obj) {
                         return obj.properties.STUSPS10;
@@ -89,7 +94,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Loops through the JSON object and uses the key value for state and language.
                 for (var state in this.data) {
                     var language = this.data[state]['dominant language'];
-                    $('#' + state).attr('class', language);
+                    $('#' + state)
+                        .attr('class', language);
                 }
             }
         };
@@ -97,37 +103,44 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         new Map();
         // Pie distribution
 
-        function Pi(city) {
+        function Pi(city, element) {
             var This = this;
-            this.width = $('.pi').width();
+            element = element || '.pi';
+            this.width = $(element)
+                .width();
             this.height = this.width * 0.5;
             this.radius = Math.min(this.width, this.height) / 2;
-            this.pi = d3.layout.pie()
-                .value(function (data) {
-                    return data.value;
-                })
-                .sort(null);
-            this.arc = d3.svg.arc()
-                .startAngle(function (data) {
-                    return data.startAngle;
-                })
-                .endAngle(function (data) {
-                    return data.endAngle;
-                })
-                .innerRadius(this.radius - 100)
-                .outerRadius(this.radius - 40);
-            // Request data from the server
+            // Request data from the server and draw the pi chart
             d3.json('/assets/sampledata.json', function (error, data) {
                 if (error) {
                     throw error;
                 }
+                This._data = {
+                    city: city,
+                    distribution: data.cities[city].distribution
+                };
                 This.init(data.cities[city].distribution);
             });
         }
         Pi.prototype = {
             init: function (data) {
                 var This = this;
-                This.svg = d3.select('.pi').append('svg')
+                This.pi = d3.layout.pie()
+                    .value(function (data) {
+                        return data.value;
+                    })
+                    .sort(null);
+                This.arc = d3.svg.arc()
+                    .startAngle(function (data) {
+                        return data.startAngle;
+                    })
+                    .endAngle(function (data) {
+                        return data.endAngle;
+                    })
+                    .innerRadius(this.radius - 100)
+                    .outerRadius(this.radius - 40);
+                This.svg = d3.select('.pi')
+                    .append('svg')
                     .attr('width', This.width)
                     .attr('height', This.height);
                 // Main group for the pi graph
@@ -138,13 +151,16 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.path = This.svg.select('g')
                     .selectAll('path')
                     .data(This.pi)
-                    .enter().append("path")
+                    .enter()
+                    .append("path")
                     .attr("class", function (arc) {
+                        // Adds the language as a class respectively 
                         return arc.data.language;
                     })
                     .attr("d", This.arc)
-                    .each(function (d) {
-                        This._current = d;
+                    .each(function (arc) {
+                        // Stores current path value in 'current'. Used to interpolate with new data.
+                        this._current = arc;
                     });
                 // Line marks for labels.
                 This.label = This.svg.append('g')
@@ -163,29 +179,44 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             },
             changeCity: function (city) {
                 var This = this;
+                // Function to redraw and animate the graph to reflect new data
+                var redraw = function (newData, This) {
+                    var interpolate = d3.interpolate(this._current, newData);
+                    // Update current path data for the next interpolations
+                    this._current = interpolate(0);
+                    return function (time) {
+                        return This.arc(interpolate(time));
+                    };
+                };
+                // XHR for new data. 
                 d3.json('/assets/sampledata.json', function (error, data) {
                     if (error) {
                         throw error;
                     }
-                    log(data.cities[city].distribution);
-                    This.pi.value(function () {
-                        return data.cities[city].distribution;
-                    });
-                    This.path = This.path.data(This.pi);
-                    This.path.transition().duration(750).attrTween('d', function () {
-                        This.redraw.call(this, arguments, This);
+                    // Update object metadata
+                    This._data = {
+                        city: city,
+                        distribution: data.cities[city].distribution
+                    };
+                    // Update the graph with new data
+                    This.graph.datum(data.cities[city].distribution);
+                    This.pi.value(function (data) {
+                        return data.value;
+                    })
+                        .sort(null);
+                    // Redraw the graph with new data
+                    This.path.data(This.pi)
+                        .transition()
+                        .duration(1000)
+                    // Tween between old and new data. Has to return as a function to animate with transition time.
+                    .attrTween('d', function (data) {
+                        return redraw.call(this, data, This);
                     });
                 });
-            },
-            redraw: function (a, This) {
-                var i = d3.interpolate(this._current, a[0]);
-                this._current = i(0);
-                return function (t) {
-                    return this.arc(i(t));
-                };
             }
         };
-        window.x = new Pi('minneapolis');
-        window.Pi = Pi;
-    }).call(this, document, jQuery, d3, topojson);
+        var samplePi = new Pi('minneapolis');
+       
+    })
+        .call(this, document, jQuery, d3, topojson);
 });
