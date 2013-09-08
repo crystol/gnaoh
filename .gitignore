@@ -3,3 +3,4 @@ npm-debug.log
 build
 source/private
 logs
+sftp-config.json
