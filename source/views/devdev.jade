@@ -1,20 +1,7 @@
 extend skeleton
 block content
-    .map
-        h1 Map
-        .legend
-            .box.cpp
-            span C++
-            .box.dotnet
-            span .Net
-            .box.java
-            span Java
-            .box.javascript
-            span Javascript
-            .box.ruby
-            span Ruby
     .pi
-        h1 Pie Distribution
+        h1 Pi Distribution
         form(class='city-select', name='city-select')
             input(type='radio', name='city-select', value='chicago', checked)
             | Chicago 
@@ -24,7 +11,19 @@ block content
             | New York City
             input(type='radio', name='city-select', value='san francisco')
             | San Francisco
-
+    .map
+        h1 Map
+    .legend
+        .box.cpp
+        span C++
+        .box.dotnet
+        span .Net
+        .box.java
+        span Java
+        .box.javascript
+        span Javascript
+        .box.ruby
+        span Ruby            
 
     script(src='js/devdev.js')
 

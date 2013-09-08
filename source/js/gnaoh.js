@@ -3,7 +3,7 @@
         'use strict';
         var developement = true;
         //lazy logging--if devleopement is false, it won't console log anything.
-        var log = developement ? function (args) {
+        var log = developement ? function () {
                 window.console.log(arguments);
             } : function () {}; 
         //common jquery selectors cache
