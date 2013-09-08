@@ -258,36 +258,35 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .data(filteredData)
                     .enter()
                     .append('text')
-                    .attr('class', function (arc) {
-                        return 'language ' + arc.data.language;
-                    })
-                // Calculates where the text label will anchor [beginning, middle, end]
-                    .attr('text-anchor', function (arc) {
-                        var position;
-                        // From 20 to 160 degrees (3/2pi to 1/2pi on unit circle)
+                    .each(function (arc) {
+                        var d3Element = d3.select(this);
+                        // X and Y positions of the label. They're pinned near the center of the arc.
+                        // Computer circles goes clockwise from 12 oclock position unlike the unit circle.
+                        // Switch the normal sin(0) and cos(0) for calculations. 
+                        // They extend slightly beyond the radius (1.1x seems to be good.)
+                        var dx = This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
+                        var dy = This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
+                        // Align the labels with regards to their position on the circle. 
                         if (arc.midpoint > 20 && arc.midpoint < 160) {
-                            position = 'begining';
+                            // From 20 to 160 degrees (3/2pi to 1/2pi on unit circle)
+                            // Determines where the text label will anchor [beginning, middle, end]
+                            d3Element.attr('text-anchor', 'begining')
+                            // Apply dx and dy
+                                .attr('dx', dx)
+                                .attr('dy', dy);
                             // From 200 to 340 degrees (1/2pi to 3/2pi on unit circle)
                         } else if (arc.midpoint > 200 && arc.midpoint < 340) {
-                            position = 'end';
+                            d3Element.attr('text-anchor', 'end')
+                                .attr('dx', dx)
+                                .attr('dy', dy);
                             // Near areas where tangent is 0 or undefined)
                         } else {
-                            position = 'middle';
+                            d3Element.attr('text-anchor', 'middle')
+                                .attr('dx', dx)
+                                .attr('dy', dy);
                         }
-                        return position;
-                    })
-                // X and Y positions of the label. They're pinned near the center of the arc.
-                // Computer circles goes clockwise from 12 oclock position unlike the unit circle.
-                // Switch the normal sin(0) and cos(0) for calculations. 
-                    .attr('dx', function (arc) {
-                        // They extend slightly beyond the radius (1.1x seems to be good.)
-                        return This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
-                    })
-                    .attr('dy', function (arc) {
-                        return This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
-                    })
-                    .text(function (arc) {
-                        return arc.data.language;
+                        d3Element.attr('class', 'language ' + arc.data.language)
+                            .text(arc.data.language);
                     });
                 // Add language distribution value labels
                 This.d3.label.languages = This.d3.label.selectAll('text.distribution')
@@ -295,34 +294,26 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .enter()
                     .append('text')
                     .attr('class', 'distribution')
-                    .attr('text-anchor', function (arc) {
-                        var position;
+                    .each(function (arc) {
+                        var d3Element = d3.select(this);
+                        // Basically the same as the language label with minor shifts. 
+                        var dx = This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
+                        var dy = This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
                         if (arc.midpoint > 20 && arc.midpoint < 160) {
-                            position = 'begining';
+                            d3Element.attr('text-anchor', 'begining')
+                                .attr('dx', dx + 10)
+                                .attr('dy', dy + 20);
                         } else if (arc.midpoint > 200 && arc.midpoint < 340) {
-                            position = 'end';
+                            d3Element.attr('text-anchor', 'end')
+                                .attr('dx', dx - 10)
+                                .attr('dy', dy + 20);
                         } else {
-                            position = 'middle';
+                            d3Element.attr('text-anchor', 'middle')
+                                .attr('dx', dx)
+                                .attr('dy', dy + 15);
                         }
-                        return position;
-                    })
-                    .attr('dx', function (arc) {
-                        return This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
-                    })
-                    .attr('dy', function (arc) {
-                        // Include a 15px offset so the value will fall  below the label.
-                        var slightBudge;
-                        if (arc.midpoint > 20 && arc.midpoint < 160) {
-                            slightBudge = 20;
-                        } else if (arc.midpoint > 200 && arc.midpoint < 340) {
-                            slightBudge = 20;
-                        } else {
-                            slightBudge = 15;
-                        }
-                        return slightBudge + This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
-                    })
-                    .text(function (arc) {
-                        return arc.value * 100 + '%';
+                        // Value for each language convert to human percentage.
+                        d3Element.text(arc.value * 100 + '%');
                     });
             }
         };
@@ -330,7 +321,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         window.DevDev = DevDev;
     }).call(this, document, jQuery, d3, topojson);
     // Sample Map
-    var sampleMap = new DevDev.Map();
+    // var sampleMap = new DevDev.Map();
     // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
     var samplePiGraph = new DevDev.Pi({
         city: $('.pi input:checked')[0].value,
