@@ -1,7 +1,7 @@
 require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     gnaoh.requireCss('devdev.css');
-    var log = window.log = function () {
-        window.console.log(arguments);
+    var log = window.log = function (args) {
+        window.console.log(args);
     };
     (function (doc, $, d3) {
         'use strict';
@@ -148,11 +148,37 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     throw error;
                 }
                 // Parse incoming JSON data and call init function
-                This.init(This.parseData(data.cities[This.options.city]));
+                var parsedJSON = This.partitioner(data.cities[This.options.city]);
+                This.init();
             });
         };
         Pi.prototype = {
-            init: function (data) {
+            // Parses data into an array format that's D3-friendly and adds helpers for calculations.
+            partitioner: function (data) {
+                var This = this;
+                // Array of languages in the API's library. Add to this array when adding new languages.
+                var languagesLibrary = ['cpp', 'dotnet', 'java', 'javascript', 'ruby'];
+                // Maps and returns a data array suitable for D3.
+                var parsedData = languagesLibrary.map(function (language) {
+                    return {
+                        language: language,
+                        // Append share data as a pi-partitiion if it exists. Normalizes to 0 if not.
+                        share: data.languages[language] ? data.languages[language].share : 0
+                    };
+                });
+                // Divide the pi into their respective portions and prototypically bind to the Pi constructor
+                var partitions = This.partitions = This.d3.pie(parsedData);
+                // Filter objects from the array that are null. This is useful for handling text labels and values.
+                This.filteredData = partitions.filter(function (data) {
+                    return data.value > 0 ? data : null;
+                });
+                // Adding a midpoint value in degrees of the arc to aid calculations
+                This.filteredData.forEach(function (element) {
+                    element.midpoint = (element.startAngle + element.endAngle) / 2 * 180 / Math.PI;
+                });
+                return partitions;
+            },
+            init: function () {
                 var This = this;
                 // Main group for the pie graph
                 This.d3.graph = This.d3.svg.append('g')
@@ -161,7 +187,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Adds a path element for each language.
                 This.d3.path = This.d3.graph
                     .selectAll('path')
-                    .data(This.d3.pie(data))
+                // Append data that was previously created with Pi.partitioner()
+                    .data(This.partitions)
                     .enter()
                     .append('path')
                 // Draw path for each pi section using the d3's arc function
@@ -174,66 +201,22 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .each(function (arc) {
                         this.currentArc = arc;
                     });
-                This.label(data);
-            },
-            // Parsing function into an array format that's D3-friendly. This normalizes the pi slices.
-            parseData: function (data) {
-                // Array of languages in the API's library. Add to this array when adding new languages.
-                var languagesLibrary = ['cpp', 'dotnet', 'java', 'javascript', 'ruby'];
-                // Maps and returns an array of objects for D3
-                var parsedJSON = this.parsedJSON = languagesLibrary.map(function (language) {
-                    return {
-                        language: language,
-                        // Append share data if it exists. Defaults to 0 if not
-                        share: data.languages[language] ? data.languages[language].share : 0
-                    };
-                });
-                return parsedJSON;
-            },
-            changeCity: function (city) {
-                var This = this;
-                This.options.city = city;
-                // Function to redraw and animate the graph to reflect new data
-                var redraw = function (newArc, This) {
-                    var interpolate = d3.interpolate(this.currentArc, newArc);
-                    // Update current path data for the next interpolations
-                    this.currentArc = interpolate(0);
-                    return function (time) {
-                        return This.d3.arc(interpolate(time));
-                    };
-                };
-                // XHR for new data.
-                d3.json('/assets/sampledata.json', function (error, data) {
-                    if (error) {
-                        throw error;
-                    }
-                    // Parse new data and update the graph with redraw function
-                    This.d3.path.data(This.d3.pie(This.parseData(data.cities[This.options.city])))
-                        .transition()
-                        .duration(This.options.tweenTime)
-                    // Tween between old and new data. Has to return as a function to animate with transition time.
-                        .attrTween('d', function (data) {
-                            return redraw.call(this, data, This);
-                        });
-                });
+                // Make the labels
+                This.labels = This.createLabels()
+                    .city()
+                    .languages()
+                    .distribution();
+                return This;
             },
             // Add text labels (language, value, etc) to the chart
-            label: function () {
+            createLabels: function () {
                 var This = this;
-                // Filter language objects from the array that are null
-                var filteredData = This.d3.pie(This.parsedJSON).filter(function (data) {
-                    return data.value > 0 ? data : null;
-                });
-                // Adding a midpoint value in degrees of the arc to aid calculations
-                filteredData.forEach(function (element) {
-                    element.midpoint = (element.startAngle + element.endAngle) / 2 * 180 / Math.PI;
-                });
-                // Add a label super-group
-                This.d3.label = This.d3.svg.append('g')
+                // Add a label super-group and append the brand if uninitialized
+                This.d3.labels = This.d3.svg.append('g')
                     .attr('class', 'labels')
                     .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
                 // /dev/deviation brand
-                This.d3.label.name = This.d3.label
+                This.d3.labels.name = This.d3.labels
                     .append('text')
                     .text('/dev/deviation')
                     .attr('class', 'title')
@@ -244,78 +227,130 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('dy', function () {
                         return -this.scrollHeight * 0.75;
                     });
-                // City name
-                This.d3.label.city = This.d3.label
-                    .append('text')
-                    .text(This.options.city)
-                    .attr('class', 'city')
-                // Offset its x position by half its length
-                    .attr('dx', function () {
-                        return -this.scrollWidth / 2;
-                    });
-                // Add language text labels
-                This.d3.label.languages = This.d3.label.selectAll('text.language')
-                    .data(filteredData)
-                    .enter()
-                    .append('text')
-                    .each(function (arc) {
-                        var d3Element = d3.select(this);
-                        // X and Y positions of the label. They're pinned near the center of the arc.
-                        // Computer circles goes clockwise from 12 oclock position unlike the unit circle.
-                        // Switch the normal sin(0) and cos(0) for calculations. 
-                        // They extend slightly beyond the radius (1.1x seems to be good.)
-                        var dx = This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
-                        var dy = This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
-                        // Align the labels with regards to their position on the circle. 
-                        if (arc.midpoint > 20 && arc.midpoint < 160) {
-                            // From 20 to 160 degrees (3/2pi to 1/2pi on unit circle)
-                            // Determines where the text label will anchor [beginning, middle, end]
-                            d3Element.attr('text-anchor', 'begining')
-                            // Apply dx and dy
-                                .attr('dx', dx)
-                                .attr('dy', dy);
-                            // From 200 to 340 degrees (1/2pi to 3/2pi on unit circle)
-                        } else if (arc.midpoint > 200 && arc.midpoint < 340) {
-                            d3Element.attr('text-anchor', 'end')
-                                .attr('dx', dx)
-                                .attr('dy', dy);
-                            // Near areas where tangent is 0 or undefined)
-                        } else {
-                            d3Element.attr('text-anchor', 'middle')
-                                .attr('dx', dx)
-                                .attr('dy', dy);
+                // Returns an object packed with functions that control the labeling of the graph;
+                return {
+                    // City name
+                    city: function (city) {
+                        city = city || This.options.city;
+                        if (This.d3.labels.city) {
+                            This.d3.labels.city.remove();
                         }
-                        d3Element.attr('class', 'language ' + arc.data.language)
-                            .text(arc.data.language);
-                    });
-                // Add language distribution value labels
-                This.d3.label.languages = This.d3.label.selectAll('text.distribution')
-                    .data(filteredData)
-                    .enter()
-                    .append('text')
-                    .attr('class', 'distribution')
-                    .each(function (arc) {
-                        var d3Element = d3.select(this);
-                        // Basically the same as the language label with minor shifts. 
-                        var dx = This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
-                        var dy = This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
-                        if (arc.midpoint > 20 && arc.midpoint < 160) {
-                            d3Element.attr('text-anchor', 'begining')
-                                .attr('dx', dx + 10)
-                                .attr('dy', dy + 20);
-                        } else if (arc.midpoint > 200 && arc.midpoint < 340) {
-                            d3Element.attr('text-anchor', 'end')
-                                .attr('dx', dx - 10)
-                                .attr('dy', dy + 20);
-                        } else {
-                            d3Element.attr('text-anchor', 'middle')
-                                .attr('dx', dx)
-                                .attr('dy', dy + 15);
+                        This.d3.labels.city = This.d3.labels
+                            .append('text')
+                            .text(city)
+                            .attr('class', 'city')
+                        // Offset its x position by half its length
+                            .attr('dx', function () {
+                                return -this.scrollWidth / 2;
+                            });
+                        return this;
+                    },
+                    languages: function () {
+                        // Add language text labels
+                        if (This.d3.labels.languages) {
+                            This.d3.labels.languages.remove();
                         }
-                        // Value for each language convert to human percentage.
-                        d3Element.text(arc.value * 100 + '%');
-                    });
-            }
+                        This.d3.labels.languages = This.d3.labels.selectAll('text.language')
+                            .data(This.filteredData)
+                            .enter()
+                            .append('text')
+                            .each(function (arc) {
+                                var d3select = d3.select(this);
+                                // X and Y positions of the label. They're pinned near the center of the arc.
+                                // Computer circles goes clockwise from 12 oclock position unlike the unit circle.
+                                // Switch the normal sin(0) and cos(0) for calculations. 
+                                // They extend slightly beyond the radius (1.1x seems to be good.)
+                                var dx = This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
+                                var dy = This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
+                                // Align the labels with regards to their position on the circle. 
+                                if (arc.midpoint > 20 && arc.midpoint < 160) {
+                                    // From 20 to 160 degrees (3/2pi to 1/2pi on unit circle)
+                                    // Determines where the text label will anchor [beginning, middle, end]
+                                    d3select.attr('text-anchor', 'begining')
+                                    // Apply dx and dy
+                                        .attr('dx', dx)
+                                        .attr('dy', dy);
+                                    // From 200 to 340 degrees (1/2pi to 3/2pi on unit circle)
+                                } else if (arc.midpoint > 200 && arc.midpoint < 340) {
+                                    d3select.attr('text-anchor', 'end')
+                                        .attr('dx', dx)
+                                        .attr('dy', dy);
+                                    // Near areas where tangent is 0 or undefined)
+                                } else {
+                                    d3select.attr('text-anchor', 'middle')
+                                        .attr('dx', dx)
+                                        .attr('dy', dy);
+                                }
+                                d3select.attr('class', 'language ' + arc.data.language)
+                                    .text(arc.data.language);
+                            });
+                        return this;
+                    },
+                    // Add language distribution value labels
+                    distribution: function () {
+                        if (This.d3.labels.distribution) {
+                            This.d3.labels.distribution.remove();
+                        }
+                        This.d3.labels.distribution = This.d3.labels.selectAll('text.distribution')
+                            .data(This.filteredData)
+                            .enter()
+                            .append('text')
+                            .attr('class', 'distribution')
+                            .each(function (arc) {
+                                var d3Element = d3.select(this);
+                                // Basically the same as the language label with minor shifts. 
+                                var dx = This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
+                                var dy = This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
+                                if (arc.midpoint > 20 && arc.midpoint < 160) {
+                                    d3Element.attr('text-anchor', 'begining')
+                                        .attr('dx', dx + 10)
+                                        .attr('dy', dy + 20);
+                                } else if (arc.midpoint > 200 && arc.midpoint < 340) {
+                                    d3Element.attr('text-anchor', 'end')
+                                        .attr('dx', dx - 10)
+                                        .attr('dy', dy + 20);
+                                } else {
+                                    d3Element.attr('text-anchor', 'middle')
+                                        .attr('dx', dx)
+                                        .attr('dy', dy + 15);
+                                }
+                                // Value for each language convert to human percentage.
+                                d3Element.text(arc.value * 100 + '%');
+                            });
+                        return this;
+                    }
+                };
+            },
+            changeCity: function (city) {
+                var This = this;
+                This.options.city = city;
+                // XHR for new data.
+                d3.json('/assets/sampledata.json', function (error, data) {
+                    if (error) {
+                        throw error;
+                    }
+                    // Parse new data and update the graph with redraw function
+                    var newData = This.partitioner(data.cities[This.options.city]);
+                    // Generate and tween between old and new arcs. Has to return as a function to animate with transition time.
+                    This.d3.path
+                        .data(newData)
+                        .transition()
+                        .duration(This.options.tweenTime)
+                        .attrTween('d', function (newArc) {
+                            // Function to redraw and animate the graph to reflect new data
+                            var interpolate = d3.interpolate(this.currentArc, newArc);
+                            // Update current path data for the next interpolations
+                            this.currentArc = interpolate(0);
+                            return function (time) {
+                                return This.d3.arc(interpolate(time));
+                            };
+                        });
+                    // Update the labels accordingly 
+                    This.labels.city()
+                        .languages()
+                        .distribution();
+                });
+            },
         };
         // Exporting the DevDev object to window scope
         window.DevDev = DevDev;
@@ -323,8 +358,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     // Sample Map
     // var sampleMap = new DevDev.Map();
     // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
-    var samplePiGraph = new DevDev.Pi({
-        city: $('.pi input:checked')[0].value,
+    var samplePiGraph = window.samplePiGraph = new DevDev.Pi({
+        city: $('.pi input:checked').val(),
         thickness: 45,
     });
     // Example of binding the graph to a change event.
