@@ -226,6 +226,18 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('dy', function () {
                         return -this.scrollHeight * 0.75;
                     });
+                // Create an object to hold temporary interpolation data.
+                This.d3.interp = {};
+                // Functions to determine X and Y positions of the label. They're pinned near the center of the arc.
+                // Computer circles goes clockwise from 12 oclock position unlike the unit circle.
+                // Switch the normal sin(0) and cos(0) for calculations. 
+                // They extend slightly beyond the radius (1.1x seems to be good.)
+                function dx(midpoint) {
+                    return This.radius * 1.1 * Math.sin(midpoint * Math.PI / 180);
+                }
+                function dy(midpoint) {
+                    return This.radius * -1.1 * Math.cos(midpoint * Math.PI / 180);
+                }
                 // Returns an object packed with functions that control the labeling of the graph;
                 return {
                     // City name
@@ -246,24 +258,18 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     },
                     // Add language text labels
                     languages: function () {
-                        var oldData = This.d3.interp || {};
+                        var oldData = This.d3.interp.languages || {};
                         var newData = {};
                         if (This.d3.labels.languages) {
                             This.d3.labels.languages.remove();
                         }
-                        This.d3.labels.languages = This.d3.labels.selectAll('text.language')
+                        var languages = This.d3.labels.languages = This.d3.labels.selectAll('text.language')
                             .data(This.filteredData)
                             .enter()
                             .append('text')
                             .each(function (arc) {
                                 var d3select = d3.select(this);
                                 var languageName = arc.data.language;
-                                // X and Y positions of the label. They're pinned near the center of the arc.
-                                // Computer circles goes clockwise from 12 oclock position unlike the unit circle.
-                                // Switch the normal sin(0) and cos(0) for calculations. 
-                                // They extend slightly beyond the radius (1.1x seems to be good.)
-                                var dx = This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
-                                var dy = This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
                                 // Align the labels with regards to their position on the circle. 
                                 if (arc.midpoint > 20 && arc.midpoint < 160) {
                                     // From 20 to 160 degrees (3/2pi to 1/2pi on unit circle)
@@ -279,34 +285,29 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                                 // Add color coding class.
                                 d3select.attr('class', 'language ' + languageName)
                                     .text(languageName)
-                                // Apply dx and dy
                                     .transition()
                                     .duration(This.options.tweenTime)
                                     .tween('position', function () {
-                                        if(!oldData[languageName]){
-                                            oldData[languageName] = {};
-                                        } 
                                         // Function to redraw and animate the graph to reflect new data
-                                        var oldX = oldData[languageName].dx || dx;
-                                        var oldY = oldData[languageName].dy || dy;
-                                        var interpX = d3.interpolate(oldX, dx);
-                                        var interpY = d3.interpolate(oldY, dy);
+                                        var oldMidpoint = oldData[languageName] ? oldData[languageName].midpoint : arc.midpoint;
+                                        var interp = d3.interpolate(oldMidpoint, arc.midpoint);
                                         // Update current path data for the next interpolations
                                         newData[languageName] = {};
-                                        newData[languageName].dx = dx;
-                                        newData[languageName].dy = dy;
-                                        log(arc);
+                                        newData[languageName].midpoint = arc.midpoint;
                                         return function (time) {
-                                            d3select.attr('dx', interpX(time));
-                                            d3select.attr('dy', interpY(time));
+                                            // Apply dx and dy
+                                            d3select.attr('dx', dx(interp(time)));
+                                            d3select.attr('dy', dy(interp(time)));
                                         };
                                     });
                             });
-                        This.d3.interp = newData;
-                        return This.d3.labels.languages;
+                        This.d3.interp.languages = newData;
+                        return languages;
                     },
                     // Add language distribution value labels
-                    distribution: function (oldData) {
+                    distribution: function () {
+                        var oldData = This.d3.interp.distribution || {};
+                        var newData = {};
                         if (This.d3.labels.distribution) {
                             This.d3.labels.distribution.remove();
                         }
@@ -316,26 +317,43 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                             .append('text')
                             .attr('class', 'distribution')
                             .each(function (arc) {
-                                var d3Element = d3.select(this);
+                                var d3select = d3.select(this);
+                                var languageName = arc.data.language;
+                                var xOffset, yOffset;
                                 // Basically the same as the language label with minor shifts. 
-                                var dx = This.radius * 1.1 * Math.sin(arc.midpoint * Math.PI / 180);
-                                var dy = This.radius * -1.1 * Math.cos(arc.midpoint * Math.PI / 180);
                                 if (arc.midpoint > 20 && arc.midpoint < 160) {
-                                    d3Element.attr('text-anchor', 'begining')
-                                        .attr('dx', dx + 10)
-                                        .attr('dy', dy + 20);
+                                    d3select.attr('text-anchor', 'begining');
+                                    xOffset = 10;
+                                    yOffset = 20;
                                 } else if (arc.midpoint > 200 && arc.midpoint < 340) {
-                                    d3Element.attr('text-anchor', 'end')
-                                        .attr('dx', dx - 10)
-                                        .attr('dy', dy + 20);
+                                    d3select.attr('text-anchor', 'end');
+                                    xOffset = -10;
+                                    yOffset = 20;
                                 } else {
-                                    d3Element.attr('text-anchor', 'middle')
-                                        .attr('dx', dx)
-                                        .attr('dy', dy + 15);
+                                    d3select.attr('text-anchor', 'middle');
+                                    xOffset = 0;
+                                    yOffset = 15;
                                 }
                                 // Value for each language convert to human percentage.
-                                d3Element.text(arc.value * 100 + '%');
+                                d3select.text(arc.value * 100 + '%');
+                                // Animating the change in position
+                                d3select.transition()
+                                    .duration(This.options.tweenTime)
+                                    .tween('position', function () {
+                                        // Function to redraw and animate the graph to reflect new data
+                                        var oldMidpoint = oldData[languageName] ? oldData[languageName].midpoint : arc.midpoint;
+                                        var interp = d3.interpolate(oldMidpoint, arc.midpoint);
+                                        // Update current path data for the next interpolations
+                                        newData[languageName] = {};
+                                        newData[languageName].midpoint = arc.midpoint;
+                                        return function (time) {
+                                            // Apply dx and dy
+                                            d3select.attr('dx', dx(interp(time)) + xOffset);
+                                            d3select.attr('dy', dy(interp(time)) + yOffset);
+                                        };
+                                    });
                             });
+                        This.d3.interp.distribution = newData;
                         return this;
                     }
                 };
