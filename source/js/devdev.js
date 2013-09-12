@@ -148,7 +148,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     throw error;
                 }
                 // Parse incoming JSON data and call init function
-                var parsedJSON = This.partitioner(data.cities[This.options.city]);
+                This.partitioner(data.cities[This.options.city]);
                 This.init();
             });
         };
@@ -241,7 +241,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Returns an object packed with functions that control the labeling of the graph;
                 return {
                     // City name
-                    city: function (oldData) {
+                    city: function () {
                         This.d3.labels.city = This.d3.labels.city ||
                             This.d3.labels.append('text')
                             .attr('class', 'city')
@@ -360,10 +360,6 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             },
             changeCity: function (city) {
                 var This = this;
-                var oldData = {
-                    city: This.options.city,
-                    filteredData: This.filteredData
-                };
                 This.options.city = city;
                 // XHR for new data.
                 d3.json('/assets/sampledata.json', function (error, data) {
@@ -387,9 +383,63 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                             };
                         });
                     // Update the labels accordingly 
-                    This.labels.city(oldData);
-                    This.labels.languages(oldData);
-                    This.labels.distribution(oldData);
+                    This.labels.city();
+                    This.labels.languages();
+                    This.labels.distribution();
+                });
+            },
+        };
+        // Line graph constructor
+        var Line = DevDev.Line = function (object) {
+            var This = this;
+            // Object that hold basic arguments and their defaults
+            This.options = {
+                city: object.city.toLowerCase() || 'minneapolis',
+                tweenTime: object.tweenTime || 1000,
+                element: object.element || '.line',
+            };
+            This.width = $(This.options.element).width();
+            This.height = This.width * 0.5;
+            // Collection of D3 specific helper methods
+            This.d3 = {
+                // SVG-maker
+                svg: d3.select(This.options.element)
+                    .append('svg')
+                    .attr('width', This.width)
+                    .attr('height', This.height)
+            };
+            // Request data from the server and initialize the line graph
+            d3.json('/assets/sampledata.json', function (error, data) {
+                if (error) {
+                    throw error;
+                }
+                // Parse incoming JSON data and call init function
+                var parsedJSON = This.partitioner(data.cities[This.options.city]);
+                This.init();
+            });
+        };
+        Line.prototype = {
+            init: function () {
+                var This = this;
+                // Main group for the line graph
+                This.d3.graph = This.d3.svg.append('g')
+                    .attr('class', 'graph')
+                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
+                // Make the labels
+                return This;
+            },
+            changeCity: function (city) {
+                var This = this;
+                var oldData = {
+                    city: This.options.city,
+                    filteredData: This.filteredData
+                };
+                This.options.city = city;
+                // XHR for new data.
+                d3.json('/assets/sampledata.json', function (error, data) {
+                    if (error) {
+                        throw error;
+                    }
                 });
             },
         };
@@ -397,7 +447,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         window.DevDev = DevDev;
     }).call(this, document, jQuery, d3, topojson);
     // Sample Map
-    // var sampleMap = new DevDev.Map();
+    var sampleMap = new DevDev.Map();
     // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
     var samplePiGraph = window.samplePiGraph = new DevDev.Pi({
         city: $('.pi input:checked').val(),
