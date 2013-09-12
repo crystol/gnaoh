@@ -153,6 +153,35 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             });
         };
         Pi.prototype = {
+            init: function () {
+                var This = this;
+                // Main group for the pie graph
+                This.d3.graph = This.d3.svg.append('g')
+                    .attr('class', 'graph')
+                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
+                // Adds a path element for each language.
+                This.d3.path = This.d3.graph
+                    .selectAll('path')
+                // Append data that was previously created with Pi.partitioner()
+                    .data(This.partitions)
+                    .enter()
+                    .append('path')
+                // Draw path for each pi section using the d3's arc function
+                    .attr('d', This.d3.arc)
+                // Adds the language as a class respectively. This enables css color coding.
+                    .attr('class', function (arc) {
+                        return arc.data.language;
+                    })
+                // Stores current path value in 'current'. Used to interpolate with new data.
+                    .each(function (arc) {
+                        this.currentArc = arc;
+                    });
+                // Make the labels
+                This.labels = This.createLabels().city();
+                This.labels.languages();
+                This.labels.distribution();
+                return This;
+            },
             // Parses data into an array format that's D3-friendly and adds helpers for calculations.
             partitioner: function (data) {
                 var This = this;
@@ -178,36 +207,6 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 });
                 return partitions;
             },
-            init: function () {
-                var This = this;
-                // Main group for the pie graph
-                This.d3.graph = This.d3.svg.append('g')
-                    .attr('class', 'graph')
-                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
-                // Adds a path element for each language.
-                This.d3.path = This.d3.graph
-                    .selectAll('path')
-                // Append data that was previously created with Pi.partitioner()
-                    .data(This.partitions)
-                    .enter()
-                    .append('path')
-                // Draw path for each pi section using the d3's arc function
-                    .attr('d', This.d3.arc)
-                // Adds the language as a class respectively. This enables css color coding.
-                    .attr('class', function (arc) {
-                        return arc.data.language;
-                    })
-                // Stores current path value in 'current'. Used to interpolate with new data.
-                    .each(function (arc) {
-                        this.currentArc = arc;
-                    });
-                // Make the labels
-                This.labels = This.createLabels()
-                    .city()
-                    .languages()
-                    .distribution();
-                return This;
-            },
             // Add text labels (language, value, etc) to the chart
             createLabels: function () {
                 var This = this;
@@ -230,23 +229,25 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Returns an object packed with functions that control the labeling of the graph;
                 return {
                     // City name
-                    city: function (city) {
-                        city = city || This.options.city;
-                        if (This.d3.labels.city) {
-                            This.d3.labels.city.remove();
-                        }
-                        This.d3.labels.city = This.d3.labels
-                            .append('text')
-                            .text(city)
+                    city: function (oldData) {
+                        This.d3.labels.city = This.d3.labels.city ||
+                            This.d3.labels.append('text')
                             .attr('class', 'city')
                         // Offset its x position by half its length
                             .attr('dx', function () {
                                 return -this.scrollWidth / 2;
                             });
+                        This.d3.labels.city
+                            .text(This.options.city)
+                            .attr('dx', function () {
+                                return -this.scrollWidth / 2;
+                            });
                         return this;
                     },
+                    // Add language text labels
                     languages: function () {
-                        // Add language text labels
+                        var oldData = This.d3.interp || {};
+                        var newData = {};
                         if (This.d3.labels.languages) {
                             This.d3.labels.languages.remove();
                         }
@@ -256,6 +257,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                             .append('text')
                             .each(function (arc) {
                                 var d3select = d3.select(this);
+                                var languageName = arc.data.language;
                                 // X and Y positions of the label. They're pinned near the center of the arc.
                                 // Computer circles goes clockwise from 12 oclock position unlike the unit circle.
                                 // Switch the normal sin(0) and cos(0) for calculations. 
@@ -266,28 +268,45 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                                 if (arc.midpoint > 20 && arc.midpoint < 160) {
                                     // From 20 to 160 degrees (3/2pi to 1/2pi on unit circle)
                                     // Determines where the text label will anchor [beginning, middle, end]
-                                    d3select.attr('text-anchor', 'begining')
-                                    // Apply dx and dy
-                                        .attr('dx', dx)
-                                        .attr('dy', dy);
+                                    d3select.attr('text-anchor', 'begining');
                                     // From 200 to 340 degrees (1/2pi to 3/2pi on unit circle)
                                 } else if (arc.midpoint > 200 && arc.midpoint < 340) {
-                                    d3select.attr('text-anchor', 'end')
-                                        .attr('dx', dx)
-                                        .attr('dy', dy);
+                                    d3select.attr('text-anchor', 'end');
                                     // Near areas where tangent is 0 or undefined)
                                 } else {
-                                    d3select.attr('text-anchor', 'middle')
-                                        .attr('dx', dx)
-                                        .attr('dy', dy);
+                                    d3select.attr('text-anchor', 'middle');
                                 }
-                                d3select.attr('class', 'language ' + arc.data.language)
-                                    .text(arc.data.language);
+                                // Add color coding class.
+                                d3select.attr('class', 'language ' + languageName)
+                                    .text(languageName)
+                                // Apply dx and dy
+                                    .transition()
+                                    .duration(This.options.tweenTime)
+                                    .tween('position', function () {
+                                        if(!oldData[languageName]){
+                                            oldData[languageName] = {};
+                                        } 
+                                        // Function to redraw and animate the graph to reflect new data
+                                        var oldX = oldData[languageName].dx || dx;
+                                        var oldY = oldData[languageName].dy || dy;
+                                        var interpX = d3.interpolate(oldX, dx);
+                                        var interpY = d3.interpolate(oldY, dy);
+                                        // Update current path data for the next interpolations
+                                        newData[languageName] = {};
+                                        newData[languageName].dx = dx;
+                                        newData[languageName].dy = dy;
+                                        log(arc);
+                                        return function (time) {
+                                            d3select.attr('dx', interpX(time));
+                                            d3select.attr('dy', interpY(time));
+                                        };
+                                    });
                             });
-                        return this;
+                        This.d3.interp = newData;
+                        return This.d3.labels.languages;
                     },
                     // Add language distribution value labels
-                    distribution: function () {
+                    distribution: function (oldData) {
                         if (This.d3.labels.distribution) {
                             This.d3.labels.distribution.remove();
                         }
@@ -323,6 +342,10 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             },
             changeCity: function (city) {
                 var This = this;
+                var oldData = {
+                    city: This.options.city,
+                    filteredData: This.filteredData
+                };
                 This.options.city = city;
                 // XHR for new data.
                 d3.json('/assets/sampledata.json', function (error, data) {
@@ -330,7 +353,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                         throw error;
                     }
                     // Parse new data and update the graph with redraw function
-                    var newData = This.partitioner(data.cities[This.options.city]);
+                    var newData = This.partitioner(data.cities[city]);
                     // Generate and tween between old and new arcs. Has to return as a function to animate with transition time.
                     This.d3.path
                         .data(newData)
@@ -338,17 +361,17 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                         .duration(This.options.tweenTime)
                         .attrTween('d', function (newArc) {
                             // Function to redraw and animate the graph to reflect new data
-                            var interpolate = d3.interpolate(this.currentArc, newArc);
+                            var interp = d3.interpolate(this.currentArc, newArc);
                             // Update current path data for the next interpolations
-                            this.currentArc = interpolate(0);
+                            this.currentArc = interp(0);
                             return function (time) {
-                                return This.d3.arc(interpolate(time));
+                                return This.d3.arc(interp(time));
                             };
                         });
                     // Update the labels accordingly 
-                    This.labels.city()
-                        .languages()
-                        .distribution();
+                    This.labels.city(oldData);
+                    This.labels.languages(oldData);
+                    This.labels.distribution(oldData);
                 });
             },
         };
