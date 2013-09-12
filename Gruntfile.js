@@ -82,7 +82,8 @@ module.exports = function () {
                     'define': true,
                     "d3": true,
                     "topojson": true,
-                    "gnaoh": true
+                    "gnaoh": true,
+                    "DevDev": true
                 },
                 force: true
             },

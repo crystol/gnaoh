@@ -406,7 +406,12 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 svg: d3.select(This.options.element)
                     .append('svg')
                     .attr('width', This.width)
-                    .attr('height', This.height)
+                    .attr('height', This.height),
+                // Data scales
+                scale: {
+                    x: d3.scale.linear().range([0, This.width]),
+                    y: d3.scale.linear().range([0, This.height])
+                }
             };
             // Request data from the server and initialize the line graph
             d3.json('/assets/sampledata.json', function (error, data) {
@@ -414,7 +419,6 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     throw error;
                 }
                 // Parse incoming JSON data and call init function
-                var parsedJSON = This.partitioner(data.cities[This.options.city]);
                 This.init();
             });
         };
@@ -425,7 +429,37 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.d3.graph = This.d3.svg.append('g')
                     .attr('class', 'graph')
                     .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
-                // Make the labels
+                // Create the data axis
+                This.d3.axis = {
+                    x: d3.svg.axis()
+                        .scale(This.d3.scale.x)
+                        .orient('bottom'),
+                    y: d3.svg.axis()
+                        .scale(This.d3.scale.y)
+                        .orient('right'),
+                };
+                // Create the line graph
+                This.d3.line = d3.svg.line()
+                    .x(function (data) {
+                        return This.d3.scale.x(data.x);
+                    })
+                    .y(function (d) {
+                        return This.d3.scale.y(data.y);
+                    });
+                // Draw the graph
+                This.d3.graph.append('g')
+                    .attr('class', 'x-axis')
+                    .attr('transform', 'translate(' + This.width * -0.1 + ',' + This.height * 0.4 + ')')
+                    .call(This.d3.scale.x)
+                    .append('text')
+                    .text('Years of Experience');
+                This.d3.graph.append('g')
+                    .attr('class', 'y-axis')
+                    .call(This.d3.scale.y)
+                    .append('text')
+                    .attr('transform', 'translate(' + This.width * -0.45 + ',' + This.height * 0 + '), rotate(-90)')
+                    .text('Average salary');
+
                 return This;
             },
             changeCity: function (city) {
@@ -447,7 +481,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         window.DevDev = DevDev;
     }).call(this, document, jQuery, d3, topojson);
     // Sample Map
-    var sampleMap = new DevDev.Map();
+    // var sampleMap = new DevDev.Map();
     // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
     var samplePiGraph = window.samplePiGraph = new DevDev.Pi({
         city: $('.pi input:checked').val(),
@@ -456,5 +490,13 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     // Example of binding the graph to a change event.
     $('.pi input').on('change', function () {
         samplePiGraph.changeCity(this.value);
+    });
+    // Sample line graph. Call the constructor with 'new DevDev.Line({arguments})'
+    var sampleLineGraph = window.sampleLineGraph = new DevDev.Line({
+        city: $('.line input:checked').val(),
+    });
+    // Binding the graph to a change event.
+    $('.line input').on('change', function () {
+        sampleLineGraph.changeCity(this.value);
     });
 });
