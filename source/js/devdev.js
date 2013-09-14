@@ -1,14 +1,14 @@
-require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
+require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function() {
     gnaoh.requireCss('devdev.css');
-    var log = window.log = function (args) {
+    var log = window.log = function(args) {
         window.console.log(args);
     };
-    (function (doc, $, d3) {
+    (function(doc, $, d3) {
         'use strict';
         var window = this;
         var DevDev = window.DevDev || {};
         // Constructor function for the maps.
-        var Map = DevDev.Map = function () {
+        var Map = DevDev.Map = function() {
             var This = this;
             // Define with of the map as the size of the container
             this.width = $('.map')
@@ -16,7 +16,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             this.height = this.width * 0.75;
             this.centered = undefined;
             // Query server for json data and initialize the map
-            d3.json('/assets/sampledata.json', function (error, data) {
+            d3.json('/assets/sampledata.json', function(error, data) {
                 if (error) {
                     throw error;
                 }
@@ -25,7 +25,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         };
         Map.prototype = {
             // Define the d3 projection for the map.
-            init: function (json) {
+            init: function(json) {
                 // Referencing the instance in order to be able to pass it to other callbacks
                 var This = this;
                 This.data = json;
@@ -40,20 +40,21 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('height', This.height);
                 This.states = This.svg.append('g');
                 // Grab the JSON files with vectors of the US
-                d3.json('/assets/Murica.json', function (data) {
+                d3.json('/assets/Murica.json', function(data) {
                     This.states.append('g')
                         .attr('class', 'states')
                         .selectAll('path')
-                        .data(topojson.feature(data, data.objects.state).features)
+                        .data(topojson.feature(data, data.objects.state)
+                        .features)
                         .enter()
                         .append('path')
                     // Marks the ID of each path as the state abbreviation
-                        .attr('id', function (obj) {
-                            return obj.properties.STUSPS10;
-                        })
-                        .on('click', function (data) {
-                            This.click.call(this, data, This);
-                        })
+                    .attr('id', function(obj) {
+                        return obj.properties.STUSPS10;
+                    })
+                        .on('click', function(data) {
+                        This.click.call(this, data, This);
+                    })
                         .attr('d', This.path);
                     // Calls colorize when the map has been initialized.
                     This.colorize();
@@ -61,7 +62,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 return This;
             },
             // Event listener for clicks
-            click: function (data, This) {
+            click: function(data, This) {
                 var x;
                 var y;
                 var k;
@@ -79,9 +80,9 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 }
                 // Centering on the map.
                 This.states.selectAll('path')
-                    .classed('active', This.centered && function (data) {
-                        return data === This.centered;
-                    });
+                    .classed('active', This.centered && function(data) {
+                    return data === This.centered;
+                });
                 // Transitions for zooming in
                 This.states.transition()
                     .duration(400)
@@ -89,7 +90,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .style('stroke-width', 1 / k + 'px');
             },
             // Color code states depending on which language is most popular.
-            colorize: function () {
+            colorize: function() {
                 // Loops through the JSON object and uses the key value for state and language.
                 for (var state in this.data) {
                     var language = this.data[state]['dominant language'];
@@ -99,7 +100,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             }
         };
         // Pi chart constructor
-        var Pi = DevDev.Pi = function (object) {
+        var Pi = DevDev.Pi = function(object) {
             // Cache 'this' to pass into callbacks.
             var This = this;
             // Object that hold basic arguments and their defaults
@@ -112,7 +113,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Thickness of the pi
                 thickness: object.thickness || '30',
             };
-            This.width = $(This.options.element).width();
+            This.width = $(This.options.element)
+                .width();
             This.height = This.width * 0.5;
             This.radius = Math.min(This.width, This.height) * 0.4;
             // Collection of D3 specific methods
@@ -120,21 +122,21 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Helper functions from the D3 library
                 // Pie graph layout engine
                 pie: d3.layout.pie()
-                    .value(function (data) {
-                        return data.share;
-                    })
+                    .value(function(data) {
+                    return data.share;
+                })
                     .sort(null),
                 // Arc construction function.
                 arc: d3.svg.arc()
-                    .startAngle(function (data) {
-                        return data.startAngle;
-                    })
-                    .endAngle(function (data) {
-                        return data.endAngle;
-                    })
+                    .startAngle(function(data) {
+                    return data.startAngle;
+                })
+                    .endAngle(function(data) {
+                    return data.endAngle;
+                })
                 // Radii of the chart. OuterRadius determines oversize of the graph (default is determined by This.radius)
                 // Inner radius determines whitespace of the chart. Set inner to 0 for no whitespace.
-                    .innerRadius(This.radius - This.options.thickness)
+                .innerRadius(This.radius - This.options.thickness)
                     .outerRadius(This.radius),
                 // Groups within the SVG
                 svg: d3.select(This.options.element)
@@ -143,7 +145,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('height', This.height)
             };
             // Request data from the server and draw the pi chart
-            d3.json('/assets/sampledata.json', function (error, data) {
+            d3.json('/assets/sampledata.json', function(error, data) {
                 if (error) {
                     throw error;
                 }
@@ -153,42 +155,42 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             });
         };
         Pi.prototype = {
-            init: function () {
+            init: function() {
                 var This = this;
                 // Main group for the pie graph
                 This.d3.graph = This.d3.svg.append('g')
                     .attr('class', 'graph')
                     .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
                 // Adds a path element for each language.
-                This.d3.path = This.d3.graph
-                    .selectAll('path')
+                This.d3.path = This.d3.graph.selectAll('path')
                 // Append data that was previously created with Pi.partitioner()
-                    .data(This.partitions)
+                .data(This.partitions)
                     .enter()
                     .append('path')
                 // Draw path for each pi section using the d3's arc function
-                    .attr('d', This.d3.arc)
+                .attr('d', This.d3.arc)
                 // Adds the language as a class respectively. This enables css color coding.
-                    .attr('class', function (arc) {
-                        return arc.data.language;
-                    })
+                .attr('class', function(arc) {
+                    return arc.data.language;
+                })
                 // Stores current path value in 'current'. Used to interpolate with new data.
-                    .each(function (arc) {
-                        this.currentArc = arc;
-                    });
+                .each(function(arc) {
+                    this.currentArc = arc;
+                });
                 // Make the labels
-                This.labels = This.createLabels().city();
+                This.labels = This.createLabels()
+                    .city();
                 This.labels.languages();
                 This.labels.distribution();
                 return This;
             },
             // Parses data into an array format that's D3-friendly and adds helpers for calculations.
-            partitioner: function (data) {
+            partitioner: function(data) {
                 var This = this;
                 // Array of languages in the API's library. Add to this array when adding new languages.
                 var languagesLibrary = ['cpp', 'dotnet', 'java', 'javascript', 'ruby'];
                 // Maps and returns a data array suitable for D3.
-                var parsedData = languagesLibrary.map(function (language) {
+                var parsedData = languagesLibrary.map(function(language) {
                     return {
                         language: language,
                         // Append share data as a pi-partitiion if it exists. Normalizes to 0 if not.
@@ -198,34 +200,33 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Divide the pi into their respective portions and prototypically bind to the Pi constructor
                 var partitions = This.partitions = This.d3.pie(parsedData);
                 // Filter objects from the array that are null. This is useful for handling text labels and values.
-                This.filteredData = partitions.filter(function (data) {
+                This.filteredData = partitions.filter(function(data) {
                     return data.value > 0 ? data : null;
                 });
                 // Adding a midpoint value in degrees of the arc to aid calculations
-                This.filteredData.forEach(function (element) {
+                This.filteredData.forEach(function(element) {
                     element.midpoint = (element.startAngle + element.endAngle) / 2 * 180 / Math.PI;
                 });
                 return partitions;
             },
             // Add text labels (language, value, etc) to the chart
-            createLabels: function () {
+            createLabels: function() {
                 var This = this;
                 // Add a label super-group and append the brand if uninitialized
                 This.d3.labels = This.d3.svg.append('g')
                     .attr('class', 'labels')
                     .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
                 // /dev/deviation brand
-                This.d3.labels.name = This.d3.labels
-                    .append('text')
+                This.d3.labels.name = This.d3.labels.append('text')
                     .text('/dev/deviation')
                     .attr('class', 'title')
                 // Offset its x position by half its length
-                    .attr('dx', function () {
-                        return -this.scrollWidth * 0.5;
-                    })
-                    .attr('dy', function () {
-                        return -this.scrollHeight * 0.75;
-                    });
+                .attr('dx', function() {
+                    return -this.scrollWidth * 0.5;
+                })
+                    .attr('dy', function() {
+                    return -this.scrollHeight * 0.75;
+                });
                 // Create an object to hold temporary interpolation data.
                 This.d3.interp = {};
                 // Functions to determine X and Y positions of the label. They're pinned near the center of the arc.
@@ -235,29 +236,28 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 function dx(midpoint) {
                     return This.radius * 1.1 * Math.sin(midpoint * Math.PI / 180);
                 }
+
                 function dy(midpoint) {
                     return This.radius * -1.1 * Math.cos(midpoint * Math.PI / 180);
                 }
                 // Returns an object packed with functions that control the labeling of the graph;
                 return {
                     // City name
-                    city: function () {
-                        This.d3.labels.city = This.d3.labels.city ||
-                            This.d3.labels.append('text')
+                    city: function() {
+                        This.d3.labels.city = This.d3.labels.city || This.d3.labels.append('text')
                             .attr('class', 'city')
                         // Offset its x position by half its length
-                            .attr('dx', function () {
-                                return -this.scrollWidth / 2;
-                            });
-                        This.d3.labels.city
-                            .text(This.options.city)
-                            .attr('dx', function () {
-                                return -this.scrollWidth / 2;
-                            });
+                        .attr('dx', function() {
+                            return -this.scrollWidth / 2;
+                        });
+                        This.d3.labels.city.text(This.options.city)
+                            .attr('dx', function() {
+                            return -this.scrollWidth / 2;
+                        });
                         return this;
                     },
                     // Add language text labels
-                    languages: function () {
+                    languages: function() {
                         var oldData = This.d3.interp.languages || {};
                         var newData = {};
                         if (This.d3.labels.languages) {
@@ -267,45 +267,45 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                             .data(This.filteredData)
                             .enter()
                             .append('text')
-                            .each(function (arc) {
-                                var d3select = d3.select(this);
-                                var languageName = arc.data.language;
-                                // Align the labels with regards to their position on the circle. 
-                                if (arc.midpoint > 20 && arc.midpoint < 160) {
-                                    // From 20 to 160 degrees (3/2pi to 1/2pi on unit circle)
-                                    // Determines where the text label will anchor [beginning, middle, end]
-                                    d3select.attr('text-anchor', 'begining');
-                                    // From 200 to 340 degrees (1/2pi to 3/2pi on unit circle)
-                                } else if (arc.midpoint > 200 && arc.midpoint < 340) {
-                                    d3select.attr('text-anchor', 'end');
-                                    // Near areas where tangent is 0 or undefined)
-                                } else {
-                                    d3select.attr('text-anchor', 'middle');
-                                }
-                                // Add color coding class.
-                                d3select.attr('class', 'language ' + languageName)
-                                    .text(languageName)
-                                    .transition()
-                                    .duration(This.options.tweenTime)
-                                    .tween('position', function () {
-                                        // Function to redraw and animate the graph to reflect new data
-                                        var oldMidpoint = oldData[languageName] ? oldData[languageName].midpoint : arc.midpoint;
-                                        var interp = d3.interpolate(oldMidpoint, arc.midpoint);
-                                        // Update current path data for the next interpolations
-                                        newData[languageName] = {};
-                                        newData[languageName].midpoint = arc.midpoint;
-                                        return function (time) {
-                                            // Apply dx and dy
-                                            d3select.attr('dx', dx(interp(time)));
-                                            d3select.attr('dy', dy(interp(time)));
-                                        };
-                                    });
+                            .each(function(arc) {
+                            var d3select = d3.select(this);
+                            var languageName = arc.data.language;
+                            // Align the labels with regards to their position on the circle. 
+                            if (arc.midpoint > 20 && arc.midpoint < 160) {
+                                // From 20 to 160 degrees (3/2pi to 1/2pi on unit circle)
+                                // Determines where the text label will anchor [beginning, middle, end]
+                                d3select.attr('text-anchor', 'begining');
+                                // From 200 to 340 degrees (1/2pi to 3/2pi on unit circle)
+                            } else if (arc.midpoint > 200 && arc.midpoint < 340) {
+                                d3select.attr('text-anchor', 'end');
+                                // Near areas where tangent is 0 or undefined)
+                            } else {
+                                d3select.attr('text-anchor', 'middle');
+                            }
+                            // Add color coding class.
+                            d3select.attr('class', 'language ' + languageName)
+                                .text(languageName)
+                                .transition()
+                                .duration(This.options.tweenTime)
+                                .tween('position', function() {
+                                // Function to redraw and animate the graph to reflect new data
+                                var oldMidpoint = oldData[languageName] ? oldData[languageName].midpoint : arc.midpoint;
+                                var interp = d3.interpolate(oldMidpoint, arc.midpoint);
+                                // Update current path data for the next interpolations
+                                newData[languageName] = {};
+                                newData[languageName].midpoint = arc.midpoint;
+                                return function(time) {
+                                    // Apply dx and dy
+                                    d3select.attr('dx', dx(interp(time)));
+                                    d3select.attr('dy', dy(interp(time)));
+                                };
                             });
+                        });
                         This.d3.interp.languages = newData;
                         return languages;
                     },
                     // Add language distribution value labels
-                    distribution: function () {
+                    distribution: function() {
                         var oldData = This.d3.interp.distribution || {};
                         var newData = {};
                         if (This.d3.labels.distribution) {
@@ -316,72 +316,71 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                             .enter()
                             .append('text')
                             .attr('class', 'distribution')
-                            .each(function (arc) {
-                                var d3select = d3.select(this);
-                                var languageName = arc.data.language;
-                                var xOffset, yOffset;
-                                // Basically the same as the language label with minor shifts. 
-                                if (arc.midpoint > 20 && arc.midpoint < 160) {
-                                    d3select.attr('text-anchor', 'begining');
-                                    xOffset = 10;
-                                    yOffset = 20;
-                                } else if (arc.midpoint > 200 && arc.midpoint < 340) {
-                                    d3select.attr('text-anchor', 'end');
-                                    xOffset = -10;
-                                    yOffset = 20;
-                                } else {
-                                    d3select.attr('text-anchor', 'middle');
-                                    xOffset = 0;
-                                    yOffset = 15;
-                                }
-                                // Value for each language convert to human percentage.
-                                d3select.text(arc.value * 100 + '%');
-                                // Animating the change in position
-                                d3select.transition()
-                                    .duration(This.options.tweenTime)
-                                    .tween('position', function () {
-                                        // Function to redraw and animate the graph to reflect new data
-                                        var oldMidpoint = oldData[languageName] ? oldData[languageName].midpoint : arc.midpoint;
-                                        var interp = d3.interpolate(oldMidpoint, arc.midpoint);
-                                        // Update current path data for the next interpolations
-                                        newData[languageName] = {};
-                                        newData[languageName].midpoint = arc.midpoint;
-                                        return function (time) {
-                                            // Apply dx and dy
-                                            d3select.attr('dx', dx(interp(time)) + xOffset);
-                                            d3select.attr('dy', dy(interp(time)) + yOffset);
-                                        };
-                                    });
+                            .each(function(arc) {
+                            var d3select = d3.select(this);
+                            var languageName = arc.data.language;
+                            var xOffset, yOffset;
+                            // Basically the same as the language label with minor shifts. 
+                            if (arc.midpoint > 20 && arc.midpoint < 160) {
+                                d3select.attr('text-anchor', 'begining');
+                                xOffset = 10;
+                                yOffset = 20;
+                            } else if (arc.midpoint > 200 && arc.midpoint < 340) {
+                                d3select.attr('text-anchor', 'end');
+                                xOffset = -10;
+                                yOffset = 20;
+                            } else {
+                                d3select.attr('text-anchor', 'middle');
+                                xOffset = 0;
+                                yOffset = 15;
+                            }
+                            // Value for each language convert to human percentage.
+                            d3select.text(arc.value * 100 + '%');
+                            // Animating the change in position
+                            d3select.transition()
+                                .duration(This.options.tweenTime)
+                                .tween('position', function() {
+                                // Function to redraw and animate the graph to reflect new data
+                                var oldMidpoint = oldData[languageName] ? oldData[languageName].midpoint : arc.midpoint;
+                                var interp = d3.interpolate(oldMidpoint, arc.midpoint);
+                                // Update current path data for the next interpolations
+                                newData[languageName] = {};
+                                newData[languageName].midpoint = arc.midpoint;
+                                return function(time) {
+                                    // Apply dx and dy
+                                    d3select.attr('dx', dx(interp(time)) + xOffset);
+                                    d3select.attr('dy', dy(interp(time)) + yOffset);
+                                };
                             });
+                        });
                         This.d3.interp.distribution = newData;
                         return this;
                     }
                 };
             },
-            changeCity: function (city) {
+            changeCity: function(city) {
                 var This = this;
                 This.options.city = city;
                 // XHR for new data.
-                d3.json('/assets/sampledata.json', function (error, data) {
+                d3.json('/assets/sampledata.json', function(error, data) {
                     if (error) {
                         throw error;
                     }
                     // Parse new data and update the graph with redraw function
                     var newData = This.partitioner(data.cities[city]);
                     // Generate and tween between old and new arcs. Has to return as a function to animate with transition time.
-                    This.d3.path
-                        .data(newData)
+                    This.d3.path.data(newData)
                         .transition()
                         .duration(This.options.tweenTime)
-                        .attrTween('d', function (newArc) {
-                            // Function to redraw and animate the graph to reflect new data
-                            var interp = d3.interpolate(this.currentArc, newArc);
-                            // Update current path data for the next interpolations
-                            this.currentArc = interp(0);
-                            return function (time) {
-                                return This.d3.arc(interp(time));
-                            };
-                        });
+                        .attrTween('d', function(newArc) {
+                        // Function to redraw and animate the graph to reflect new data
+                        var interp = d3.interpolate(this.currentArc, newArc);
+                        // Update current path data for the next interpolations
+                        this.currentArc = interp(0);
+                        return function(time) {
+                            return This.d3.arc(interp(time));
+                        };
+                    });
                     // Update the labels accordingly 
                     This.labels.city();
                     This.labels.languages();
@@ -390,7 +389,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             },
         };
         // Line graph constructor
-        var Line = DevDev.Line = function (object) {
+        var Line = DevDev.Line = function(object) {
             var This = this;
             // Object that hold basic arguments and their defaults
             This.options = {
@@ -398,7 +397,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 tweenTime: object.tweenTime || 1000,
                 element: object.element || '.line',
             };
-            This.width = $(This.options.element).width();
+            This.width = $(This.options.element)
+                .width();
             This.height = This.width * 0.5;
             // Collection of D3 specific helper methods
             This.d3 = {
@@ -409,68 +409,106 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('height', This.height),
                 // Data scales
                 scale: {
-                    x: d3.scale.linear().range([0, This.width]),
-                    y: d3.scale.linear().range([0, This.height])
+                    x: d3.scale.linear()
+                        .range([0, This.width * 0.8]),
+                    y: d3.scale.linear()
+                        .range([This.height * 0.8, 0])
+                },
+                axis: {
+                    x: d3.svg.axis()
+                        .orient('bottom'),
+                    y: d3.svg.axis()
+                        .orient('left'),
                 }
             };
             // Request data from the server and initialize the line graph
-            d3.json('/assets/sampledata.json', function (error, data) {
+            d3.json('/assets/sampledata.json', function(error, data) {
                 if (error) {
                     throw error;
                 }
                 // Parse incoming JSON data and call init function
+                This.parser(data.cities[This.options.city]);
+                This.parsedData = [{
+                    x: 1,
+                    y: 20000
+                }, {
+                    x: 2,
+                    y: 40000
+                }, {
+                    x: 3,
+                    y: 90000
+                }];
+                This.parsedData2 = [{
+                    x: 1,
+                    y: 30000
+                }, {
+                    x: 2,
+                    y: 40000
+                }, {
+                    x: 3,
+                    y: 50000
+                }];
                 This.init();
             });
         };
         Line.prototype = {
-            init: function () {
+            init: function() {
                 var This = this;
                 // Main group for the line graph
                 This.d3.graph = This.d3.svg.append('g')
-                    .attr('class', 'graph')
-                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
-                // Create the data axis
-                This.d3.axis = {
-                    x: d3.svg.axis()
-                        .scale(This.d3.scale.x)
-                        .orient('bottom'),
-                    y: d3.svg.axis()
-                        .scale(This.d3.scale.y)
-                        .orient('right'),
-                };
+                    .attr('class', 'graph');
+                // .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
                 // Create the line graph
-                This.d3.line = d3.svg.line()
-                    .x(function (data) {
-                        return This.d3.scale.x(data.x);
-                    })
-                    .y(function (d) {
-                        return This.d3.scale.y(data.y);
-                    });
+                This.d3.area = d3.svg.area()
+                    .interpolate('monotone')
+                    .x(function(data) {
+                    return This.d3.scale.x(data.x);
+                })
+                    .y(function(data) {
+                    return This.d3.scale.y(data.y);
+                });
+                // Add the data to the line stack
+                This.d3.scale.x.domain(d3.extent(This.parsedData, function(data) {
+                    return data.x;
+                }));
+                This.d3.scale.y.domain(d3.extent(This.parsedData, function(data) {
+                    return data.y;
+                }));
+                // Create the data axis
+                This.d3.axis.x.scale(This.d3.scale.x);
+                This.d3.axis.y.scale(This.d3.scale.y);
                 // Draw the graph
                 This.d3.graph.append('g')
                     .attr('class', 'x-axis')
-                    .attr('transform', 'translate(' + This.width * -0.1 + ',' + This.height * 0.4 + ')')
-                    .call(This.d3.scale.x)
-                    .append('text')
+                    .attr('transform', 'translate(' + This.width * 0.1 + ',' + This.height * 0.9 + ')')
+                    .call(This.d3.axis.x);
+                This.d3.graph.append('text')
+                    .attr('dy', 35)
+                    .attr('transform', 'translate(' + This.width * 0.1 + ',' + This.height * 0.9 + ')')
                     .text('Years of Experience');
                 This.d3.graph.append('g')
                     .attr('class', 'y-axis')
-                    .call(This.d3.scale.y)
-                    .append('text')
-                    .attr('transform', 'translate(' + This.width * -0.45 + ',' + This.height * 0 + '), rotate(-90)')
-                    .text('Average salary');
-
+                    .attr('transform', 'translate(' + This.width * 0.1 + ',' + This.height * 0.1 + ')')
+                    .call(This.d3.axis.y);
+                This.d3.graph.append('text')
+                // .attr('dx', -This.height * 0.5)
+                // .attr('dy', -This.width * 0.05)
+                // .attr('transform', ' rotate(-90)')
+                .attr('transform', 'rotate(-90), translate(' + This.height * -0.5 + ',' + This.height * 0.1 + ')')
+                    .text('Average salary (x 1000 USD)');
+                // Append the main line path.
+                This.d3.path = This.d3.graph.append('path')
+                    .attr('class', 'line-path')
+                    .datum(This.parsedData)
+                    .attr('d', This.d3.area);
                 return This;
             },
-            changeCity: function (city) {
+            parser: function(data) {},
+            changeCity: function(city) {
                 var This = this;
-                var oldData = {
-                    city: This.options.city,
-                    filteredData: This.filteredData
-                };
                 This.options.city = city;
                 // XHR for new data.
-                d3.json('/assets/sampledata.json', function (error, data) {
+                d3.json('/assets/sampledata.json', function(error, data) {
                     if (error) {
                         throw error;
                     }
@@ -479,24 +517,29 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         };
         // Exporting the DevDev object to window scope
         window.DevDev = DevDev;
-    }).call(this, document, jQuery, d3, topojson);
+    })
+        .call(this, document, jQuery, d3, topojson);
     // Sample Map
     // var sampleMap = new DevDev.Map();
     // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
     var samplePiGraph = window.samplePiGraph = new DevDev.Pi({
-        city: $('.pi input:checked').val(),
+        city: $('.pi input:checked')
+            .val(),
         thickness: 45,
     });
     // Example of binding the graph to a change event.
-    $('.pi input').on('change', function () {
+    $('.pi input')
+        .on('change', function() {
         samplePiGraph.changeCity(this.value);
     });
     // Sample line graph. Call the constructor with 'new DevDev.Line({arguments})'
     var sampleLineGraph = window.sampleLineGraph = new DevDev.Line({
-        city: $('.line input:checked').val(),
+        city: $('.line input:checked')
+            .val(),
     });
     // Binding the graph to a change event.
-    $('.line input').on('change', function () {
+    $('.line input')
+        .on('change', function() {
         sampleLineGraph.changeCity(this.value);
     });
 });
