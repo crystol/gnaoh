@@ -5,6 +5,38 @@
 @java: #693535;
 @cpp: #57C282;
 
+.ruby   {
+    color: @ruby;
+    background: @ruby;
+    fill: @ruby;
+    stroke: @ruby;
+}
+.javascript {
+    color: @javascript;
+    background: @javascript;
+    fill: @javascript;
+    stroke: @javascript;
+}
+.dotnet {
+    color: @dotnet;
+    background: @dotnet;
+    fill: @dotnet;
+    stroke: @dotnet;
+}
+.cpp {
+    color: @cpp;
+    background: @cpp;
+    fill: @cpp;
+    stroke: @cpp;
+}
+.java {
+    color: @java;
+    background: @java;
+    fill: @java;
+    stroke: @java;
+} 
+
+
 .map {
     .background {
         fill: none;
@@ -58,6 +90,26 @@
     input {
         margin: 0.5em;
     }
+    .area {
+            fill: @javascript;
+        }
+    .x-axis, .y-axis {
+        .tick {
+            font-size: 80%;
+        }
+        .domain {
+            shape-rendering: crispEdges;
+            stroke: black;
+            stroke-width: 1px;
+            fill: none;
+        }
+    .y-axis {
+        .label {
+            transform: rotate(90);
+        }
+    }
+    }
+
 }
 .legend {
     h3 {
@@ -73,34 +125,3 @@
         vertical-align: top;
     }
 }
-.ruby   {
-    color: @ruby;
-    background: @ruby;
-    fill: @ruby;
-    stroke: @ruby;
-}
-.javascript {
-    color: @javascript;
-    background: @javascript;
-    fill: @javascript;
-    stroke: @javascript;
-}
-.dotnet {
-    color: @dotnet;
-    background: @dotnet;
-    fill: @dotnet;
-    stroke: @dotnet;
-}
-.cpp {
-    color: @cpp;
-    background: @cpp;
-    fill: @cpp;
-    stroke: @cpp;
-}
-.java {
-    color: @java;
-    background: @java;
-    fill: @java;
-    stroke: @java;
-} 
-
