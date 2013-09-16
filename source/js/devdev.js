@@ -612,10 +612,10 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 left: This.width * 0.1,
                 right: This.width * 0.1
             };
-            // Dropdown menu
-            This.dropdown = $('<select>').appendTo(This.options.element);
-            This.dropdown.on('change', function () {
-                log(this);
+            // Check boxes for language selection
+            This.selection = $('<form name="language">').appendTo(This.options.element);
+            This.selection.on('change', 'input', function () {
+                This.addLanguage(this.value);
             });
             // D3 helpers
             This.d3 = {
@@ -691,15 +691,11 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             init: function () {
                 var This = this;
                 // Add dropdown menu
-                This.dropdown.empty();
+                This.selection.empty();
                 This.parsedData.list.forEach(function (data, element) {
-                    if (element === 0) {
-                        This.dropdown
-                            .append('<option selected value="' + data + '"">' + data + '</option>');
-                    } else {
-                        This.dropdown
-                            .append('<option value="' + data + '"">' + data + '</option>');
-                    }
+                    var checked = element === 0 ? 'checked' : '';
+                    var input = '<input type="checkbox" name="language" value="' + data + '"' + checked + '>' + data;
+                    This.selection.append(input);
                 });
                 // Determine x domain anx create the axis
                 This.d3.scale.x.domain(
@@ -767,18 +763,24 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('class', 'y-axis')
                     .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')')
                     .call(This.d3.axis.y);
-                // Label the language
+                // Brand it
                 This.d3.graph.name = This.d3.graph.append('text')
-                    .text(language)
-                    .attr('class', 'name ' + language)
+                    .text('/dev/deviation')
+                    .attr('class', 'brand')
                     .attr('dx', This.margin.left * 1.5)
                     .attr('dy', function () {
                         return this.scrollHeight * 2;
                     });
                 // Append the path to the graph
-                This.d3.graph.line = This.d3.graph.append('path')
+                This.addLanguage(language);
+            },
+            addLanguage: function (language) {
+                var This = this;
+                This.d3.graph[language] = This.d3.graph.append('g');
+                This.d3.graph[language].append('path')
                     .attr('class', 'line-path ' + language)
                     .data([This.parsedData.languages[language]])
+                    .transition()
                     .attr('d', This.d3.line)
                     .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')');
             },
@@ -793,6 +795,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 //     // Parse incoming JSON data and call init function
                 //     // This.parser(data.cities[This.options.city].languages);
                 // });
+                $('.line [name="language"]').empty();
                 $('.line svg').remove();
                 return new DevDev.Line({
                     city: city
