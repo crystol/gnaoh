@@ -105,7 +105,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             var This = this;
             // Object that hold basic arguments and their defaults
             This.options = {
-                city: object.city.toLowerCase() || 'minneapolis',
+                city: object.city || 'minneapolis',
                 // Transition duration
                 tweenTime: object.tweenTime || 1000,
                 // Appends to a specific dom element--defaults to class 'pi'
@@ -387,12 +387,12 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 });
             },
         };
-        // Line graph constructor
-        var Line = DevDev.Line = function (object) {
+        // Area graph constructor
+        var Area = DevDev.Area = function (object) {
             var This = this;
             // Object that hold basic arguments and their defaults
             This.options = {
-                city: object.city.toLowerCase() || 'minneapolis',
+                city: object.city || 'minneapolis',
                 tweenTime: object.tweenTime || 1000,
                 element: object.element || '.line',
             };
@@ -436,7 +436,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.init();
             });
         };
-        Line.prototype = {
+        Area.prototype = {
             // Parsed data for each city request into a d3-friendly array-object format
             parser: function (data) {
                 // Object to be returned after data is parsed
@@ -592,11 +592,12 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 //     // This.parser(data.cities[This.options.city].languages);
                 // });
                 $('.line svg').remove();
-                return new DevDev.Line({
+                return new DevDev.Area({
                     city: city
                 });
             },
         };
+
         // Exporting the DevDev object to window scope
         window.DevDev = DevDev;
     }).call(this, document, jQuery, d3, topojson);
@@ -611,12 +612,12 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     $('.pi input').on('change', function () {
         samplePiGraph.changeCity(this.value);
     });
-    // Sample line graph. Call the constructor with 'new DevDev.Line({arguments})'
-    var sampleLineGraph = window.sampleLineGraph = new DevDev.Line({
-        city: $('.line input:checked').val(),
+    // Sample area graph. Call the constructor with 'new DevDev.Area({arguments})'
+    var sampleAreaGraph = window.sampleAreaGraph = new DevDev.Area({
+        city: $('.area input:checked').val(),
     });
     // Binding the graph to a change event.
-    $('.line input').on('change', function () {
-        sampleLineGraph.changeCity(this.value);
+    $('.area input').on('change', function () {
+        sampleAreaGraph.changeCity(this.value);
     });
 });
