@@ -5,67 +5,6 @@
 @java: #693535;
 @cpp: #57C282;
 
-.map {
-    .background {
-        fill: none;
-        pointer-events: all;    
-    }
-    .states {
-        fill: #555;
-        stroke: #fff;
-        stroke-width: 0.2px;
-        stroke-linejoin: round;
-        stroke-linecap: round;
-        .active {
-            stroke-width: 1.5px;
-        }
-    }
-}
-.pi {
-    width: auto;
-    input {
-        margin: 0.5em;
-    }
-    .graph {
-        path {
-            stroke: white;
-            stroke-width: 10px;
-        }
-    }
-    .labels {
-        .title {
-            font-size: 150%;
-        }
-        .city {
-            font-size: 125%;
-            text-transform: capitalize;
-        }
-        line {
-            // stroke: #858585;
-            stroke-width: 1px;
-        }
-        .language {
-            font-size: 120%;
-            stroke: none;
-            text-transform: capitalize;
-        }
-    }
-
-}
-.legend {
-    h3 {
-        margin: 0.5em 0;
-    }
-    .box {
-        height: 25px;
-        width: 25px;
-        display: inline-block;
-    }
-    span {
-        margin: 0 0.5em;
-        vertical-align: top;
-    }
-}
 .ruby   {
     color: @ruby;
     background: @ruby;
@@ -95,5 +34,94 @@
     background: @java;
     fill: @java;
     stroke: @java;
-}
+} 
 
+
+.map {
+    .background {
+        fill: none;
+        pointer-events: all;    
+    }
+    .states {
+        fill: #555;
+        stroke: #fff;
+        stroke-width: 0.2px;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+        .active {
+            stroke-width: 1.5px;
+        }
+    }
+}
+.pi {
+    input {
+        margin: 0.5em;
+    }
+    .graph {
+        path {
+            stroke: white;
+            stroke-width: 10px;
+        }
+    }
+    .labels {
+        .title {
+            font-size: 150%;
+        }
+        .city {
+            font-size: 125%;
+            text-transform: capitalize;
+        }
+        line {
+            // stroke: #858585;
+            stroke-width: 1px;
+        }
+        .language {
+            font-size: 120%;
+            stroke: none;
+            text-transform: capitalize;
+        }
+        .distribution {
+            font-size: 80%;
+        }
+    }
+
+}
+.line {
+    input {
+        margin: 0.5em;
+    }
+    .area {
+            // fill: @javascript;
+        }
+    .x-axis, .y-axis {
+        .tick {
+            font-size: 80%;
+        }
+        .domain {
+            shape-rendering: crispEdges;
+            stroke: black;
+            stroke-width: 1px;
+            fill: none;
+        }
+    .y-axis {
+        .label {
+            transform: rotate(90);
+        }
+    }
+    }
+
+}
+.legend {
+    h3 {
+        margin: 0.5em 0;
+    }
+    .box {
+        height: 25px;
+        width: 25px;
+        display: inline-block;
+    }
+    span {
+        margin: 0 0.5em;
+        vertical-align: top;
+    }
+}
