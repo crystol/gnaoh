@@ -396,11 +396,10 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 tweenTime: object.tweenTime || 1000,
                 element: object.element || '.line',
             };
-            This.width = $(This.options.element)
-                .width();
+            This.width = $(This.options.element).width();
             This.height = This.width * 0.5;
             // Each graph has 1/4 of the height of the main svg container
-            This.singleHeight = This.height * 0.25;
+            This.singleHeight = This.height * 0.2;
             // Collection of D3 specific helper methods
             This.d3 = {
                 // SVG-maker
@@ -442,6 +441,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             parser: function (data) {
                 // Object to be returned after data is parsed
                 var parsedLanguages = {};
+                // Tracks the count of languages
+                var languagesCount = 0;
                 // Array that holds all points of data (useful for calculating max and mins)
                 var allDataPoints = [];
                 // Loops through each available language for the specific city
@@ -462,10 +463,14 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     // Add each basket to the parsed object.
                     allDataPoints = allDataPoints.concat(basket);
                     parsedLanguages[language] = basket;
+                    languagesCount++;
                 }
-                this.allDataPoints = allDataPoints;
-                this.parsedData = parsedLanguages;
-                return parsedLanguages;
+                var parsedData = this.parsedData = {
+                    allDataPoints: allDataPoints,
+                    languages: parsedLanguages,
+                    languagesCount: languagesCount
+                };
+                return parsedData;
             },
             init: function () {
                 var This = this;
@@ -475,7 +480,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.d3.scale.x.domain(
                     [
                         0,
-                        d3.max(This.allDataPoints, function (data) {
+                        d3.max(This.parsedData.allDataPoints, function (data) {
                             return data.experience;
                         })
                     ]);
@@ -483,13 +488,13 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.d3.axis
                     .x.scale(This.d3.scale.x)
                 // Limit the ticks to the amount of year data points available
-                    .ticks(d3.max(This.allDataPoints, function (data) {
+                    .ticks(d3.max(This.parsedData.allDataPoints, function (data) {
                         return data.experience;
                     }));
                 // Y-scale is determined by the max and min of the range of salary data.           
                 This.d3.scale.y.domain(
                     [
-                        d3.max(This.allDataPoints, function (data) {
+                        d3.max(This.parsedData.allDataPoints, function (data) {
                             return data.salary;
                         }),
                         0
@@ -504,7 +509,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Draw the X-axis
                 This.d3.graph.x = This.d3.svg.append('g')
                     .attr('class', 'x-axis')
-                    .attr('transform', 'translate(' + This.width * 0.12 + ',' + This.height * 0.8 + ')')
+                    .attr('transform', 'translate(' + This.width * 0.12 + ',' + This.singleHeight * This.parsedData.languagesCount + ')')
                     .call(This.d3.axis.x);
                 // Append the label for the X-axis
                 This.d3.graph.x.append('text')
@@ -533,8 +538,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     });
                 // Append a separate graph for each language available
                 var chartCount = 0;
-                for (var language in This.parsedData) {
-                    This.drawChart(language, This.parsedData[language], chartCount);
+                for (var language in This.parsedData.languages) {
+                    This.drawChart(language, This.parsedData.languages[language], chartCount);
                     chartCount++;
                 }
                 return This;
