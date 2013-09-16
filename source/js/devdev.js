@@ -438,9 +438,37 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             });
         };
         Line.prototype = {
+            // Parsed data for each city request into a d3-friendly array-object format
+            parser: function (data) {
+                // Object to be returned after data is parsed
+                var parsedLanguages = {};
+                // Array that holds all points of data (useful for calculating max and mins)
+                var allDataPoints = [];
+                // Loops through each available language for the specific city
+                for (var language in data) {
+                    // Temporary array to push data into
+                    var basket = [];
+                    // Normalizes the set with f(0) = 0
+                    basket[0] = {
+                        experience: 0,
+                        salary: 0
+                    };
+                    for (var experience in data[language].salary) {
+                        basket.push({
+                            experience: experience,
+                            salary: data[language].salary[experience]
+                        });
+                    }
+                    // Add each basket to the parsed object.
+                    allDataPoints = allDataPoints.concat(basket);
+                    parsedLanguages[language] = basket;
+                }
+                this.allDataPoints = allDataPoints;
+                this.parsedData = parsedLanguages;
+                return parsedLanguages;
+            },
             init: function () {
                 var This = this;
-                var chartCount = 0;
                 This.d3.graph = {};
                 // Determine the axis' domain and ticks
                 // X-axis starts at 0 years of experience and ends at the highest point of data available                
@@ -504,75 +532,55 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                         return this.scrollHeight * 2;
                     });
                 // Append a separate graph for each language available
+                var chartCount = 0;
                 for (var language in This.parsedData) {
-                    singleChart(language, This.parsedData[language]);
+                    This.drawChart(language, This.parsedData[language], chartCount);
                     chartCount++;
-                }
-                function singleChart(language, parsedData) {
-                    // Main group for the line graph
-                    This.d3.graph[language] = This.d3.svg.append('g')
-                        .attr('class', 'graph')
-                        .attr('transform', 'translate(' + 0 + ',' + chartCount * This.singleHeight + ')');
-                    // Draw the Y-axis
-                    This.d3.graph[language].y = This.d3.graph[language].append('g')
-                        .attr('class', 'y-axis')
-                        .attr('transform', 'translate(' + This.width * 0.1 + ',' + This.singleHeight * 0.1 + ')')
-                        .call(This.d3.axis.y);
-                    // Create the path using the data.
-                    This.d3.area
-                        .x(function (data) {
-                            return This.d3.scale.x(data.experience);
-                        })
-                        .y1(function (data) {
-                            return This.d3.scale.y(data.salary);
-                        })
-                        .y0(This.singleHeight * 0.8);
-                    // Append the path to the graph
-                    This.d3.graph[language].line = This.d3.graph[language].append('path')
-                        .attr('class', 'area ' + language)
-                        .data([parsedData])
-                        .attr('d', This.d3.area)
-                        .attr('transform', 'translate(' + This.width * 0.12 + ',' + This.singleHeight * 0.1 + ')');
                 }
                 return This;
             },
-            // Parsed data for each city request into a d3-friendly array-object format
-            parser: function (data) {
-                // Object to be returned after data is parsed
-                var parsedLanguages = {};
-                // Array that holds all points of data (useful for calculating max and mins)
-                var allDataPoints = [];
-                // Loops through each available language for the specific city
-                for (var language in data) {
-                    // Temporary array to push data into
-                    var basket = [];
-                    // Normalizes the set with f(0) = 0
-                    basket[0] = {
-                        experience: 0,
-                        salary: 0
-                    };
-                    for (var experience in data[language].salary) {
-                        basket.push({
-                            experience: experience,
-                            salary: data[language].salary[experience]
-                        });
-                    }
-                    // Add each basket to the parsed object.
-                    allDataPoints = allDataPoints.concat(basket);
-                    parsedLanguages[language] = basket;
-                }
-                this.allDataPoints = allDataPoints;
-                this.parsedData = parsedLanguages;
-                return parsedLanguages;
+            // Function that draws each individual graph
+            drawChart: function (language, parsedData, chartCount) {
+                var This = this;
+                // Main group for the line graph
+                This.d3.graph[language] = This.d3.svg.append('g')
+                    .attr('class', 'graph')
+                    .attr('transform', 'translate(' + 0 + ',' + chartCount * This.singleHeight + ')');
+                // Append a Y-axis for each chart.
+                This.d3.graph[language].y = This.d3.graph[language].append('g')
+                    .attr('class', 'y-axis')
+                    .attr('transform', 'translate(' + This.width * 0.1 + ',' + This.singleHeight * 0.1 + ')')
+                    .call(This.d3.axis.y);
+                // Create the path using the data.
+                This.d3.area
+                    .x(function (data) {
+                        return This.d3.scale.x(data.experience);
+                    })
+                    .y1(function (data) {
+                        return This.d3.scale.y(data.salary);
+                    })
+                    .y0(This.singleHeight * 0.8);
+                // Append the path to the graph
+                This.d3.graph[language].line = This.d3.graph[language].append('path')
+                    .attr('class', 'area ' + language)
+                    .data([parsedData])
+                    .attr('d', This.d3.area)
+                    .attr('transform', 'translate(' + This.width * 0.12 + ',' + This.singleHeight * 0.1 + ')');
             },
             changeCity: function (city) {
                 var This = this;
                 This.options.city = city;
                 // XHR for new data.
-                d3.json('/assets/sampledata.json', function (error, data) {
-                    if (error) {
-                        throw error;
-                    }
+                // d3.json('/assets/sampledata.json', function (error, data) {
+                //     if (error) {
+                //         throw error;
+                //     }
+                //     // Parse incoming JSON data and call init function
+                //     // This.parser(data.cities[This.options.city].languages);
+                // });
+                $('.line svg').remove();
+                return new DevDev.Line({
+                    city: city
                 });
             },
         };
