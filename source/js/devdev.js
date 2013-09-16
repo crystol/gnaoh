@@ -556,6 +556,14 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('class', 'y-axis')
                     .attr('transform', 'translate(' + This.width * 0.1 + ',' + This.singleHeight * 0.1 + ')')
                     .call(This.d3.axis.y);
+                // Label the language
+                This.d3.graph[language].name = This.d3.graph[language].append('text')
+                    .text(language)
+                    .attr('class', 'name ' + language)
+                    .attr('dx', This.width * 0.12)
+                    .attr('dy', function () {
+                        return this.scrollHeight;
+                    });
                 // Create the path using the data.
                 This.d3.area
                     .x(function (data) {
@@ -593,11 +601,10 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         window.DevDev = DevDev;
     }).call(this, document, jQuery, d3, topojson);
     // Sample Map
-    // var sampleMap = new DevDev.Map();
+    var sampleMap = new DevDev.Map();
     // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
     var samplePiGraph = window.samplePiGraph = new DevDev.Pi({
-        city: $('.pi input:checked')
-            .val(),
+        city: $('.pi input:checked').val(),
         thickness: 45,
     });
     // Example of binding the graph to a change event.
@@ -606,8 +613,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     });
     // Sample line graph. Call the constructor with 'new DevDev.Line({arguments})'
     var sampleLineGraph = window.sampleLineGraph = new DevDev.Line({
-        city: $('.line input:checked')
-            .val(),
+        city: $('.line input:checked').val(),
     });
     // Binding the graph to a change event.
     $('.line input').on('change', function () {
