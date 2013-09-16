@@ -398,8 +398,9 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             };
             This.width = $(This.options.element)
                 .width();
-            This.height = This.width;
-            This.singleHeight = This.height * 0.3;
+            This.height = This.width * 0.5;
+            // Each graph has 1/4 of the height of the main svg container
+            This.singleHeight = This.height * 0.25;
             // Collection of D3 specific helper methods
             This.d3 = {
                 // SVG-maker
@@ -412,7 +413,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     x: d3.scale.linear()
                         .range([0, This.width * 0.8]),
                     y: d3.scale.linear()
-                        .range([0, This.singleHeight * 0.5])
+                        .range([0, This.singleHeight * 0.8])
                 },
                 // Axis creator
                 axis: {
@@ -443,11 +444,6 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.d3.graph = {};
                 // Determine the axis' domain and ticks
                 // X-axis starts at 0 years of experience and ends at the highest point of data available                
-                
-                log(This.allDataPoints);
-                log(d3.extent(This.allDataPoints, function (data) {
-                    return data.experience;
-                }));
                 This.d3.scale.x.domain(
                     [
                         0,
@@ -460,9 +456,54 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .x.scale(This.d3.scale.x)
                 // Limit the ticks to the amount of year data points available
                     .ticks(d3.max(This.allDataPoints, function (data) {
-                            return data.experience;
-                        }));
-                // Append a chart for each language available
+                        return data.experience;
+                    }));
+                // Y-scale is determined by the max and min of the range of salary data.           
+                This.d3.scale.y.domain(
+                    [
+                        d3.max(This.allDataPoints, function (data) {
+                            return data.salary;
+                        }),
+                        0
+                    ]);
+                // Create the y axis
+                This.d3.axis.y.scale(This.d3.scale.y)
+                    .ticks(This.singleHeight / 20)
+                // Round the ticks to the nearest thousandth and append 'k'
+                    .tickFormat(function (tick) {
+                        return Math.round(tick / 1000) + 'k';
+                    });
+                // Draw the X-axis
+                This.d3.graph.x = This.d3.svg.append('g')
+                    .attr('class', 'x-axis')
+                    .attr('transform', 'translate(' + This.width * 0.12 + ',' + This.height * 0.8 + ')')
+                    .call(This.d3.axis.x);
+                // Append the label for the X-axis
+                This.d3.graph.x.append('text')
+                    .text('Experience (Years)')
+                    .attr('text-anchor', 'end')
+                // Align it at the center
+                    .attr('dx', function () {
+                        return This.width * 0.5;
+                    })
+                // Shift the position by a factor of its height
+                    .attr('dy', function () {
+                        return this.scrollHeight * 2;
+                    });
+                //Draw the Y-axis label
+                // Append the label for the Y-axis
+                This.d3.graph.y = This.d3.svg.append('g')
+                    .append('text')
+                    .text('Salary (USD)')
+                    .attr('class', 'label')
+                // Rotate the label to a vertical position
+                    .attr('transform', 'rotate(-90)')
+                // Stick it to the middle of the axis
+                    .attr('dx', -This.height * 0.5)
+                    .attr('dy', function () {
+                        return this.scrollHeight * 2;
+                    });
+                // Append a separate graph for each language available
                 for (var language in This.parsedData) {
                     singleChart(language, This.parsedData[language]);
                     chartCount++;
@@ -472,53 +513,11 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     This.d3.graph[language] = This.d3.svg.append('g')
                         .attr('class', 'graph')
                         .attr('transform', 'translate(' + 0 + ',' + chartCount * This.singleHeight + ')');
-                    // Y-axis is determined by the max and min of the range of salary data.           
-                    This.d3.scale.y.domain(
-                        [
-                            d3.max(parsedData, function (data) {
-                                return data.salary;
-                            }),
-                            0
-                        ]);
-                    // Create the y axis
-                    This.d3.axis.y.scale(This.d3.scale.y)
-                        .ticks(parsedData.length)
-                    // Round the ticks to the nearest thousandth and append 'k'
-                        .tickFormat(function (tick) {
-                            return Math.round(tick / 1000) + 'k';
-                        });
-                    // Draw the X-axis
-                    This.d3.graph[language].x = This.d3.graph[language].append('g')
-                        .attr('class', 'x-axis')
-                        .attr('transform', 'translate(' + This.width * 0.12 + ',' + This.singleHeight * 0.8 + ')')
-                        .call(This.d3.axis.x);
-                    // Append the label for the X-axis
-                    This.d3.graph[language].x.append('text')
-                        .text('Experience (Years)')
-                        .attr('text-anchor', 'end')
-                        .attr('dx', function () {
-                            return This.width * 0.5;
-                        })
-                    // Shift the position by a factor of its height
-                        .attr('dy', function () {
-                            return this.scrollHeight * 1.5;
-                        });
                     // Draw the Y-axis
                     This.d3.graph[language].y = This.d3.graph[language].append('g')
                         .attr('class', 'y-axis')
                         .attr('transform', 'translate(' + This.width * 0.1 + ',' + This.singleHeight * 0.1 + ')')
                         .call(This.d3.axis.y);
-                    // Append the label for the Y-axis
-                    This.d3.graph[language].y.append('text')
-                        .text('Salary (USD)')
-                        .attr('class', 'label')
-                    // Rotate the label to a vertical position
-                        .attr('transform', 'rotate(-90)')
-                    // Stick it to the middle of the axis
-                        .attr('dx', -This.singleHeight * 0.5)
-                        .attr('dy', function () {
-                            return -this.scrollHeight * 2;
-                        });
                     // Create the path using the data.
                     This.d3.area
                         .x(function (data) {
@@ -527,7 +526,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                         .y1(function (data) {
                             return This.d3.scale.y(data.salary);
                         })
-                        .y0(This.singleHeight * 0.5);
+                        .y0(This.singleHeight * 0.8);
                     // Append the path to the graph
                     This.d3.graph[language].line = This.d3.graph[language].append('path')
                         .attr('class', 'area ' + language)
