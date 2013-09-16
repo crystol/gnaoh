@@ -44,8 +44,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     This.states.append('g')
                         .attr('class', 'states')
                         .selectAll('path')
-                        .data(topojson.feature(data, data.objects.state)
-                            .features)
+                        .data(topojson.feature(data, data.objects.state).features)
                         .enter()
                         .append('path')
                     // Marks the ID of each path as the state abbreviation
@@ -591,7 +590,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 //     // Parse incoming JSON data and call init function
                 //     // This.parser(data.cities[This.options.city].languages);
                 // });
-                $('.line svg').remove();
+                $('.area svg').remove();
                 return new DevDev.Area({
                     city: city
                 });
@@ -607,6 +606,17 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             };
             This.width = $(This.options.element).width();
             This.height = This.width * 0.5;
+            This.margin = {
+                top: This.height * 0.1,
+                bottom: This.height * 0.1,
+                left: This.width * 0.1,
+                right: This.width * 0.1
+            };
+            // Dropdown menu
+            This.dropdown = $('<select>').appendTo(This.options.element);
+            This.dropdown.on('change', function () {
+                log(this);
+            });
             // D3 helpers
             This.d3 = {
                 svg: d3.select(This.options.element)
@@ -615,9 +625,9 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('height', This.height),
                 scale: {
                     x: d3.scale.linear()
-                        .range([0, This.width * 0.8]),
+                        .range([0, This.width - (This.margin.left + This.margin.right)]),
                     y: d3.scale.linear()
-                        .range([0, This.singleHeight * 0.8])
+                        .range([0, This.height - (This.margin.top + This.margin.bottom)])
                 },
                 axis: {
                     x: d3.svg.axis()
@@ -626,7 +636,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                         .orient('left'),
                 },
                 line: d3.svg.line()
-                    .interpolate('basis')
+                    .interpolate('monotone')
                     .x(function (data) {
                         return This.d3.scale.x(data.experience);
                     })
@@ -649,7 +659,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             parser: function (data) {
                 var parsedLanguages = {};
                 var allDataPoints = [];
-                var languagesCount = 0;
+                var list = [];
+                var count = 0;
                 for (var language in data) {
                     var basket = [];
                     // Normalizes the set with f(0) = 0
@@ -665,19 +676,32 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     }
                     allDataPoints = allDataPoints.concat(basket);
                     parsedLanguages[language] = basket;
-                    languagesCount++;
+                    list.push(language);
+                    count++;
                 }
                 var parsedData = this.parsedData = {
                     allDataPoints: allDataPoints,
                     languages: parsedLanguages,
-                    languagesCount: languagesCount
+                    count: count,
+                    list: list
                 };
                 return parsedData;
             },
+            // Initializer
             init: function () {
                 var This = this;
-                This.d3.graph = {};
-                // Determine the axis' domain and ticks
+                // Add dropdown menu
+                This.dropdown.empty();
+                This.parsedData.list.forEach(function (data, element) {
+                    if (element === 0) {
+                        This.dropdown
+                            .append('<option selected value="' + data + '"">' + data + '</option>');
+                    } else {
+                        This.dropdown
+                            .append('<option value="' + data + '"">' + data + '</option>');
+                    }
+                });
+                // Determine x domain anx create the axis
                 This.d3.scale.x.domain(
                     [
                         0,
@@ -685,14 +709,12 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                             return data.experience;
                         })
                     ]);
-                // Create the x axis
                 This.d3.axis.x
                     .scale(This.d3.scale.x)
-                // Limit the ticks to the amount of year data points available
                     .ticks(d3.max(This.parsedData.allDataPoints, function (data) {
                         return data.experience;
                     }));
-                // Y-scale is determined by the max and min of the range of salary data.           
+                // Determine Y domain and create the axis
                 This.d3.scale.y.domain(
                     [
                         d3.max(This.parsedData.allDataPoints, function (data) {
@@ -700,78 +722,65 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                         }),
                         0
                     ]);
-                // Create the y axis
-                This.d3.axis.y
-                    .scale(This.d3.scale.y2)
-                    .ticks(This.singleHeight / 20)
                 // Round the ticks to the nearest thousandth and append 'k'
+                This.d3.axis.y
+                    .scale(This.d3.scale.y)
+                    .ticks(This.height / 50)
                     .tickFormat(function (tick) {
                         return Math.round(tick / 1000) + 'k';
                     });
+                This.drawChart(This.parsedData.list[0]);
+                return This;
+            },
+            // Function that draws each individual graph
+            drawChart: function (language) {
+                var This = this;
+                // Main group for the line graph
+                This.d3.graph = This.d3.svg.append('g')
+                    .attr('class', 'graph');
                 // Draw the X-axis
-                This.d3.graph.x = This.d3.svg.append('g')
+                This.d3.graph.x = This.d3.graph.append('g')
                     .attr('class', 'x-axis')
-                    .attr('transform', 'translate(' + This.width * 0.12 + ',' + This.singleHeight * This.parsedData.languagesCount + ')')
+                    .attr('transform', 'translate(' + This.margin.left + ',' + Number(This.height - This.margin.bottom) + ')')
                     .call(This.d3.axis.x);
                 // Append the label for the X-axis
                 This.d3.graph.x.append('text')
                     .text('Experience (Years)')
                     .attr('text-anchor', 'end')
-                // Align it at the center
                     .attr('dx', function () {
                         return This.width * 0.5;
                     })
-                // Shift the position by a factor of its height
                     .attr('dy', function () {
                         return this.scrollHeight * 2;
                     });
-                //Draw the Y-axis label
                 // Append the label for the Y-axis
                 This.d3.graph.y = This.d3.svg.append('g')
                     .append('text')
                     .text('Salary (USD)')
                     .attr('class', 'label')
-                // Rotate the label to a vertical position
                     .attr('transform', 'rotate(-90)')
-                // Stick it to the middle of the axis
                     .attr('dx', -This.height * 0.5)
                     .attr('dy', function () {
                         return this.scrollHeight * 2;
                     });
-                // Append a separate graph for each language available
-                var chartCount = 0;
-                for (var language in This.parsedData.languages) {
-                    This.drawChart(language, This.parsedData.languages[language], chartCount);
-                    chartCount++;
-                }
-                return This;
-            },
-            // Function that draws each individual graph
-            drawChart: function (language, parsedData, chartCount) {
-                var This = this;
-                // Main group for the line graph
-                This.d3.graph[language] = This.d3.svg.append('g')
-                    .attr('class', 'graph')
-                    .attr('transform', 'translate(' + 0 + ',' + chartCount * This.singleHeight + ')');
-                // Append a Y-axis for each chart.
-                This.d3.graph[language].y = This.d3.graph[language].append('g')
+                This.d3.graph.y = This.d3.graph.append('g')
                     .attr('class', 'y-axis')
-                    .attr('transform', 'translate(' + This.width * 0.1 + ',' + This.singleHeight * 0.1 + ')')
+                    .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')')
                     .call(This.d3.axis.y);
                 // Label the language
-                This.d3.graph[language].name = This.d3.graph[language].append('text')
+                This.d3.graph.name = This.d3.graph.append('text')
                     .text(language)
                     .attr('class', 'name ' + language)
-                    .attr('dx', This.width * 0.12)
+                    .attr('dx', This.margin.left * 1.5)
                     .attr('dy', function () {
-                        return this.scrollHeight;
+                        return this.scrollHeight * 2;
                     });
                 // Append the path to the graph
-                This.d3.graph[language].line = This.d3.graph[language].append('path')
-                    .attr('class', 'area ' + language)
-                    .data([parsedData])
-                    .attr('d', This.d3.area)
-                    .attr('transform', 'translate(' + This.width * 0.12 + ',' + This.singleHeight * 0.1 + ')');
+                This.d3.graph.line = This.d3.graph.append('path')
+                    .attr('class', 'line-path ' + language)
+                    .data([This.parsedData.languages[language]])
+                    .attr('d', This.d3.line)
+                    .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')');
             },
             changeCity: function (city) {
                 var This = this;
@@ -785,7 +794,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 //     // This.parser(data.cities[This.options.city].languages);
                 // });
                 $('.line svg').remove();
-                return new DevDev.Area({
+                return new DevDev.Line({
                     city: city
                 });
             },
@@ -795,6 +804,13 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     }).call(this, document, jQuery, d3, topojson);
     // Sample Map
     var sampleMap = new DevDev.Map();
+    // Sample Line graph. Call the constructor with 'new DevDev.Line({arguments})'
+    var sampleLineGraph = window.sampleLineGraph = new DevDev.Line({
+        city: $('.line input:checked').val()
+    });
+    $('.line .city-select input').on('change', function () {
+        sampleLineGraph.changeCity(this.value);
+    });
     // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
     var samplePiGraph = window.samplePiGraph = new DevDev.Pi({
         city: $('.pi input:checked').val(),

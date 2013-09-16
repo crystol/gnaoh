@@ -86,6 +86,37 @@
     }
 
 }
+.line {
+    input {
+        margin: 0.5em;
+    }
+    .name {
+        font-size: 200%;
+        text-transform: capitalize;
+        stroke: none;
+    }
+    .line-path {
+        fill: none;
+        stroke-width: 5px;
+    }
+    .x-axis, .y-axis {
+        .tick {
+            font-size: 80%;
+        }
+        .domain {
+            shape-rendering: crispEdges;
+            stroke: black;
+            stroke-width: 1px;
+            fill: none;
+        }
+    }
+    .y-axis {
+        .label {
+            transform: rotate(90);
+        }
+    }
+
+}
 .area {
     input {
         margin: 0.5em;
