@@ -614,8 +614,13 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             };
             // Add check boxes for language selection
             This.selection = $('<form name="language">').appendTo(This.options.element);
+            // Listener that adds or remove paths
             This.selection.on('change', 'input', function () {
-                This.addLanguage(this.value);
+                if (this.checked) {
+                    This.addLanguage(this.value);
+                } else {
+                    This.removeLanguage(this.value);
+                }
             });
             // D3 helpers
             This.d3 = {
@@ -693,7 +698,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Add dropdown menu
                 This.parsedData.list.forEach(function (data, element) {
                     var checked = element === 0 ? 'checked' : '';
-                    var input = '<label class="checkbox ' + data + '"><input type="checkbox" value="' + data + '"' + checked + '>' + data+'</label>';
+                    var input = '<label class="checkbox ' + data + '"><input type="checkbox" value="' + data + '"' + checked + '>' + data + '</label>';
                     This.selection.append(input);
                 });
                 // Determine x domain and create the axis
@@ -778,13 +783,32 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             },
             addLanguage: function (language) {
                 var This = this;
-                This.d3.graph[language] = This.d3.graph.append('path')
+                This.d3.graph[language] = This.d3.graph.append('path');
+                This.d3.graph[language] 
                     .attr('class', 'line-path ' + language)
-                    .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')')
                     .data([This.parsedData.languages[language]])
+                    .attr('d', This.d3.line)
+                    .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')')
+                    .attr('stroke-dashoffset', function () {
+                        return this.getTotalLength();
+                    })
+                    .attr('stroke-dasharray', function () {
+                        return this.getTotalLength();
+                    })
                     .transition()
-                    .attr("stroke-dashoffset", 0)
-                    .attr('d', This.d3.line);
+                    .ease('linear')
+                    .duration(This.options.tweenTime)
+                    .attr('stroke-dashoffset', 0);
+            },
+            removeLanguage: function (language) {
+                var This = this;
+                This.d3.graph[language]
+                    .transition()
+                    .ease('linear')
+                    .duration(This.options.tweenTime/2)
+                    .attr('stroke-dashoffset', function () {
+                        return this.getTotalLength();
+                    });
             },
             changeCity: function (city) {
                 var This = this;
@@ -797,8 +821,8 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 //     // Parse incoming JSON data and call init function
                 //     // This.parser(data.cities[This.options.city].languages);
                 // });
-                $('.line [name="language"]').remove();
-                $('.line svg').remove();
+                $(This.options.element + ' [name="language"]').remove();
+                $(This.options.element + ' svg').remove();
                 return new DevDev.Line({
                     city: city
                 });
