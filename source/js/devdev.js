@@ -691,13 +691,12 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             init: function () {
                 var This = this;
                 // Add dropdown menu
-                This.selection.empty();
                 This.parsedData.list.forEach(function (data, element) {
                     var checked = element === 0 ? 'checked' : '';
                     var input = '<input type="checkbox" name="language" value="' + data + '"' + checked + '>' + data;
                     This.selection.append(input);
                 });
-                // Determine x domain anx create the axis
+                // Determine x domain and create the axis
                 This.d3.scale.x.domain(
                     [
                         0,
@@ -725,46 +724,49 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .tickFormat(function (tick) {
                         return Math.round(tick / 1000) + 'k';
                     });
+                // Create super groups to hold SVG paths
+                This.d3.graph = This.d3.svg.append('g')
+                    .attr('class', 'graph');
+                // Labels group
+                This.d3.graph.labels = This.d3.svg.append('g')
+                    .attr('class', 'labels');
+                // Axes group
+                This.d3.graph.axes = This.d3.svg.append('g')
+                    .attr('class', 'axes');
+                // Draw the first language on the list
                 This.drawChart(This.parsedData.list[0]);
                 return This;
             },
             // Function that draws each individual graph
             drawChart: function (language) {
                 var This = this;
-                // Main group for the line graph
-                This.d3.graph = This.d3.svg.append('g')
-                    .attr('class', 'graph');
                 // Draw the X-axis
-                This.d3.graph.x = This.d3.graph.append('g')
+                This.d3.graph.axes.x = This.d3.graph.axes.append('g')
                     .attr('class', 'x-axis')
                     .attr('transform', 'translate(' + This.margin.left + ',' + Number(This.height - This.margin.bottom) + ')')
                     .call(This.d3.axis.x);
                 // Append the label for the X-axis
-                This.d3.graph.x.append('text')
+                This.d3.graph.labels.append('text')
                     .text('Experience (Years)')
-                    .attr('text-anchor', 'end')
-                    .attr('dx', function () {
-                        return This.width * 0.5;
-                    })
+                    .attr('text-anchor', 'middle')
+                    .attr('dx', This.width * 0.5)
                     .attr('dy', function () {
-                        return this.scrollHeight * 2;
+                        return This.height - This.margin.bottom + this.scrollHeight * 2;
                     });
                 // Append the label for the Y-axis
-                This.d3.graph.y = This.d3.svg.append('g')
-                    .append('text')
+                This.d3.graph.labels.append('text')
                     .text('Salary (USD)')
-                    .attr('class', 'label')
                     .attr('transform', 'rotate(-90)')
                     .attr('dx', -This.height * 0.5)
                     .attr('dy', function () {
                         return this.scrollHeight * 2;
                     });
-                This.d3.graph.y = This.d3.graph.append('g')
+                 This.d3.graph.axes.y = This.d3.graph.axes.append('g')
                     .attr('class', 'y-axis')
                     .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')')
                     .call(This.d3.axis.y);
                 // Brand it
-                This.d3.graph.name = This.d3.graph.append('text')
+                This.d3.graph.labels.append('text')
                     .text('/dev/deviation')
                     .attr('class', 'brand')
                     .attr('dx', This.margin.left * 1.5)
@@ -779,10 +781,11 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.d3.graph[language] = This.d3.graph.append('g');
                 This.d3.graph[language].append('path')
                     .attr('class', 'line-path ' + language)
+                    .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')')
                     .data([This.parsedData.languages[language]])
                     .transition()
-                    .attr('d', This.d3.line)
-                    .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')');
+                    .attr("stroke-dashoffset", 0)
+                    .attr('d', This.d3.line);
             },
             changeCity: function (city) {
                 var This = this;
@@ -795,7 +798,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 //     // Parse incoming JSON data and call init function
                 //     // This.parser(data.cities[This.options.city].languages);
                 // });
-                $('.line [name="language"]').empty();
+                $('.line [name="language"]').remove();
                 $('.line svg').remove();
                 return new DevDev.Line({
                     city: city
@@ -805,8 +808,6 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         // Exporting the DevDev object to window scope
         window.DevDev = DevDev;
     }).call(this, document, jQuery, d3, topojson);
-    // Sample Map
-    var sampleMap = new DevDev.Map();
     // Sample Line graph. Call the constructor with 'new DevDev.Line({arguments})'
     var sampleLineGraph = window.sampleLineGraph = new DevDev.Line({
         city: $('.line input:checked').val()
@@ -831,4 +832,6 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     $('.area input').on('change', function () {
         sampleAreaGraph.changeCity(this.value);
     });
+    // Sample Map
+    // var sampleMap = new DevDev.Map();
 });

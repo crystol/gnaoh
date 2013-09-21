@@ -1,32 +1,32 @@
 {
-  "name": "gnaoh",
-  "version": "0.0.1",
-  "description": "gnaoh.com",
-  "author": "Kenny Hoang",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/crystol/gnaoh.git"
-  },
-  "bugs": {
-    "url": "https://github.com/crystol/gnaoh/issues"
-  },
-  "main": "build/server.js",
-  "dependencies": {
-    "express": "~3.3.4",
-    "jade": "~0.34.1",
-    "spdy": "~1.10.1",
-    "nodeunit": "~0.8.1"
-  },
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-less": "~0.6.4",
-    "grunt-contrib-uglify": "~0.2.2",
-    "grunt-contrib-jshint": "~0.6.2",
-    "grunt-contrib-watch": "~0.5.1",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-nodemon": "0.0.8",
-    "grunt-concurrent": "~0.3.0"
-  }
+    "name": "gnaoh",
+    "version": "0.0.1",
+    "description": "gnaoh.com",
+    "author": "Kenny Hoang",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/crystol/gnaoh.git"
+    },
+    "bugs": {
+        "url": "https://github.com/crystol/gnaoh/issues"
+    },
+    "main": "build/server.js",
+    "dependencies": {
+        "express": "~3.3.4",
+        "jade": "~0.34.1",
+        "spdy": "~1.10.1",
+        "nodeunit": "~0.8.1"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "grunt-contrib-clean": "~0.5.0",
+        "grunt-contrib-concat": "~0.3.0",
+        "grunt-contrib-less": "~0.6.4",
+        "grunt-contrib-uglify": "~0.2.2",
+        "grunt-contrib-jshint": "~0.6.2",
+        "grunt-contrib-watch": "~0.5.1",
+        "grunt-contrib-copy": "~0.4.1",
+        "grunt-nodemon": "0.0.8",
+        "grunt-concurrent": "~0.3.0"
+    }
 }
