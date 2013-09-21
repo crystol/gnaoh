@@ -1,50 +1,27 @@
+//- form mixin
+mixin cities(graphTitle)
+    h1= graphTitle
+    form(class='city-select', name='city-select')
+        label 
+            input(type='radio', name='city-select', value='chicago', checked, id='chicago')
+            | Chicago 
+        label
+            input(type='radio', name='city-select', value='minneapolis')
+            | Minneapolis
+        label    
+            input(type='radio', name='city-select', value='new york city')
+            | New York City
+        label
+            input(type='radio', name='city-select', value='san francisco')
+            | San Francisco 
 extend skeleton
 block content
     .line
-        h1 Line Graph
-        form(class='city-select', name='city-select')
-            label 
-                input(type='radio', name='city-select', value='chicago', checked, id='chicago')
-                | Chicago 
-            label
-                input(type='radio', name='city-select', value='minneapolis')
-                | Minneapolis
-            label    
-                input(type='radio', name='city-select', value='new york city')
-                | New York City
-            label
-                input(type='radio', name='city-select', value='san francisco')
-                | San Francisco  
+        +cities('Line Graph')
     .pi
-        h1 Pi Distribution
-        form(class='city-select', name='city-select')
-            label 
-                input(type='radio', name='city-select', value='chicago', checked, id='chicago')
-                | Chicago 
-            label
-                input(type='radio', name='city-select', value='minneapolis')
-                | Minneapolis
-            label    
-                input(type='radio', name='city-select', value='new york city')
-                | New York City
-            label
-                input(type='radio', name='city-select', value='san francisco')
-                | San Francisco 
+        +cities('Pi Graph')
     .area
-        h1 Area Graph
-        form(class='city-select', name='city-select')
-            label 
-                input(type='radio', name='city-select', value='chicago', checked, id='chicago')
-                | Chicago 
-            label
-                input(type='radio', name='city-select', value='minneapolis')
-                | Minneapolis
-            label    
-                input(type='radio', name='city-select', value='new york city')
-                | New York City
-            label
-                input(type='radio', name='city-select', value='san francisco')
-                | San Francisco 
+        +cities('Area Graphs')
     .map
         h1 Map
     .legend
@@ -58,6 +35,4 @@ block content
         span Javascript
         .box.ruby
         span Ruby            
-
     script(src='js/devdev.js')
-
