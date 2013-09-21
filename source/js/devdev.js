@@ -607,10 +607,10 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             This.width = $(This.options.element).width();
             This.height = This.width * 0.5;
             This.margin = {
-                top: This.height * 0.1,
-                bottom: This.height * 0.1,
-                left: This.width * 0.1,
-                right: This.width * 0.1
+                top: This.height * 0.125,
+                bottom: This.height * 0.125,
+                left: This.width * 0.125,
+                right: This.width * 0.125
             };
             // Add check boxes for language selection
             This.selection = $('<form name="language">').appendTo(This.options.element);
@@ -698,7 +698,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Add dropdown menu
                 This.parsedData.list.forEach(function (data, element) {
                     var checked = element === 0 ? 'checked' : '';
-                    var input = '<label class="checkbox ' + data + '"><input type="checkbox" value="' + data + '"' + checked + '>' + data + '</label>';
+                    var input = '<label class="' + data + '"><input type="checkbox" value="' + data + '"' + checked + '>' + data + '</label>';
                     This.selection.append(input);
                 });
                 // Determine x domain and create the axis
@@ -774,7 +774,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.d3.graph.labels.append('text')
                     .text('/dev/deviation')
                     .attr('class', 'brand')
-                    .attr('dx', This.margin.left * 1.5)
+                    .attr('dx', This.margin.left*1.5)
                     .attr('dy', function () {
                         return this.scrollHeight * 2;
                     });
@@ -784,7 +784,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             addLanguage: function (language) {
                 var This = this;
                 This.d3.graph[language] = This.d3.graph.append('path');
-                This.d3.graph[language] 
+                This.d3.graph[language]
                     .attr('class', 'line-path ' + language)
                     .data([This.parsedData.languages[language]])
                     .attr('d', This.d3.line)
@@ -805,7 +805,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.d3.graph[language]
                     .transition()
                     .ease('linear')
-                    .duration(This.options.tweenTime/2)
+                    .duration(This.options.tweenTime / 2)
                     .attr('stroke-dashoffset', function () {
                         return this.getTotalLength();
                     });

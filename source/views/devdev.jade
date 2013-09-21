@@ -18,14 +18,18 @@ block content
     .pi
         h1 Pi Distribution
         form(class='city-select', name='city-select')
-            input(type='radio', name='city-select', value='chicago', checked)
-            | Chicago 
-            input(type='radio', name='city-select', value='minneapolis')
-            | Minneapolis
-            input(type='radio', name='city-select', value='new york city')
-            | New York City
-            input(type='radio', name='city-select', value='san francisco')
-            | San Francisco
+            label 
+                input(type='radio', name='city-select', value='chicago', checked, id='chicago')
+                | Chicago 
+            label
+                input(type='radio', name='city-select', value='minneapolis')
+                | Minneapolis
+            label    
+                input(type='radio', name='city-select', value='new york city')
+                | New York City
+            label
+                input(type='radio', name='city-select', value='san francisco')
+                | San Francisco 
     .area
         h1 Area Graph
         form(class='city-select', name='city-select')
