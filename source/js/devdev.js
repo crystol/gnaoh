@@ -612,7 +612,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 left: This.width * 0.1,
                 right: This.width * 0.1
             };
-            // Check boxes for language selection
+            // Add check boxes for language selection
             This.selection = $('<form name="language">').appendTo(This.options.element);
             This.selection.on('change', 'input', function () {
                 This.addLanguage(this.value);
@@ -693,7 +693,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Add dropdown menu
                 This.parsedData.list.forEach(function (data, element) {
                     var checked = element === 0 ? 'checked' : '';
-                    var input = '<input type="checkbox" name="language" value="' + data + '"' + checked + '>' + data;
+                    var input = '<label class="checkbox ' + data + '"><input type="checkbox" value="' + data + '"' + checked + '>' + data+'</label>';
                     This.selection.append(input);
                 });
                 // Determine x domain and create the axis
@@ -761,7 +761,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('dy', function () {
                         return this.scrollHeight * 2;
                     });
-                 This.d3.graph.axes.y = This.d3.graph.axes.append('g')
+                This.d3.graph.axes.y = This.d3.graph.axes.append('g')
                     .attr('class', 'y-axis')
                     .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')')
                     .call(This.d3.axis.y);
@@ -778,8 +778,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             },
             addLanguage: function (language) {
                 var This = this;
-                This.d3.graph[language] = This.d3.graph.append('g');
-                This.d3.graph[language].append('path')
+                This.d3.graph[language] = This.d3.graph.append('path')
                     .attr('class', 'line-path ' + language)
                     .attr('transform', 'translate(' + This.margin.left + ',' + This.margin.top + ')')
                     .data([This.parsedData.languages[language]])
