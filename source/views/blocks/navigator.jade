@@ -14,11 +14,6 @@
             .hoang Hoang
             .gnaoh gnaoH
     #navlist
-        .link
-            a(href='index') Index
-        .link
-            a(href='gallery') Gallery
-        .link
-            a(href='videos') Videos
-        .link
-            a(href='about') About
+        each link in ['index', 'gallery', 'videos', 'about']
+            .link
+                a(href=link)=link 
