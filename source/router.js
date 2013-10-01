@@ -1,5 +1,10 @@
 // Lists of all of the possible routes used by the server
-var routes = ['/', '404', 'index', 'about', 'gallery', 'videos', 'projects/devdev'];
+var routes = [
+    // Common
+    '/', '404', 'index', 'about', 'gallery', 'videos',
+    // Projects
+    'projects', 'projects/devdev'
+];
 // Append private routes (pages not included in repo) if they exist
 try {
     var privateRoutes = require('./privateRoutes.js');
@@ -16,7 +21,6 @@ routes.forEach(function (value) {
     module.exports[value] = function (request, response) {
         response.set({
             'Cache-Control': 'must-revalidate, private, max-age=0',
-            'Strict-Transport-Security': 'max-age=13333337'
         }).render(value, {
             title: value,
             pretty: true

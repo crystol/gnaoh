@@ -258,10 +258,6 @@
                     for (var i = options.start; i < options.amount; i++) {
                         var image = document.createElement('img');
                         var imageWrapper = document.createElement('div');
-                        //load smaller images for mobile devices
-                        // if (This.mini) {
-                        //     image.src = This.static + '/img/gallery/' + options.id + '/' + i + 's.jpg';
-                        // } 
                         image.src = This.static + '/img/gallery/' + options.id + '/' + i + '.jpg';
                         imageWrapper.className = 'image';
                         imageWrapper.id = options.id + '-' + i;

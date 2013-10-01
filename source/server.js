@@ -84,6 +84,8 @@ routeList.forEach(function (value) {
     if (value === '/') {
         // 404 the root for now
         gnaoh.get('/', router['404']);
+    } else if (value === 'projects') {
+        gnaoh.get('/projects', router['index']);
     } else {
         gnaoh.get('/' + value, router[value]);
     }

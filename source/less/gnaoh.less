@@ -29,7 +29,7 @@
 @selection: #7E7E7E;                                                            //selection color
 @highlight: #666;
 @bg-color: #fff;                                                                //background color
-@navigator-h: 175px;                                                            //height of sidebar
+@navigator-h: 50px;                                                            //height of sidebar
 @navigator-w: 100%;                                                             //with of sidebar
 @navigator-fc: #BBB;                                                            //font color of nav links
 @post-width: 1000px;                                                            //max width of main post
@@ -203,12 +203,23 @@ html {
     .noselect;
     height: @navigator-h;
     width: @navigator-w;
+    z-index: 10;
+    box-shadow: 1px 1px 3px #888888; 
+    background: rgba(255, 255, 255, 0.85);
+    top: 0;
+    .fixed;
+
+    .wrapper {
+        max-width: @post-width;
+        margin: 0 auto;
+    }
 }
-   //Logo
     .logo {
-        margin:0 auto;
-        width: @navigator-h - 25px;
-        height: @navigator-h - 25px;
+        // margin:0 auto;
+        // width: @navigator-h - 25px;
+        // height: @navigator-h - 25px;
+        .absolute;
+        // Rotate on hover
         &:hover .hoang {
             opacity: 0;
             .transform(rotate, -180deg);
@@ -219,62 +230,55 @@ html {
         }
     }
         //G (gangsta) Molecule
-        .aromatics {
-            position: relative;
-            left: 13%;
-            top: 1%;
-            .pyrimidine, .benzene {
-                position: absolute;
-                .top {
-                    width: 0;
-                    border-bottom: round(@aromatics-size/4, 1) solid @highlight;
-                    border-left: round(@aromatics-size/2 * 0.866, 1) solid transparent;
-                    border-right: round(@aromatics-size/2 * 0.866, 1) solid transparent;
-                }
-                .middle {
-                    width: round(@aromatics-size * 0.866, 1);   //width to heigh ratio is root(3) to 1
-                    height: round(@aromatics-size/2, 1);
-                    background: @highlight;
-                }
-                .bottom {
-                    width: 0;
-                    border-top: round(@aromatics-size/4, 1) solid @highlight;
-                    border-left: round(@aromatics-size/2 * 0.866, 1) solid transparent;
-                    border-right: round(@aromatics-size/2 * 0.866, 1) solid transparent;
-                }
+        .pyrimidine, .benzene {
+            position: absolute;
+            .top {
+                width: 0;
+                border-bottom: round(@aromatics-size/4, 1) solid @highlight;
+                border-left: round(@aromatics-size/2 * 0.866, 1) solid transparent;
+                border-right: round(@aromatics-size/2 * 0.866, 1) solid transparent;
             }
-            .benzene {
-                left: round(@aromatics-size*0.43,1);
-                top: round(@aromatics-size*0.755,1);
+            .middle {
+                width: round(@aromatics-size * 0.866, 1);   //width to heigh ratio is root(3) to 1
+                height: round(@aromatics-size/2, 1);
+                background: @highlight;
             }
-            .flipper {
-                .hide;
+            .bottom {
+                width: 0;
+                border-top: round(@aromatics-size/4, 1) solid @highlight;
+                border-left: round(@aromatics-size/2 * 0.866, 1) solid transparent;
+                border-right: round(@aromatics-size/2 * 0.866, 1) solid transparent;
             }
-            .kenny, .hoang, .gnaoh {
-                color: @bg-color;
-                .absolute;
-				.animated(500ms);
-                // height: 0;
-                // width: 0;
-            }
-            .kenny {
-                left: round(@aromatics-size/7, 1);
-                top: round(@aromatics-size/3 , 1);
-            }
-            .hoang {
-                left: round(@aromatics-size/1.8, 1);
-                top: round(@aromatics-size*1.1, 1);
-                // transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6,1);
-                // -webkit-transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6, 1);
-            }
-           .gnaoh {
-				opacity: 0;
-                left: round(@aromatics-size*0.55, 1);
-                top: round(@aromatics-size*1.1, 1);
-                // transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6,1);
-                // -webkit-transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6, 1);
-				.transform(rotate, -180deg);
-            }
+        }
+        .benzene {
+            left: round(@aromatics-size*0.43,1);
+            top: round(@aromatics-size*0.755,1);
+        }
+        .flipper {
+            .hide;
+        }
+        .kenny, .hoang, .gnaoh {
+            color: @bg-color;
+            .absolute;
+			.animated(500ms);
+        }
+        .kenny {
+            left: round(@aromatics-size/7, 1);
+            top: round(@aromatics-size/3 , 1);
+        }
+        .hoang {
+            left: round(@aromatics-size/1.8, 1);
+            top: round(@aromatics-size*1.1, 1);
+            // transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6,1);
+            // -webkit-transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6, 1);
+        }
+       .gnaoh {
+			opacity: 0;
+            left: round(@aromatics-size*0.55, 1);
+            top: round(@aromatics-size*1.1, 1);
+            // transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6,1);
+            // -webkit-transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6, 1);
+			.transform(rotate, -180deg);
         }
         .beta {
             position: relative;
@@ -284,40 +288,28 @@ html {
         }
 	//the list with all of them links
     #navlist {
-        text-align: center;
-        width: 100%;
+        margin-top: @navigator-h*0.3;
+        float: right;
         .link {
             display: inline-block;
-            margin:0 1em;
-            text-transform: capitalize;
-
+            margin:0 0.5em;
             a {
                 color: #000;
                 display: block;
-                padding:0 1.0em;
+                padding:0 0.5em;
                 border-radius: 1px;
                 text-decoration: none;
+                text-transform: capitalize;
             }
             &:hover, &.active {
-                background: @highlight;
-                a {
-                    color: @bg-color;
-                }
+                border-bottom: @color solid 3px;
             }
-        }
-        &.fixed {
-            top:0;
-            z-index: 5;
-            padding: 0.25em 0;
-            position: fixed !important;
-            box-shadow: 1px 1px 3px #888888; 
-            background: rgba(255, 255, 255, 0.85);
         }
     }
 //content page
 #content {
     max-width: @post-width;
-    margin: 0 auto;
+    margin: @navigator-h auto;
     padding: 2em 1em;
     -webkit-perspective: 1000;
     perspective:1000;
@@ -510,33 +502,33 @@ html {
                     opacity: .85;
                     z-index: 10;
                     .transform(scale, 0.75);
-                //hides everything but pyrimidine ring
-                 & >:not(.pyrimidine) {
-                    .hide;
-                 }
-                .flipper {
-                    .show;
-                    width: 55%;
-                    height: 15%;
-                    margin: 0 auto;
-                    position: relative;
-                    top: 45%;
-                    background: @bg-color;
-                }
-                .flipper:before, .flipper:after {
-                    content: '';
-                    width: 100%;
-                    height: 100%;
-                    position: absolute;
-                    background: @bg-color;
-                }
-               
-                .flipper:before {
-                    top: -200%;
-                }
-                .flipper:after {
-                    top: 200%;
-                }
+                    //hides everything but pyrimidine ring
+                     & >:not(.pyrimidine) {
+                        .hide;
+                     }
+                    .flipper {
+                        .show;
+                        width: 55%;
+                        height: 15%;
+                        margin: 0 auto;
+                        position: relative;
+                        top: 45%;
+                        background: @bg-color;
+                    }
+                    .flipper:before, .flipper:after {
+                        content: '';
+                        width: 100%;
+                        height: 100%;
+                        position: absolute;
+                        background: @bg-color;
+                    }
+                   
+                    .flipper:before {
+                        top: -200%;
+                    }
+                    .flipper:after {
+                        top: 200%;
+                    }
             }
             .beta {
                 .hide;
