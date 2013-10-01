@@ -1,13 +1,13 @@
-(function (win, doc) {
+(function (window, document) {
     define(['jquery'], function ($) {
         'use strict';
+        //lazy logging in dev env
         var developement = true;
-        //lazy logging--if devleopement is false, it won't console log anything.
         var log = window.log = developement ? function (args) {
                 window.console.log(args);
             } : function () {}; 
         //common jquery selectors cache
-        var $window = $(win);
+        var $window = $(window);
         var $body = $('body');
         var $content = $('#content');
         var $post = $('#post');
@@ -27,13 +27,13 @@
             }
             //if callback exists, perform it after the delay and return jquery object for chaining
             if (typeof callback === 'function') {
-                win.setTimeout(function () {
+                window.setTimeout(function () {
                     callback.call($this);
                 }, time);
                 return $this;
             } else {
                 //return promise--use withh .done()--if no callbacks are provided
-                win.setTimeout(function () {
+                window.setTimeout(function () {
                     procrastinate.resolveWith($this);
                 }, time);
                 return procrastinate;
@@ -94,8 +94,8 @@
                 this.resizeCallbacks.add([This.scrollspy, This.size]);
                 //bind said handlers to window and add a delay to prevent rapid firing
                 $window.on('resize', function () {
-                    win.clearTimeout(This.resizeDelay);
-                    This.resizeDelay = win.setTimeout(function () {
+                    window.clearTimeout(This.resizeDelay);
+                    This.resizeDelay = window.setTimeout(function () {
                         This.resizeCallbacks.fire.call(This);
                     }, 200);
                 });
@@ -105,8 +105,8 @@
                 $about = $('#post .about');
                 //update currentpage for navigation
                 this.currentPage = {
-                    path: doc.location.pathname,
-                    href: doc.location.href
+                    path: document.location.pathname,
+                    href: document.location.href
                 };
                 //load about section if it exists
                 if ($about.length) {
@@ -127,7 +127,7 @@
             },
             //media query: will set mini || medium || massive to true appropiately
             size: function () {
-                var width = doc.body.clientWidth;
+                var width = document.body.clientWidth;
                 this.mini = this.medium = this.massive = false;
                 if (width <= 768) {
                     this.mini = true;
@@ -168,7 +168,7 @@
                     var $postPrep = $('<div id="new-post">').append($data.find('#post').contents());
                     //changes page name and title
                     $post.data('name', name);
-                    doc.title = name.charAt(0).toUpperCase() + name.substring(1);
+                    document.title = name.charAt(0).toUpperCase() + name.substring(1);
                     $post.wrapInner('<div id="old-post">').append($postPrep);
                     var $old = $('#old-post');
                     var $new = $('#new-post').css('width',$post.width());
@@ -180,11 +180,11 @@
                         $post.removeClass(animethod);
                         //push new page to analytics and browser history
                         This.init();
-                        win._gaq.push(['_trackPageview', doc.location.pathname]);
+                        window._gaq.push(['_trackPageview', document.location.pathname]);
                     }
                     //animating the pages
                     //skip on mobile devices and browsers that isn't chrome
-                    var notChrome = !/Chrome/.test(win.navigator.userAgent);
+                    var notChrome = !/Chrome/.test(window.navigator.userAgent);
                     if (This.mini || skipAnimation || notChrome) {
                         return cleanUp();
                     }
@@ -197,11 +197,11 @@
                 if (!name) {
                     return;
                 }
-                var stylesheet = doc.createElement("link");
+                var stylesheet = document.createElement("link");
                 var href = (staticLib) ? this.static + '/css/' + name : '/css/' + name;
                 stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
                 stylesheet.href = href;
-                doc.getElementsByTagName("head")[0].appendChild(stylesheet);
+                document.getElementsByTagName("head")[0].appendChild(stylesheet);
             },
             //load a  gallery from a specified directory. sample html code <div class='gallery' id='dirName' start='1' amount='10'></div>
             loadGallery: function () {
@@ -256,8 +256,8 @@
                     }
                     //creates a div, append the appropiate image to itself, and then pushes to the array of images
                     for (var i = options.start; i < options.amount; i++) {
-                        var image = doc.createElement('img');
-                        var imageWrapper = doc.createElement('div');
+                        var image = document.createElement('img');
+                        var imageWrapper = document.createElement('div');
                         //load smaller images for mobile devices
                         // if (This.mini) {
                         //     image.src = This.static + '/img/gallery/' + options.id + '/' + i + 's.jpg';
@@ -282,7 +282,7 @@
             layBricks: function () {
                 var This = this;
                 var $foundation = $('.wall');
-                win.require(['static/isotope'], function () {
+                window.require(['static/isotope'], function () {
                     $foundation.imagesLoaded(function () {
                         $foundation.isotope({
                             itemSelector: '.image',
@@ -347,13 +347,13 @@
                         height: $wrapper.width() * (9 / 16)
                     });
                     //create the video tag and apply attributes
-                    var video = doc.createElement('video');
+                    var video = document.createElement('video');
                     //create the mp4 source tag
-                    var mp4 = doc.createElement('source');
+                    var mp4 = document.createElement('source');
                     mp4.type = 'video/mp4';
                     mp4.src = vidSrc + '.mp4';
                     //create the webm source tag
-                    var webm = doc.createElement('source');
+                    var webm = document.createElement('source');
                     webm.type = 'video/webm';
                     webm.src = vidSrc + '.webm';
                     //append the sources to the video tag and stick it into the div
@@ -447,19 +447,19 @@
                     mouseenter: function () {
                         This.isMini();
                         var $this = $(this);
-                        var countdown = win.setTimeout(function () {
+                        var countdown = window.setTimeout(function () {
                             $about.find('.active').removeClass('active');
                             $this.addClass(' active ');
                         }, 1000);
                         $this.on(' mouseleave ', function (event) {
-                            win.clearTimeout(countdown);
+                            window.clearTimeout(countdown);
                             $this.off(event);
                         });
                     }
                 });
                 $("#coolio").on('click', function () {
                     This.requireCss('fancybox/fancybox.css', true);
-                    win.require(['static/fancybox'], function () {
+                    window.require(['static/fancybox'], function () {
                         $.fancybox({
                             padding: 3,
                             closeClick: true,
@@ -531,8 +531,8 @@
                 var stopDropRoll;
 
                 function delayer() {
-                    win.clearTimeout(stopDropRoll);
-                    stopDropRoll = win.setTimeout(function () {
+                    window.clearTimeout(stopDropRoll);
+                    stopDropRoll = window.setTimeout(function () {
                         navlistDock();
                     }, 10);
                 }
@@ -558,14 +558,14 @@
                 function modify() {
                     $('link[rel=stylesheet]').remove();
                     $('body *').deanimate();
-                    win.less.modifyVars({
+                    window.less.modifyVars({
                         '@color': colors[randomColor],
                         '@highlight': colors[randomColor]
                     });
                 }
-                if (!win.less) {
+                if (!window.less) {
                     this.requireCss('gnaoh.less');
-                    win.require(['static/less'], modify);
+                    window.require(['static/less'], modify);
                 } else {
                     modify();
                 }
@@ -573,8 +573,8 @@
         };
         //initializing everything and exporting it to the global scope
         var gnaoh = new Gnaoh().init();
-        win.gnaoh = gnaoh;
-        win.Gnaoh = function () {
+        window.gnaoh = gnaoh;
+        window.Gnaoh = function () {
             return new Gnaoh();
         };
         // /*****************************************************************************************
@@ -582,9 +582,9 @@
         //  * ****************************************************************************************
         // //history navigation (back/forward buttons) for ajax loaded pages
         try {
-            win.onpopstate = function () {
-                if (gnaoh.popState && gnaoh.currentPage.path !== doc.location.pathname) {
-                    gnaoh.getPage(doc.location, true);
+            window.onpopstate = function () {
+                if (gnaoh.popState && gnaoh.currentPage.path !== document.location.pathname) {
+                    gnaoh.getPage(document.location, true);
                 }
                 gnaoh.popState = true;
             };
@@ -615,7 +615,7 @@
                 gnaoh.getPage(link);
             }
             //mark link active & push page/hash to history
-            win.history.pushState({}, "", href);
+            window.history.pushState({}, "", href);
             return false;
         });
         //navlist toggle for smaller devices
