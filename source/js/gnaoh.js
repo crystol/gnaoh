@@ -3,8 +3,8 @@
         'use strict';
         var developement = true;
         //lazy logging--if devleopement is false, it won't console log anything.
-        var log = developement ? function () {
-                window.console.log(arguments);
+        var log = window.log = developement ? function (args) {
+                window.console.log(args);
             } : function () {}; 
         //common jquery selectors cache
         var $window = $(win);

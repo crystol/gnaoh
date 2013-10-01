@@ -1,8 +1,5 @@
 require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     gnaoh.requireCss('devdev.css');
-    var log = window.log = function (args) {
-        window.console.log(args);
-    };
     (function (doc, $, d3) {
         'use strict';
         var window = this;
@@ -177,8 +174,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                         this.currentArc = arc;
                     });
                 // Make the labels
-                This.labels = This.createLabels()
-                    .city();
+                This.labels = This.createLabels().city();
                 This.labels.languages();
                 This.labels.distribution();
                 return This;
@@ -856,5 +852,5 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         sampleAreaGraph.changeCity(this.value);
     });
     // Sample Map
-    // var sampleMap = new DevDev.Map();
+    var sampleMap = new DevDev.Map();
 });
