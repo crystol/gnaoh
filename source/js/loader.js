@@ -4,7 +4,7 @@
     //CDN hosted scripts and their local fallbacks
     var staticLocation = '/static/js';
     win.require.config({
-        baseUrl: 'js/',
+        baseUrl: '/js/',
         paths: {
             static: staticLocation,
             jquery: [

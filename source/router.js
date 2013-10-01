@@ -1,6 +1,6 @@
 // Lists of all of the possible routes used by the server
-var routes = ['/', '404', 'index', 'about', 'gallery', 'videos', 'devdev'];
-// Append private routes if they exist
+var routes = ['/', '404', 'index', 'about', 'gallery', 'videos', 'projects/devdev'];
+// Append private routes (pages not included in repo) if they exist
 try {
     var privateRoutes = require('./privateRoutes.js');
     privateRoutes.forEach(function (value) {

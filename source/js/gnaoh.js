@@ -198,7 +198,7 @@
                     return;
                 }
                 var stylesheet = doc.createElement("link");
-                var href = (staticLib) ? this.static + '/css/' + name : 'css/' + name;
+                var href = (staticLib) ? this.static + '/css/' + name : '/css/' + name;
                 stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
                 stylesheet.href = href;
                 doc.getElementsByTagName("head")[0].appendChild(stylesheet);
@@ -519,7 +519,7 @@
             //highlights the current page
             activate: function () {
                 var pageName = $post.data('name');
-                var activists = $navList.find('a[href="' + pageName + '"]');
+                var activists = $navList.find('a[href="/' + pageName + '"]');
                 activists = activists.add(activists.parent());
                 $navList.find('.active').removeClass('active');
                 activists.addClass('active');
@@ -588,7 +588,9 @@
                 }
                 gnaoh.popState = true;
             };
-        } catch (e) {}
+        } catch (e) {
+            log(e);
+        }
         //nav list functions for each link
         $navList.on('click', 'a', function (event) {
             var $this = $(this);

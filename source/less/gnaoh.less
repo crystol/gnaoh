@@ -85,7 +85,7 @@
 // Typography
 @font-face {
     font-family: 'Roboto';
-    src: local('Roboto Light'), local('Roboto-Light'), url(//themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+    src: local('Roboto'), local('Roboto Light'), local('Roboto-Light'), url(//themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
 }
 //Normalizer
 * {
@@ -275,6 +275,12 @@ html {
                 // -webkit-transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6, 1);
 				.transform(rotate, -180deg);
             }
+        }
+        .beta {
+            position: relative;
+            float: right;
+            top: @navigator-h * 0.6;
+            font-size: 80%;
         }
 	//the list with all of them links
     #navlist {
@@ -531,6 +537,9 @@ html {
                 .flipper:after {
                     top: 200%;
                 }
+            }
+            .beta {
+                .hide;
             }
         #navlist {
             .absolute;
