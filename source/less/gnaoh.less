@@ -34,7 +34,7 @@
 @navigator-fc: #BBB;                                                            //font color of nav links
 @post-width: 1000px;                                                            //max width of main post
 @gallery-w: @post-width;                                                        //image gallery's width
-@aromatics-size: 70px;                                                          //side of logo
+@aromatics-size: 50px;                                                          //side of logo
 @cssTransitionTime: 900ms;                                                      //default time for css transitions
 
 @nl:`'\n'`;                                                                     //newline shorthand
@@ -233,18 +233,18 @@ html {
             opacity: 0.75;
             .top {
                 width: 0;
-                border-bottom: round(@aromatics-size/4, 1) solid @highlight;
+                border-bottom: round(@aromatics-size/4, 1) solid @color;
                 border-left: round(@aromatics-size/2 * 0.866, 1) solid transparent;
                 border-right: round(@aromatics-size/2 * 0.866, 1) solid transparent;
             }
             .middle {
                 width: round(@aromatics-size * 0.866, 1);   //width to heigh ratio is root(3) to 1
                 height: round(@aromatics-size/2, 1);
-                background: @highlight;
+                background: @color;
             }
             .bottom {
                 width: 0;
-                border-top: round(@aromatics-size/4, 1) solid @highlight;
+                border-top: round(@aromatics-size/4, 1) solid @color;
                 border-left: round(@aromatics-size/2 * 0.866, 1) solid transparent;
                 border-right: round(@aromatics-size/2 * 0.866, 1) solid transparent;
             }
@@ -280,8 +280,9 @@ html {
             position: relative;
             float: right;
             color: @bg-color;
-            left: round(@aromatics-size / 5, 1);
-            top: round(@aromatics-size / 3 , 1);
+            font-size: 85%;
+            left: round(@aromatics-size / 6, 1);
+            top: round(@aromatics-size / 4 , 1);
         }
 	//the list with all of them links
     #navlist {
@@ -487,55 +488,49 @@ html {
         position: fixed;
     }
         .logo {
-            width: 0;
-            height: 0;
-        }
-                .aromatics {
-                    top : 5%;
-                    left : auto;
-                    right : @aromatics-size*0.75;
-                    .absolute;
-                    opacity: .85;
-                    z-index: 10;
-                    .transform(scale, 0.75);
-                    //hides everything but pyrimidine ring
-                     & >:not(.pyrimidine) {
-                        .hide;
-                     }
-                    .flipper {
-                        .show;
-                        width: 55%;
-                        height: 15%;
-                        margin: 0 auto;
-                        position: relative;
-                        top: 45%;
-                        background: @bg-color;
-                    }
-                    .flipper:before, .flipper:after {
-                        content: '';
-                        width: 100%;
-                        height: 100%;
-                        position: absolute;
-                        background: @bg-color;
-                    }
-                   
-                    .flipper:before {
-                        top: -200%;
-                    }
-                    .flipper:after {
-                        top: 200%;
-                    }
-            }
-            .beta {
-                .hide;
-            }
-        #navlist {
+            top : 5%;
+            left : auto;
+            right : @aromatics-size;
             .absolute;
-            padding-top: 4.1em !important; 
+            opacity: .85;
+            z-index: 10;
+            // .transform(scale, 0.75);
+            //hides everything but pyrimidine ring
+             & >:not(.pyrimidine) {
+                .hide;
+             }
+            .flipper {
+                .show;
+                width: 55%;
+                height: 15%;
+                margin: 0 auto;
+                position: relative;
+                top: 45%;
+                background: @bg-color;
+            }
+            .flipper:before, .flipper:after {
+                content: '';
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                background: @bg-color;
+            }
+           
+            .flipper:before {
+                top: -200%;
+            }
+            .flipper:after {
+                top: 200%;
+            }
+        }
+        #navlist {
             top: 0;
+            .absolute;
+            margin: 0;
             right: -100px;
             width: auto;
             .animated(400ms);
+            padding-top: 4.1em !important; 
             background: fadeout(darken(@bg-color, 5%), 20%);
             box-shadow: 1px 1px 5px #3F3F3F;
             .link {
@@ -543,6 +538,13 @@ html {
                 margin: 0;
                 a {
                     padding: 2em 0.6em;
+                }
+                &.active, &:hover {
+                    background: #666;
+                    border-bottom: none;
+                    a {
+                        color: @bg-color;
+                    }
                 }
             }
             &.show {

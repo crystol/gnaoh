@@ -156,7 +156,7 @@
                 var This = this;
                 this.loading = true;
                 gnaoh.smoothScroll(null, null, 'navigator');
-                $loader.addClass('loading').next().addClass('gnidaol');
+                $loader.addClass('loading');
                 //sends ajax request for the specific page
                 $.ajax({
                     type: 'GET',
