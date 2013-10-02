@@ -68,7 +68,7 @@
                 $window.off();
                 this.activate();
                 this.size();
-                $loader.addClass('loading').next().addClass('gnidaol');
+                $loader.addClass('loading');
                 //promises and callbacks
                 this.initPromise = $.Deferred();
                 this.initCallbacks = $.Callbacks();
@@ -81,7 +81,7 @@
                     //removeloading animation
                     $loader.on('animationiteration webkitAnimationIteration', function (event) {
                         $loader.off().on(event.type, function () {
-                            $loader.removeClass('loading').next().removeClass('gnidaol');
+                            $loader.removeClass('loading');
                             $loader.off();
                         });
                     });

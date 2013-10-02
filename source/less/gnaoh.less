@@ -212,12 +212,10 @@ html {
     .wrapper {
         max-width: @post-width;
         margin: 0 auto;
+        padding: 0 1em;
     }
 }
     .logo {
-        // margin:0 auto;
-        // width: @navigator-h - 25px;
-        // height: @navigator-h - 25px;
         .absolute;
         // Rotate on hover
         &:hover .hoang {
@@ -232,6 +230,7 @@ html {
         //G (gangsta) Molecule
         .pyrimidine, .benzene {
             position: absolute;
+            opacity: 0.75;
             .top {
                 width: 0;
                 border-bottom: round(@aromatics-size/4, 1) solid @highlight;
@@ -258,33 +257,31 @@ html {
             .hide;
         }
         .kenny, .hoang, .gnaoh {
-            color: @bg-color;
             .absolute;
+            margin-top: 5px;
+            font-size: 125%;
+            left: @aromatics-size;
 			.animated(500ms);
         }
         .kenny {
-            left: round(@aromatics-size/7, 1);
-            top: round(@aromatics-size/3 , 1);
+            top: 0;
         }
         .hoang {
-            left: round(@aromatics-size/1.8, 1);
-            top: round(@aromatics-size*1.1, 1);
-            // transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6,1);
-            // -webkit-transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6, 1);
+            left: @aromatics-size;
+            top: 1em;
         }
        .gnaoh {
 			opacity: 0;
-            left: round(@aromatics-size*0.55, 1);
-            top: round(@aromatics-size*1.1, 1);
-            // transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6,1);
-            // -webkit-transform-origin: round(@aromatics-size/3, 1) round(@aromatics-size/6, 1);
+            top: 1em;
+            left: @aromatics-size;
 			.transform(rotate, -180deg);
         }
         .beta {
             position: relative;
             float: right;
-            top: @navigator-h * 0.6;
-            font-size: 80%;
+            color: @bg-color;
+            left: round(@aromatics-size / 5, 1);
+            top: round(@aromatics-size / 3 , 1);
         }
 	//the list with all of them links
     #navlist {
@@ -365,7 +362,6 @@ html {
         .head {
             margin: 0.5em 0;
             font-size: @font-size*1.5;
-            // color: @color-dark;
             padding-bottom: 5px;
             text-decoration: underline;
         }
