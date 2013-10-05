@@ -88,7 +88,7 @@
     font-family: 'Titillium';
     src: local('Titillium'), local('Titillium Web'), url(//themes.googleusercontent.com/static/fonts/titilliumweb/v1/anMUvcNT0H1YN4FII8wpr24bNCNEoFTpS2BTjF6FB5E.woff) format('woff');
 }
-//Normalizer
+// Normalizers
 * {
     margin: 0;
     padding: 0;
@@ -109,7 +109,7 @@ img, video {
     max-width: 100%;
     height: auto;
     vertical-align: middle;
-    .noselect;
+    .noselect();
 }
 
 // .loading class will rotate the object continuously
@@ -160,15 +160,14 @@ html {
     }
 //navigation bar
 #navigator {
-    .noselect;
+    top: 0;
+    z-index: 10;
     height: @navigator-h;
     width: @navigator-w;
-    z-index: 10;
     box-shadow: 1px 1px 3px #888888; 
     background: rgba(255, 255, 255, 0.85);
-    top: 0;
-    .fixed;
-
+    .noselect();
+    .fixed();
     .wrapper {
         max-width: @post-width;
         margin: 0 auto;
@@ -176,7 +175,7 @@ html {
     }
 }
     .logo {
-        .absolute;
+        .absolute();
         // Rotate on hover
         &:hover .hoang {
             opacity: 0;
@@ -189,7 +188,7 @@ html {
     }
         //G (gangsta) Molecule
         .pyrimidine, .benzene {
-            position: absolute;
+            .absolute();
             opacity: 0.75;
             .top {
                 width: 0;
@@ -214,21 +213,21 @@ html {
             top: round(@aromatics-size*0.755,1);
         }
         .flipper {
-            .hide;
+            .hide();
         }
         .kenny, .hoang, .gnaoh {
-            .absolute;
             margin-top: 5px;
             font-size: 125%;
             left: @aromatics-size;
-			.animated(500ms);
+            .absolute();
+			.animated(300ms);
         }
         .kenny {
             top: 0;
         }
         .hoang {
-            left: @aromatics-size;
             top: 1em;
+            left: @aromatics-size;
         }
        .gnaoh {
 			opacity: 0;
@@ -237,17 +236,17 @@ html {
 			.transform(rotate, -180deg);
         }
         .beta {
-            position: relative;
             float: right;
-            color: @bg-color;
             font-size: 85%;
+            color: @bg-color;
+            position: relative;
             left: round(@aromatics-size / 6, 1);
             top: round(@aromatics-size / 4 , 1);
         }
 	//the list with all of them links
     #navlist {
-        margin-top: @navigator-h*0.3;
         float: right;
+        margin-top: @navigator-h*0.3;
         .link {
             display: inline-block;
             margin:0 0.5em;
@@ -266,18 +265,18 @@ html {
     }
 //content page
 #content {
+    padding: 2em 1em;
+    perspective:1000;
     max-width: @post-width;
     margin: @navigator-h auto;
-    padding: 2em 1em;
     -webkit-perspective: 1000;
-    perspective:1000;
 }
 #post {
     h1 {
         color: @color;
         margin: 10px 0;
-        font-weight: normal;
         font-size: 1.7em;
+        font-weight: normal;
     }
     a {
         color: @color;
@@ -285,22 +284,22 @@ html {
     }
     //ajax page switching
     #old-post, #new-post {
-        max-width: @post-width;
-        .animated;
-        -webkit-backface-visibility: hidden;
-        position: absolute;
         top: 0;
         left: 0;
+        max-width: @post-width;
+        -webkit-backface-visibility: hidden;
+        .absolute();
+        .animated();
     }
     #new-post{
         .transform(rotateY, -180deg);
     }
     //rotates the pages as they switch
     &.flipped, &.deppilf {
-        position: relative;
         -webkit-transform-style: preserve-3d;
         -webkit-backface-visibility: hidden;
         -webkit-perspective: 1000;
+        .relative();
     }
     &.flipped {
         .transform(rotateY, 180deg);
@@ -315,21 +314,21 @@ html {
         }
         .category {
             margin: 0.75em 0;
-            font-size: @font-size*1.75;
             color: @color-dark;
             padding-bottom: 5px;
+            font-size: @font-size*1.75;
             border-bottom: 1px solid @color-dark;
         }
         .head {
             margin: 0.5em 0;
-            font-size: @font-size*1.5;
             padding-bottom: 5px;
+            font-size: @font-size*1.5;
             text-decoration: underline;
         }
         .position {
+            margin-bottom: 2em;
             transform-origin: left top;
             -webkit-transform-origin: left top;
-            margin-bottom: 2em;
             .animated(150ms, all);
             &.active {
                 .transform(scale, 1.3);
@@ -360,47 +359,46 @@ html {
         overflow: hidden;
         }
         .image {
-            position: relative;
             margin: 10px 0;
+            .relative();
             //displays captions on hover
             .caption {
-                width: 100%;
-                position: absolute;
                 bottom: 0;
-                background: rgba(0, 0, 0, 0.75);
+                width: 100%;
                 color: #fff;
                 opacity: 0;
                 padding: 0 0 0 1%;
+                background: rgba(0, 0, 0, 0.75);
+                .absolute();
                 .animated(300ms);
             }
             //displays captions on hover
             &:hover > .caption {
-                padding: 1.5% 0 1.5% 1%;
                 opacity: 1;
+                padding: 1.5% 0 1.5% 1%;
             }
         }
-            
-        //the resizable gallery
+        // The resizable gallery (isotope)
         &.wall, .brick,  {
             .animated(400ms);
         }
         &.wall {
             .brick {
-                max-width: 24.5%;
                 margin: 0.25% 0;
+                max-width: 24.5%;
                 &.biggie {
                     max-width:  49.5%;
                     .caption {
-                        padding: 1.5% 0 1.5% 1%;
                         opacity: 1;
+                        padding: 1.5% 0 1.5% 1%;
                     }
                 }
                 &.top {
                     z-index: 5 !important;
                 }
                 &.brick-hidden {
-                    pointer-events: none;
                     z-index: 0;
+                    pointer-events: none;
                 }
             }
             //hides the gallery when it's initializing to ensure proper positioning
@@ -411,16 +409,17 @@ html {
         }
     //video wrapper and UI
     .video {
-        .relative;
         width: 100%;
-        margin-bottom: 1em;
         overflow: hidden;
+        margin-bottom: 1em;
+        .relative();
+
         .poster {
-            .absolute;
             width: 100%;
             background-size:100%;
             background-repeat: no-repeat;
             background-clip: content-box;
+            .absolute();
         }
         video {
             max-width: 100%;
@@ -443,7 +442,7 @@ html {
     & >:last-child {
         padding-right: 0;
     }
-    .clearfix;
+    .clearfix();
 }
 //grid widths
 .grid-100   {width: 100%    !important;}
@@ -483,41 +482,40 @@ html {
     .grid-25,
     .grid-20,
     .grid-10 {
-        .grid-50;
+            .grid-50();
         }
     #navigator {
         height: auto;
         z-index: 5;
         top: 0;
-        position: fixed;
+        .fixed();
     }
         .logo {
             top : 5%;
             left : auto;
-            right : @aromatics-size;
-            .absolute;
-            opacity: .85;
             z-index: 10;
-            // .transform(scale, 0.75);
+            opacity: .85;
+            right : @aromatics-size;
+            .absolute();
             //hides everything but pyrimidine ring
              & >:not(.pyrimidine) {
                 .hide;
              }
             .flipper {
-                .show;
+                top: 45%;
                 width: 55%;
                 height: 15%;
                 margin: 0 auto;
-                position: relative;
-                top: 45%;
                 background: @bg-color;
+                .relative();
+                .show();
             }
             .flipper:before, .flipper:after {
                 content: '';
                 width: 100%;
                 height: 100%;
-                position: absolute;
                 background: @bg-color;
+                .absolute();
             }
            
             .flipper:before {
@@ -529,14 +527,15 @@ html {
         }
         #navlist {
             top: 0;
-            .absolute;
             margin: 0;
-            right: -100px;
             width: auto;
-            .animated(400ms);
+            right: -100px;
             padding-top: 4.1em !important; 
-            background: fadeout(darken(@bg-color, 5%), 20%);
             box-shadow: 1px 1px 5px #3F3F3F;
+            background: fadeout(darken(@bg-color, 5%), 20%);
+            .animated(400ms);
+            .absolute();
+
             .link {
                 display: block;
                 margin: 0;
@@ -559,23 +558,23 @@ html {
         margin:  @topbar-height*1.5 0.5em;
         padding: 0;
     }
-            .gallery.wall, .gallery .brick {
-                .animated(0ms);
-            }
-                .gallery.wall .brick {
-                    max-width: 49.5%;
-                    &.biggie {
-                        max-width:  100%;
-                    }
-                }
-            
-            .video {
-                width: 100% !important;
-                margin-bottom: 0.5em;
-                video {
-                    max-width: 100%;
+        .gallery.wall, .gallery .brick {
+            .animated(0ms) !important;
+        }
+            .gallery.wall .brick {
+                max-width: 49.5%;
+                &.biggie {
+                    max-width:  100%;
                 }
             }
+        
+        .video {
+            width: 100% !important;
+            margin-bottom: 0.5em;
+            video {
+                max-width: 100%;
+            }
+        }
 }
 //Phones in portrait layout
 @media (max-width:480px) {

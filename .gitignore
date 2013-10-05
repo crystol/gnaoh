@@ -4,3 +4,4 @@ logs
 npm-debug.log
 source/private
 sftp-config.json
+.nodemonignore
