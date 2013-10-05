@@ -5,7 +5,7 @@
         var developement = true;
         var log = window.log = developement ? function (args) {
                 window.console.log(args);
-            } : function () {}; 
+            } : function () {};
         //common jquery selectors cache
         var $window = $(window);
         var $body = $('body');
@@ -52,7 +52,6 @@
             return this;
         };
         //an object to wield the burden of responsibilities--it will be the one...
-
         function Gnaoh() {
             //global scope variables
             this.scrolling = false;
@@ -171,9 +170,8 @@
                     document.title = name.charAt(0).toUpperCase() + name.substring(1);
                     $post.wrapInner('<div id="old-post">').append($postPrep);
                     var $old = $('#old-post');
-                    var $new = $('#new-post').css('width',$post.width());
+                    var $new = $('#new-post').css('width', $post.width());
                     //restores the order
-
                     function cleanUp() {
                         $old.remove();
                         $new.contents().unwrap();
@@ -292,7 +290,6 @@
                             sortBy: 'random',
                             resizable: false
                         });
-
                         function anotherBrickOnTheWall() {
                             $foundation.isotope('reloadItems');
                             $foundation.isotope('reLayout');
@@ -478,7 +475,6 @@
                     event.preventDefault();
                 }
                 //recursively try to get the target
-
                 function getNext(current) {
                     var next = direction.call(current);
                     //base case: breaks the loop if it bubbles to #post
@@ -525,14 +521,12 @@
                 //delay function to prevent scroll event from firing too often
                 var This = this;
                 var stopDropRoll;
-
                 function delayer() {
                     window.clearTimeout(stopDropRoll);
                     stopDropRoll = window.setTimeout(function () {
                         navlistDock();
                     }, 10);
                 }
-
                 function navlistDock() {
                     This.isMini();
                     var currentY = window.pageYOffset;
@@ -550,7 +544,6 @@
             rainbow: function () {
                 var colors = ['#52a87f', '#EE8080', '#9371b3', '#7C7C7C', '#0EAED6'];
                 var randomColor = Math.floor(Math.random() * colors.length);
-
                 function modify() {
                     $('link[rel=stylesheet]').remove();
                     $('body *').deanimate();

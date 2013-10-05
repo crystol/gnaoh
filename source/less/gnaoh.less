@@ -22,23 +22,20 @@
  *      - Media Queries for Responsive functionality.
  */
 //variables
-@font: 'Roboto', ubuntu, 'droid sans', monospace, sans-serif;                  //default font
+@font: Titillium, ubuntu, 'droid sans', monospace, sans-serif;                  //default font
 @font-size: 15px;                                                               //default font size
 @color: #9371B3;                                                                //highlighted color
 @color-dark: darken(@color,5%);                                                 //highlighted color
-@selection: #7E7E7E;                                                            //selection color
-@highlight: #666;
+@selection: darken(@color,25%);                                                            //selection color
 @bg-color: #fff;                                                                //background color
-@navigator-h: 50px;                                                            //height of sidebar
+@navigator-h: 50px;                                                             //height of sidebar
 @navigator-w: 100%;                                                             //with of sidebar
 @navigator-fc: #BBB;                                                            //font color of nav links
 @post-width: 1000px;                                                            //max width of main post
 @gallery-w: @post-width;                                                        //image gallery's width
 @aromatics-size: 50px;                                                          //side of logo
 @cssTransitionTime: 900ms;                                                      //default time for css transitions
-
 @nl:`'\n'`;                                                                     //newline shorthand
-@baseURL: '/library';                                        //URL for compilation
 
 //common mixins
 .animated (@time: @cssTransitionTime; @type: all) {
@@ -87,6 +84,10 @@
     font-family: 'Roboto';
     src: local('Roboto'), local('Roboto Light'), local('Roboto-Light'), url(//themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
 }
+@font-face {
+    font-family: 'Titillium';
+    src: local('Titillium'), local('Titillium Web'), url(//themes.googleusercontent.com/static/fonts/titilliumweb/v1/anMUvcNT0H1YN4FII8wpr24bNCNEoFTpS2BTjF6FB5E.woff) format('woff');
+}
 //Normalizer
 * {
     margin: 0;
@@ -110,55 +111,14 @@ img, video {
     vertical-align: middle;
     .noselect;
 }
-//responsive fluid grids
-[class *= 'grid-'] {
-    display: inline;
-    float: left;
-    padding: 0 0.5%;
-}
-//the parent wrappers of grid elements
-.gridlock {
-    float: none;
-    & >:first-child {
-        padding-left: 0;
-    }
-    & >:last-child {
-        padding-right: 0;
-    }
-    .clearfix;
-}
-//grid widths
-.grid-100   {width: 100%    !important;}
-.grid-80    {width:80%      !important;}
-.grid-75    {width:75%      !important;}
-.grid-66    {width:66.6%    !important;}
-.grid-60    {width:60%      !important;}
-.grid-50    {width:50%      !important;}
-.grid-40    {width:40%      !important;}
-.grid-33    {width:33.3%    !important;}
-.grid-25    {width:25%      !important;}
-.grid-20    {width:20%      !important;}
-.grid-10    {width:10%      !important;}
 
-//grid blank offsets
-.grid-offset-80    {margin-left:80%;}
-.grid-offset-75    {margin-left:75%;}
-.grid-offset-66    {margin-left:66%;}
-.grid-offset-60    {margin-left:60%;}
-.grid-offset-50    {margin-left:50%;}
-.grid-offset-40    {margin-left:40%;}
-.grid-offset-33    {margin-left:33%;}
-.grid-offset-25    {margin-left:25%;}
-.grid-offset-20    {margin-left:20%;}
-.grid-offset-10    {margin-left:10%;}
-
-//universials
-//.loading class will rotate the object continuously
+// .loading class will rotate the object continuously
 .keyframes(loading, 'transform:none;', 'transform:rotate(360deg);');
 .keyframes(loading, 'transform:none;', 'transform:rotate(360deg);', -webkit-);
-.keyframes(gnidaol, 'transform:none;', 'transform:rotate(-360deg);');
-.keyframes(gnidaol, 'transform:none;', 'transform:rotate(-360deg);', -webkit-);
- //default transition animation
+// .keyframes(gnidaol, 'transform:none;', 'transform:rotate(-360deg);');
+// .keyframes(gnidaol, 'transform:none;', 'transform:rotate(-360deg);', -webkit-);
+
+// default transition animation
 .animated {
     .animated();
 }
@@ -468,10 +428,54 @@ html {
     }
 
 
-//tablets
+// responsive fluid grids
+[class *= 'grid-'] {
+    display: inline;
+    float: left;
+    padding: 0 0.5%;
+}
+// parent wrappers of grid elements
+.gridlock {
+    float: none;
+    & >:first-child {
+        padding-left: 0;
+    }
+    & >:last-child {
+        padding-right: 0;
+    }
+    .clearfix;
+}
+//grid widths
+.grid-100   {width: 100%    !important;}
+.grid-80    {width:80%      !important;}
+.grid-75    {width:75%      !important;}
+.grid-66    {width:66.6%    !important;}
+.grid-60    {width:60%      !important;}
+.grid-50    {width:50%      !important;}
+.grid-40    {width:40%      !important;}
+.grid-33    {width:33.3%    !important;}
+.grid-25    {width:25%      !important;}
+.grid-20    {width:20%      !important;}
+.grid-10    {width:10%      !important;}
+
+// grid blank offsets
+.grid-offset-80    {margin-left:80%;}
+.grid-offset-75    {margin-left:75%;}
+.grid-offset-66    {margin-left:66%;}
+.grid-offset-60    {margin-left:60%;}
+.grid-offset-50    {margin-left:50%;}
+.grid-offset-40    {margin-left:40%;}
+.grid-offset-33    {margin-left:33%;}
+.grid-offset-25    {margin-left:25%;}
+.grid-offset-20    {margin-left:20%;}
+.grid-offset-10    {margin-left:10%;}
+
+// Media queries
+// tablets
 // @media (max-width:1024px) {
     //nothing to see here
 // }
+
 //Phones in landscape & Tablets in portrait
 @media (max-width:768px) {
     @topbar-height: 2.5em;

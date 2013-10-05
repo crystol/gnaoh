@@ -852,5 +852,5 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         sampleAreaGraph.changeCity(this.value);
     });
     // Sample Map
-    var sampleMap = new DevDev.Map();
+    new DevDev.Map();
 });
