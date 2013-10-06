@@ -153,7 +153,7 @@
             getPage: function (link, skipAnimation) {
                 //need to save context of this to pass to jquery callbacks
                 var This = this;
-                this.loading = true;
+                This.loading = true;
                 gnaoh.smoothScroll(null, null, 'navigator');
                 $loader.addClass('loading');
                 //sends ajax request for the specific page
@@ -200,6 +200,27 @@
                 stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
                 stylesheet.href = href;
                 document.getElementsByTagName("head")[0].appendChild(stylesheet);
+            },
+            // Load a single photo in a light box
+            lightbox: function (url, caption) {
+                console.log('yo');
+                var This = this;
+                function load() {
+                    $.fancybox({
+                        padding: 3,
+                        closeClick: true,
+                        href: This.static + '/img/' + url,
+                        title: caption,
+                    });
+                }
+                // Loads the CSS and JS files for fancybox.js if they're not loaded. 
+                if (!This.lightboxed) {
+                    This.lightboxed = true;
+                    This.requireCss('fancybox/fancybox.css', true);
+                    window.require(['static/fancybox'], load);
+                } else {
+                    return load();
+                }
             },
             //load a  gallery from a specified directory. sample html code <div class='gallery' id='dirName' start='1' amount='10'></div>
             loadGallery: function () {
@@ -450,18 +471,6 @@
                         });
                     }
                 });
-                $("#coolio").on('click', function () {
-                    This.requireCss('fancybox/fancybox.css', true);
-                    window.require(['static/fancybox'], function () {
-                        $.fancybox({
-                            padding: 3,
-                            closeClick: true,
-                            href: This.static + '/img/misc/coolio.jpg',
-                            title: 'Hanging out in g-paradise with Coolio.'
-                        });
-                    });
-                    return false;
-                });
             },
             //animated smoothScroll to next sibbling element or specified target
             smoothScroll: function (event, direction, customTarget) {
@@ -563,9 +572,6 @@
         //initializing everything and exporting it to the global scope
         var gnaoh = new Gnaoh().init();
         window.gnaoh = gnaoh;
-        window.Gnaoh = function () {
-            return new Gnaoh();
-        };
         // /*****************************************************************************************
         //  * Misc. DOM event bindings and manipulations
         //  * ****************************************************************************************

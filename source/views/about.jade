@@ -1,7 +1,6 @@
 extends skeleton
 block content
     .about
-        .category Kenny Hoang
         .self
             p Welcome to my corner of the collective human information network.
             p In my free time, I enjoy brainstorming and writing apt self-descriptions.
@@ -14,13 +13,12 @@ block content
                         a(href='mailto:kenny@gnaoh.com?subject=Hi%20Kenny') kenny@gnaoh.com
         .category Curriculum Vitae
         .category Experience
-        //- .head Experience
         .position
             .title Center for Drug Design, University of Minnesota - Research Assistant
             .date December 2009 – May 2010
             .description
                 ul
-                    liZ
+                    li
                     li
         .position
             .title Department of Biochemistry, University of Minnesota - Teaching Assistant
@@ -59,7 +57,7 @@ block content
                     li Miscellaneous freelance gigs--e.g., weddings, portraits, events.
                     li
                         | Extensive experience in the 
-                        a#coolio(href='#') nightlife 
+                        a(href='#coolie', onclick='gnaoh.lightbox("misc/coolio.jpg", "Hanging out in g-paradise with Coolio.")') nightlife 
                         | industry.
         .position
             .title Walgreens - Pharmacy Technician
