@@ -65,15 +65,15 @@
                 var This = this;
                 //clear sticky settings and unbind listeners
                 $window.off();
-                this.activate();
-                this.size();
+                This.activate();
+                This.size();
                 $loader.addClass('loading');
                 //promises and callbacks
-                this.initPromise = $.Deferred();
-                this.initCallbacks = $.Callbacks();
-                this.resizeCallbacks = $.Callbacks();
+                This.initPromise = $.Deferred();
+                This.initCallbacks = $.Callbacks();
+                This.resizeCallbacks = $.Callbacks();
                 //add functions post-init callbacks list
-                this.initCallbacks.add(function () {
+                This.initCallbacks.add(function () {
                     This.loading = false;
                     //pagescroll observer
                     This.scrollspy();
@@ -86,11 +86,11 @@
                     });
                 });
                 //exectue the callbacks after init is finished
-                this.initPromise.done(function () {
+                This.initPromise.done(function () {
                     This.initCallbacks.fire();
                 });
                 //add handlers for window's resize events
-                this.resizeCallbacks.add([This.scrollspy, This.size]);
+                This.resizeCallbacks.add([This.scrollspy, This.size]);
                 //bind said handlers to window and add a delay to prevent rapid firing
                 $window.on('resize', function () {
                     window.clearTimeout(This.resizeDelay);
@@ -103,26 +103,29 @@
                 $video = $('#post .video');
                 $about = $('#post .about');
                 //update currentpage for navigation
-                this.currentPage = {
+                This.currentPage = {
                     path: document.location.pathname,
                     href: document.location.href
                 };
                 //load about section if it exists
                 if ($about.length) {
-                    this.loadAbout();
+                    This.loadAbout();
                 }
                 //loads videos if they exist
                 if ($video.length) {
-                    this.loadVideo();
+                    This.loadVideo();
                 }
                 //loads galleries if they exist
                 if ($gallery.length) {
-                    this.loadGallery();
+                    This.loadGallery();
                 }
-                if (!$video.length && !$gallery.length) {
-                    this.initPromise.resolve();
-                }
-                return this;
+                // Resolve the init promise if it fails to fire through other means
+                $.wait(1000, function () {
+                    if (This.initPromise.state() === 'pending') {
+                        This.initPromise.resolve();
+                    }
+                });
+                return This;
             },
             //media query: will set mini || medium || massive to true appropiately
             size: function () {
@@ -203,7 +206,6 @@
             },
             // Load a single photo in a light box
             lightbox: function (url, caption) {
-                console.log('yo');
                 var This = this;
                 function load() {
                     $.fancybox({
@@ -211,6 +213,9 @@
                         closeClick: true,
                         href: This.static + '/img/' + url,
                         title: caption,
+                        helpers: {
+                            overlay: null,
+                        }
                     });
                 }
                 // Loads the CSS and JS files for fancybox.js if they're not loaded. 
@@ -437,29 +442,25 @@
                         $wrapper.find('video').trigger(event.type);
                     });
                 });
-                //resolve init promise if it's hanging
-                if (This.initPromise.state() === 'pending' || !$gallery.length) {
-                    $.wait(1000, This.initPromise.resolve);
-                }
-                //on window resize, the video heights will adjust
+                // On window resize, the video heights will adjust
                 This.resizeCallbacks.add(function () {
                     $video.each(function () {
                         var $this = $(this);
                         $this.css('height', $this.width() * (9 / 16));
                     });
                 });
+                // Resolve init promise
+                This.initPromise.resolve();
             },
-            //curriculum vitae section
+            // Curriculum Vitae section
             loadAbout: function () {
-                var This = this;
                 $about.find('.position:not(.active)').on({
                     click: function () {
-                        This.isMini();
                         $about.find('.active ').removeClass(' active ');
                         $(this).addClass(' active ');
                     },
+                    // Adds active status on hover. Cancels if mouse leaves within 1000ms
                     mouseenter: function () {
-                        This.isMini();
                         var $this = $(this);
                         var countdown = window.setTimeout(function () {
                             $about.find('.active').removeClass('active');
@@ -472,11 +473,11 @@
                     }
                 });
             },
-            //animated smoothScroll to next sibbling element or specified target
+            // Animated smoothScroll to next sibbling element or specified target
             smoothScroll: function (event, direction, customTarget) {
                 var This = this;
                 var $this = $(this);
-                //prevent stacking scroll animations
+                //  Prevent stacking scroll animations
                 if (this.scrolling) {
                     return;
                 }
@@ -539,13 +540,11 @@
                 function navlistDock() {
                     This.isMini();
                     var currentY = window.pageYOffset;
-                    if (currentY <= 144) {
-                        $navList.removeClass('fixed');
-                    } else if (currentY > 144) {
-                        $navList.addClass('fixed');
-                    } else {
-                        return;
-                    }
+                    // if (currentY <= 144) {
+                    // } else if (currentY > 144) {
+                    // } else {
+                    // return;
+                    // }
                 }
                 $window.off('scroll').on('scroll', delayer).trigger('scroll');
             },

@@ -22,7 +22,7 @@
  *      - Media Queries for Responsive functionality.
  */
 //variables
-@font: Titillium, ubuntu, 'droid sans', monospace, sans-serif;                  //default font
+@font: 'Titillium', 'ubuntu', 'droid sans', monospace, sans-serif;                  //default font
 @font-size: 15px;                                                               //default font size
 @color: #9371B3;                                                                //highlighted color
 @color-dark: darken(@color,5%);                                                 //highlighted color
@@ -79,14 +79,18 @@
 .absolute (){
     position: absolute;
 }
+
 // Typography
 @font-face {
     font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
     src: local('Roboto'), local('Roboto Light'), local('Roboto-Light'), url(//themes.googleusercontent.com/static/fonts/roboto/v8/Hgo13k-tfSpn0qi1SFdUfT8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
 }
 @font-face {
     font-family: 'Titillium';
-    src: local('Titillium'), local('Titillium Web'), url(//themes.googleusercontent.com/static/fonts/titilliumweb/v1/anMUvcNT0H1YN4FII8wpr24bNCNEoFTpS2BTjF6FB5E.woff) format('woff');
+    font-style: normal;
+    src: url('//themes.googleusercontent.com/static/fonts/titilliumweb/v1/anMUvcNT0H1YN4FII8wprwwHpU-8OKeXrGSDRtNNsHg.ttf') format('truetype');
 }
 // Normalizers
 * {
@@ -121,10 +125,6 @@ img, video {
 // default transition animation
 .animated {
     .animated();
-}
-.collapse {
-	@collapsed-w: -@navigator-w*0.85;
-	.transform(translate, '@{collapsed-w}, 0');
 }
 .clearfix {
     &:before, &:after {
@@ -321,14 +321,14 @@ html {
         }
         .position {
             margin-bottom: 2em;
-            transform-origin: left top;
-            -webkit-transform-origin: left top;
-            .animated(150ms, all);
+            .animated(200ms, all);
+
             &.active {
-                .transform(scale, 1.3);
-                border-left: 5px solid @color-dark;
+                margin-bottom: 1.5em;
+                font-size: @font-size * 1.25;
+                line-height: 125%;
                 padding-left: 1em;
-                margin-bottom: 4.5em;
+                border-left: 5px solid @color-dark;
             }
             .title {
                 font-size: 120%;
@@ -347,7 +347,7 @@ html {
             }
         }
     }
-    //image galleries
+    // Image galleries
     .gallery {
         margin: 10px 0;
         overflow: hidden;
@@ -355,7 +355,7 @@ html {
         .image {
             margin: 10px 0;
             .relative();
-            //displays captions on hover
+            // Displays captions on hover
             .caption {
                 bottom: 0;
                 width: 100%;
@@ -464,15 +464,13 @@ html {
 .grid-offset-10    {margin-left:10%;}
 
 // Media queries
-// tablets
+// Tablets
 // @media (max-width:1024px) {
-    //nothing to see here
 // }
 
-//Phones in landscape & Tablets in portrait
+// Phones in landscape & Tablets in portrait
 @media (max-width:768px) {
-    @topbar-height: 2.5em;
-    // converts the smaller grids to be 50%
+    // Converts the smaller grids to be 50%
     .grid-25,
     .grid-20,
     .grid-10 {
@@ -491,7 +489,7 @@ html {
             opacity: .85;
             right : @aromatics-size;
             .absolute();
-            //hides everything but pyrimidine ring
+            // Hides everything but pyrimidine ring
              & >:not(.pyrimidine) {
                 .hide;
              }
@@ -549,7 +547,7 @@ html {
             }
         }
     #content {
-        margin:  @topbar-height*1.5 0.5em;
+        margin: 1em 0.5em;
         padding: 0;
     }
         .gallery.wall, .gallery .brick {
@@ -567,6 +565,16 @@ html {
             margin-bottom: 0.5em;
             video {
                 max-width: 100%;
+            }
+        }
+        .about {
+            .position {
+                .animated(0ms);
+                &.active {
+                    margin-bottom: 1em;
+                    line-height: 150%;
+                    padding-left: 0.5em;
+                }
             }
         }
 }
