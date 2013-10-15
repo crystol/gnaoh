@@ -341,18 +341,26 @@ html {
                     height: auto;
                 }
             }
-            .bar {
-                // background: @color;
-                border: 1px solid @color;
-                display: inline-block;
+            .bar, [class *= 'bar-length'] {
                 height: 1em;
-                width: 10em;
                 border-radius: 5px;
+                display: inline-block;
+                .absolute;
+            }
+            .bar {
+                border: 1px solid @color;
+                width: 10em;
                 margin-left: 1em;
                 .length-50 {
                     background: @color;
                     width: 50%;
                 }
+            }
+            [class *= 'bar-length'] {
+                background: @color;
+            }
+            .bar-length-50 {
+                width: 50%;
             }
         }
         .position {
