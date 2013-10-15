@@ -12,63 +12,107 @@ block content
                     li Email: 
                         a(href='mailto:kenny@gnaoh.com?subject=Hi%20Kenny') kenny@gnaoh.com
         .category Curriculum Vitae
-        .category Experience
-        .position
-            .title Center for Drug Design, University of Minnesota - Research Assistant
-            .date December 2009 – May 2010
-            .description
-                ul
-                    li
-                    li
-        .position
-            .title Department of Biochemistry, University of Minnesota - Teaching Assistant
-            .date Spring Semester, 2011
-            .description
-                | Evaluated assignments in a senior-level biochemistry course.
-        .position
-            .title Center for Drug Design, University of Minnesota - IT
-            .date May 2010 - July 2011
-            .description
-                | Computing and networking technical support for a network of 50 machines.
-        .position
-            .title Department of Plant Biology, University of Minnesota - Research Assistant
-            .date December 2009 – May 2010
-            .description
-                | Examined the uncharted genetic linkage map of 
-                span.genus-species Cannabis sativa
-                |  and 
-                span.genus-species Cannabis indica
-                | .
-                ul
-                    li beebepp
-        .position
-            .title University Relations, University of Minnesota - Photographer
-            .date August 2009 – June 2010
-            .description
-                ul
-                    li Photographed notable figures and events on campus.
-                    li Processed images from film and digital media for university publications.
-                    li Organized and prepped photographs and their metadata for archiving purposes.
-        .position
-            .title Photographer
-            .date 2008 - Present
-            .description
-                ul
-                    li Miscellaneous freelance gigs--e.g., weddings, portraits, events.
-                    li
-                        | Extensive experience in the 
-                        a(href='#coolie', onclick='gnaoh.lightbox("misc/coolio.jpg", "Hanging out in g-paradise with Coolio.")') nightlife 
-                        | industry.
-        .position
-            .title Walgreens - Pharmacy Technician
-            .date October 2007 – September 2008
-            .description
-                | Aided the workflow in an HIV-specialty pharmacy: distribution of prescription drugs, insurance fillings, and patient assistance.
-        .position
-            .title Vietnamese Community of Minnesota - Tutor
-            .date 2003 - 2009
-            .description
-                | Assisted in the process of teaching the Vietnamese language as a second language to the youth.
+        .skills
+            .category Skills
+            .tabs
+                div(class='title active', data-tab='#skill1') Web Developement
+                div(class='title', data-tab='#skill2') Biochemistry/Bioinformatics
+                div(class='title', data-tab='#skill3') Tech
+                #skill1(class='tab active')
+                    ul
+                        li Photographed notable figures and events on campus.
+                        li Processed images from film and digital media for university publications.
+                #skill2.tab
+                    ul
+                        li aksdjkasjd 
+                        li aklsdjaksljd
+                        li oqiweoiqwopeu
+                .tab#skill3
+                    ul
+                        li zzzz
+        .experience 
+            .category Experience
+            .position
+                .title Spitfire Labs - Contracted Front-end Developer
+                .date April 2013 - Present
+                .description
+            .position
+                .title Self-Employed - English Interpreter
+                .date September 2011 - December 2012
+                .description
+            .position
+                .title Xuong Huan Elementary / Nha Trang National College of Pedagogy - English as a Second Language Teacher
+                .date September 2011 - December 2012
+                .description
+
+            .position
+                .title Center for Drug Design, University of Minnesota - Research Assistant
+                .date May 2010 – July 2011
+                .description
+                    .header Topics of investigation:
+                    ul
+                        li Molecular structure of an ATP-binding xenobiotic transporter membrane protein that is highly expressed in human breast cancer cells: BCRP.
+                        li Behavior and molecular dynamics of BCRP sans its transmembrane domains.
+                    .header Methods of investigation:
+                    ul
+                        li Generated a working model of the BCRP protein using homology modeling and  P-glycoprotein as a reference.
+            .position
+                .title Department of Biochemistry, University of Minnesota - Teaching Assistant
+                .date Spring Semester, 2011
+                .description
+                    | Evaluated assignments in a senior-level biochemistry course.
+            .position
+                .title Center for Drug Design, University of Minnesota - IT
+                .date May 2010 - July 2011
+                .description
+                    | Computing, printing, and networking technical support and maintenance for a network of 50+ machines.
+            .position
+                .title Department of Plant Biology, University of Minnesota - Research Assistant
+                .date December 2009 – May 2010
+                .description
+                    .header Topics of investigation:
+                    ul
+                        li
+                            | Uncharted (2009) genetic linkage map of 
+                            span.genus-species Cannabis sativa
+                            |  and 
+                            span.genus-species Cannabis indica. 
+                        li Loci of alleles responsible for the translation of proteins exclusive to the trichomes found on female F1 progenies. 
+                        li Proteome differences that affect the production of targetted cannabinoids: cannabidiol and tetrahydrocannabinol.
+                    .header Methods of investigation:
+                    ul
+                        li Determined the locations of possible single nucleotide polymorphisms(SNPs) of the two species using previously sequenced DNA and 
+                            a(href='http://blast.ncbi.nlm.nih.gov/Blast.cgi') BLAST. 
+                        li Utilized the polymerase chain reaction(PCR) to amplify the DNA samples to observable concentrations.
+                        li Confirmed the existence of the hypothesized SNPs via restriction endonuclease disgetions and gel agarose electrophoresis reactions. 
+            .position
+                .title University Relations, University of Minnesota - Photographer
+                .date August 2009 – June 2010
+                .description
+                    ul
+                        li Photographed notable figures and events on campus.
+                        li Processed images from film and digital media for university publications.
+                        li Organized and prepped photographs and their metadata for archiving purposes.
+            .position
+                .title Self-Employed - Photographer
+                .date 2008 - Present
+                .description
+                    ul
+                        li Miscellaneous freelance gigs--e.g., weddings, portraits, events.
+                        li
+                            | Extensive experience in the 
+                            a(href='#coolio', onclick='gnaoh.lightbox("misc/coolio.jpg", "Hanging out in g-paradise with Coolio.")') nightlife 
+                            | industry.
+            .position
+                .title Walgreens - Pharmacy Technician
+                .date October 2007 – September 2008
+                .description
+                    | Aided the workflow in an HIV-specialty pharmacy: distribution of prescription drugs, insurance fillings, and patient assistance.
+            .position
+                .title Vietnamese Community of Minnesota - Tutor
+                .date 2003 - 2009
+                .description
+                    | Assisted in the process of teaching the Vietnamese language as a second language to the youth.
         .category Education
         .position
             .title University of Minnesota

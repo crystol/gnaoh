@@ -312,12 +312,32 @@ html {
         .self {
             margin-bottom: 1em;
         }
+        li { 
+              list-style: circle inside;
+        }
         .category {
             margin: 0.75em 0;
             font-size: 175%;
             color: @color-dark;
             padding-bottom: 0.25em;
             border-bottom: 1px solid @color-dark;
+        }
+        .skills {
+            height: 10em;
+            .title {
+                display: inline-block;
+                margin-right: 1em;
+                &.active {
+                    color: @color;
+                    text-decoration: underline;
+                }
+            }
+            .tab {
+                display: none;
+                &.active {
+                    display: block;
+                }
+            }
         }
         .position {
             margin-bottom: 2em;
@@ -338,9 +358,7 @@ html {
                 margin-bottom: 0.5em;
             }
             .description {
-                 li { 
-                    list-style: circle inside;
-                 }
+                 
             }
             .genus-species {
                 font-style: italic;

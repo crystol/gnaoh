@@ -68,24 +68,23 @@
                 This.activate();
                 This.size();
                 $loader.addClass('loading');
-                //promises and callbacks
-                This.initPromise = $.Deferred();
-                This.initCallbacks = $.Callbacks();
-                This.resizeCallbacks = $.Callbacks();
-                //add functions post-init callbacks list
+                // Promises and callbacks
+                This.initPromise = new $.Deferred();
+                This.initCallbacks = new $.Callbacks();
+                This.resizeCallbacks = new $.Callbacks();
+                // Add functions post-init callbacks list
                 This.initCallbacks.add(function () {
                     This.loading = false;
-                    //pagescroll observer
+                    // Pagescroll observer
                     This.scrollspy();
-                    //removeloading animation
+                    // Removeloading animation after next iteration
                     $loader.on('animationiteration webkitAnimationIteration', function (event) {
                         $loader.off().on(event.type, function () {
-                            $loader.removeClass('loading');
-                            $loader.off();
+                            $loader.removeClass('loading').off();
                         });
                     });
                 });
-                //exectue the callbacks after init is finished
+                // Exectue the callbacks after init is finished
                 This.initPromise.done(function () {
                     This.initCallbacks.fire();
                 });
@@ -179,18 +178,18 @@
                         $old.remove();
                         $new.contents().unwrap();
                         $post.removeClass(animethod);
-                        //push new page to analytics and browser history
+                        // Push new page to analytics and browser history
                         This.init();
                         window._gaq.push(['_trackPageview', document.location.pathname]);
                     }
-                    //animating the pages
-                    //skip on mobile devices and browsers that isn't chrome
+                    // Animating the pages
+                    // Skip on mobile devices and browsers that isn't chrome
                     var notChrome = !/Chrome/.test(window.navigator.userAgent);
                     if (This.mini || skipAnimation || notChrome) {
                         return cleanUp();
                     }
                     var animethod = (Math.round(Math.random()) === 0) ? 'flipped' : 'deppilf';
-                    $post.deanimate(null, null, 1100).addClass(animethod).find($old).fadeOut(500).wait(1100, cleanUp);
+                    $post.deanimate(null, null, This.cssDelay).addClass(animethod).find($old).fadeOut(500).wait(This.cssDelay, cleanUp);
                 });
             },
             //load a css file 
@@ -199,6 +198,7 @@
                     return;
                 }
                 var stylesheet = document.createElement("link");
+                // Load from static library or local /css directory
                 var href = (staticLib) ? this.static + '/css/' + name : '/css/' + name;
                 stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
                 stylesheet.href = href;
@@ -454,19 +454,26 @@
             },
             // Curriculum Vitae section
             loadAbout: function () {
+                $about.find('.tabs .title').on({
+                    click: function () {
+                        $about.find('.skills .active').removeClass('active');
+                        $(this).addClass('active');
+                        $about.find(this.dataset.tab).addClass('active');
+                    }
+                });
                 $about.find('.position:not(.active)').on({
                     click: function () {
-                        $about.find('.active ').removeClass(' active ');
-                        $(this).addClass(' active ');
+                        $about.find('.position.active').removeClass(' active');
+                        $(this).addClass(' active');
                     },
                     // Adds active status on hover. Cancels if mouse leaves within 1000ms
                     mouseenter: function () {
                         var $this = $(this);
                         var countdown = window.setTimeout(function () {
-                            $about.find('.active').removeClass('active');
-                            $this.addClass(' active ');
+                            $about.find('.position.active').removeClass('active');
+                            $this.addClass(' active');
                         }, 1000);
-                        $this.on(' mouseleave ', function (event) {
+                        $this.on('mouseleave', function (event) {
                             window.clearTimeout(countdown);
                             $this.off(event);
                         });
