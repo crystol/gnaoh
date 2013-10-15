@@ -323,19 +323,35 @@ html {
             border-bottom: 1px solid @color-dark;
         }
         .skills {
-            height: 10em;
+            height: 200px;
             .title {
                 display: inline-block;
-                margin-right: 1em;
+                margin: 0 1em 1em 0;
+                padding: 0.25em;
+                font-size: 115%;
                 &.active {
-                    color: @color;
-                    text-decoration: underline;
+                    border-bottom: 2px solid @color;
                 }
             }
             .tab {
-                display: none;
+                height: 0;
+                opacity: 0;
                 &.active {
-                    display: block;
+                    opacity: 1;
+                    height: auto;
+                }
+            }
+            .bar {
+                // background: @color;
+                border: 1px solid @color;
+                display: inline-block;
+                height: 1em;
+                width: 10em;
+                border-radius: 5px;
+                margin-left: 1em;
+                .length-50 {
+                    background: @color;
+                    width: 50%;
                 }
             }
         }

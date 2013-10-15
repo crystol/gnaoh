@@ -454,13 +454,15 @@
             },
             // Curriculum Vitae section
             loadAbout: function () {
+                // Skills section
                 $about.find('.tabs .title').on({
                     click: function () {
                         $about.find('.skills .active').removeClass('active');
                         $(this).addClass('active');
-                        $about.find(this.dataset.tab).addClass('active');
+                        $about.find(this.dataset.tab).deanimate().addClass('active');
                     }
                 });
+                // Experience section
                 $about.find('.position:not(.active)').on({
                     click: function () {
                         $about.find('.position.active').removeClass(' active');
