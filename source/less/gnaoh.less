@@ -40,7 +40,9 @@
 //common mixins
 .animated (@time: @cssTransitionTime; @type: all) {
     transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    // -webkit-transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.delay (@time: @cssTransitionTime) {
+    transition-delay: @time;
 }
 //arguments as follows: name, duration, easing, delay, iteration count, direction, fill
 .key-animated (@name; @duration: 2s; @iteration: infinite; @easing: cubic-bezier(1,1,1,1); @delay: 0ms; @direction: normal; @fill: both) {
@@ -314,6 +316,18 @@ html {
         }
         li { 
               list-style: circle inside;
+              &:hover > .tooltip {
+                .show;
+              }
+        }
+        .tooltip {
+            .hide;
+            color: white;
+            z-index: 5;
+            height: 3em;
+            padding: 1em;
+            .absolute;
+            background: rgba(0, 0, 0, 0.7);
         }
         .category {
             margin: 0.75em 0;
@@ -323,7 +337,11 @@ html {
             border-bottom: 1px solid @color-dark;
         }
         .skills {
-            height: 250px;
+            .wrapper {
+                .relative;
+                height: 150px;
+                overflow: hidden;
+            }
             .title {
                 display: inline-block;
                 margin: 0 1em 1em 0;
@@ -335,33 +353,44 @@ html {
                 }
             }
             .tab {
-                height: 0;
-                opacity: 0;
+                width: 100%;
+                .absolute;
+                .animated(500ms);
+                .transform(translateY, -100%);
+                [class *= 'bar-'] {
+                    .transform(translateX, -100%);
+                }
                 &.active {
-                    opacity: 1;
-                    height: auto;
+                    .delay(550ms);
+                    .transform(translateY, 0);
+                    [class *= 'bar-'] {
+                        .transform(translateX, 0);
+                    }
                 }
             }
-            .bar, [class *= 'bar-length'] {
-                height: 1em;
-                border-radius: 5px;
+            [class *= 'bar'] {
                 display: inline-block;
             }
             .bar {
-                border: 1px solid @color;
-                width: 10em;
-                margin-left: 1em;
                 left: 10em;
+                width: 10em;
+                height: 1em;
+                margin-left: 1em;
+                overflow: hidden;
+                border-radius: 5px;
+                border: 1px solid @color;
                 .absolute;
                 span {
                     top: -0.25em;
-                    right: -2em;
-                    float: right;
+                    right: 0;
                     font-size: 75%;
                     .absolute;
                 }
             }
             [class *= 'bar-length'] {
+                height: 125%;
+                .animated;
+                .delay;
                 background: @color;
             }
             .bar-length-10 {width: 10%;}

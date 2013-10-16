@@ -454,12 +454,17 @@
             },
             // Curriculum Vitae section
             loadAbout: function () {
+                var This = this;
                 // Skills section
                 $about.find('.tabs .title').on({
                     click: function () {
                         $about.find('.skills .active').removeClass('active');
+                        // Mark the label and the tab active
+                        $about.find(this.dataset.tab).addClass('active');
                         $(this).addClass('active');
-                        $about.find(this.dataset.tab).deanimate().addClass('active');
+                        // $about.find(this.dataset.tab).wait(This.cssDelay*0.75, function () {
+                            // this.deanimate().addClass('active');
+                        // });
                     }
                 });
                 // Experience section
@@ -473,7 +478,7 @@
                         var $this = $(this);
                         var countdown = window.setTimeout(function () {
                             $about.find('.position.active').removeClass('active');
-                            $this.addClass(' active');
+                            $this.addClass('active');
                         }, 1000);
                         $this.on('mouseleave', function (event) {
                             window.clearTimeout(countdown);
@@ -548,7 +553,7 @@
                 }
                 function navlistDock() {
                     This.isMini();
-                    var currentY = window.pageYOffset;
+                    // var currentY = window.pageYOffset;
                     // if (currentY <= 144) {
                     // } else if (currentY > 144) {
                     // } else {
