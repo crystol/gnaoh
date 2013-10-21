@@ -61,8 +61,9 @@ gnaoh.configure(function () {
         });
         next();
     });
-    // Static url for domain wide routing 
-    gnaoh.use(express.favicon(__dirname + '/views/misc/favicon.ico'));
+    // Route stack
+    // Public root directories for files such as robots.txt, favicon.ico, humans.txt, etc
+    gnaoh.use('/', express.static(__dirname + '/views/public/'));
     // Static files
     gnaoh.use('/css/', express.static(__dirname + '/css/'));
     gnaoh.use('/js/', express.static(__dirname + '/js/'));

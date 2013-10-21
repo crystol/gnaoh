@@ -314,15 +314,26 @@ html {
         .self {
             margin-bottom: 1em;
         }
-        li { 
-              list-style: circle inside;
-              &:hover > .tooltip {
+        li {    
+            margin: 0.25em 0;
+            list-style: circle inside;
+            li {
+                margin-left: 2em;
+                list-style-type: disc;
+            }
+        }
+        .tool {
+            border-bottom: 1px dashed @color;
+            a {
+                text-decoration: none !important;
+            }
+            &:hover + .tip {
                 .show;
               }
         }
-        .tooltip {
+        .tip {
             .hide;
-            color: white;
+            color: @bg-color;
             z-index: 5;
             height: 3em;
             padding: 1em;
@@ -337,26 +348,25 @@ html {
             border-bottom: 1px solid @color-dark;
         }
         .skills {
-            .wrapper {
-                .relative;
-                height: 150px;
-                overflow: hidden;
-            }
             .title {
                 display: inline-block;
-                margin: 0 1em 1em 0;
+                margin: 0 1em 0.5em 0;
                 cursor: s-resize;
-                padding: 0.25em;
-                font-size: 115%;
+                font-size: 125%;
                 &.active {
                     border-bottom: 2px solid @color;
                 }
+            }
+            .tabs {
+                .relative;
+                height: 250px;
+                overflow: hidden;
             }
             .tab {
                 width: 100%;
                 .absolute;
                 .animated(500ms);
-                .transform(translateY, -100%);
+                .transform(translateY, -110%);
                 [class *= 'bar-'] {
                     .transform(translateX, -100%);
                 }
@@ -381,9 +391,10 @@ html {
                 border: 1px solid @color;
                 .absolute;
                 span {
+                    left: 0.5em;
                     top: -0.25em;
-                    right: 0;
-                    font-size: 75%;
+                    color: @bg-color;
+                    font-size: 80%;
                     .absolute;
                 }
             }

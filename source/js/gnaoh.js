@@ -1,12 +1,12 @@
 (function (window, document) {
     define(['jquery'], function ($) {
         'use strict';
-        //lazy logging in dev env
+        // Lazy logging in dev env
         var developement = true;
         var log = window.log = developement ? function (args) {
                 window.console.log(args);
             } : function () {};
-        //common jquery selectors cache
+        // Common jquery selectors cache
         var $window = $(window);
         var $body = $('body');
         var $content = $('#content');
@@ -16,11 +16,10 @@
         var $gallery;
         var $video;
         var $about;
-        /******Extending jQuery functions******/
-        //stall function that can be used more versitile from $().delay()
+        // Extending jQuery functions
+        // Stall function that can be used more versitile from $().delay()
         $.prototype.wait = $.wait = function (time, callback) {
-            //need to cache this and pass it to window as context
-            var $this = this;
+            var This = this;
             var procrastinate = $.Deferred();
             if (typeof time !== 'number') {
                 time = 500;
@@ -28,13 +27,13 @@
             //if callback exists, perform it after the delay and return jquery object for chaining
             if (typeof callback === 'function') {
                 window.setTimeout(function () {
-                    callback.call($this);
+                    callback.call(This);
                 }, time);
-                return $this;
+                return This;
             } else {
                 //return promise--use withh .done()--if no callbacks are provided
                 window.setTimeout(function () {
-                    procrastinate.resolveWith($this);
+                    procrastinate.resolveWith(This);
                 }, time);
                 return procrastinate;
             }
@@ -456,15 +455,12 @@
             loadAbout: function () {
                 var This = this;
                 // Skills section
-                $about.find('.tabs .title').on({
+                $about.find('.skills .title').on({
                     click: function () {
                         $about.find('.skills .active').removeClass('active');
                         // Mark the label and the tab active
                         $about.find(this.dataset.tab).addClass('active');
                         $(this).addClass('active');
-                        // $about.find(this.dataset.tab).wait(This.cssDelay*0.75, function () {
-                            // this.deanimate().addClass('active');
-                        // });
                     }
                 });
                 // Experience section
