@@ -42,22 +42,22 @@ gnaoh.configure(function () {
     // route stack   
     gnaoh.use(express.methodOverride());
     gnaoh.use(express.bodyParser());
-    // cannonicalizer
+    // URL Cannonicalizer
     gnaoh.use(function (request, response, next) {
         // Remove www prefix
         if (request.host.substr(0, 4) === 'www.') {
             var url = '//' + request.host.slice(4) + request.path;
             response.redirect(301, url);
         }
-        // strip forward slashes at the end
+        // Strip forward slashes at the end
         if (request.url.substr(-1) === '/' && request.url.length > 1) {
             response.redirect(301, request.url.slice(0, -1));
         }
         // Default headers
         response.set({
-            Server: 'NodeGnaoh',
+            'Server': 'NodeGnaoh',
             'Cache-Control': 'public, max-age=13333337',
-            'Transfer-Encoding': 'chunked'
+            'Transfer-Encoding': 'chunked',
         });
         next();
     });
