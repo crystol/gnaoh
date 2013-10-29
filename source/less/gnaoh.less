@@ -268,10 +268,8 @@ html {
 //content page
 #content {
     padding: 2em 1em;
-    perspective:1000;
     max-width: @post-width;
     margin: @navigator-h auto;
-    -webkit-perspective: 1000;
 }
 #post {
     h1 {
@@ -286,28 +284,24 @@ html {
     }
     //ajax page switching
     #old-post, #new-post {
-        top: 0;
-        left: 0;
         max-width: @post-width;
-        -webkit-backface-visibility: hidden;
-        .absolute();
-        .animated();
+        .absolute;
+        .animated(500ms);
+    }
+    #old-post {
+        &.move {
+            .transform(translateX, -@post-width*1.25);
+            opacity: 0;
+        }
     }
     #new-post{
-        .transform(rotateY, -180deg);
-    }
-    //rotates the pages as they switch
-    &.flipped, &.deppilf {
-        -webkit-transform-style: preserve-3d;
-        -webkit-backface-visibility: hidden;
-        -webkit-perspective: 1000;
-        .relative();
-    }
-    &.flipped {
-        .transform(rotateY, 180deg);
-    }
-    &.deppilf {
-        .transform(rotateY, -180deg);
+        .transform(translateX, -@post-width*1.25);
+        opacity: 0;
+        &.move {
+            .delay(500ms);
+             opacity: 1;
+            .transform(translateX, 0);
+        }
     }
 }   
     .about {

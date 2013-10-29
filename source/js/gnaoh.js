@@ -176,7 +176,6 @@
                     function cleanUp() {
                         $old.remove();
                         $new.contents().unwrap();
-                        $post.removeClass(animethod);
                         // Push new page to analytics and browser history
                         This.init();
                         window._gaq.push(['_trackPageview', document.location.pathname]);
@@ -185,10 +184,11 @@
                     // Skip on mobile devices and browsers that isn't chrome
                     var notChrome = !/Chrome/.test(window.navigator.userAgent);
                     if (This.mini || skipAnimation || notChrome) {
-                        return cleanUp();
+                        cleanUp();
+                    } else {
+                        $old.add($new).addClass('move');
+                        $.wait(1000, cleanUp);
                     }
-                    var animethod = (Math.round(Math.random()) === 0) ? 'flipped' : 'deppilf';
-                    $post.deanimate(null, null, This.cssDelay).addClass(animethod).find($old).fadeOut(500).wait(This.cssDelay, cleanUp);
                 });
             },
             //load a css file 
