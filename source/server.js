@@ -2,16 +2,16 @@
 'use strict';
 // dependencies
 var http = require('http');
-var spdy = require('spdy');
 var express = require('express');
 var router = require('./router.js');
 var fs = require('fs');
 // init express
 var gnaoh = express();
 // Serving gnaoh
-// Production environment
-gnaoh.configure('production', function () {
+// Standalone environment (without nginx proxy)
+gnaoh.configure('standalone', function () {
     // SPDY options 
+    var spdy = require('spdy');
     var spdyOptions = {
         windowSize: 3000,
         maxChunk: 32 * 1024,
@@ -28,6 +28,10 @@ gnaoh.configure('production', function () {
         response.end();
     }).listen(80);
     spdy.createServer(spdyOptions, gnaoh).listen(443);
+});
+// Proxied through nginx
+gnaoh.configure('production', function () {
+    http.createServer(gnaoh).listen(1337);
 });
 // Developmental environment (http://localhost:1337)
 gnaoh.configure('development', function () {
