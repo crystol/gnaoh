@@ -73,6 +73,11 @@ block content
                                 +profBar(80, 'Express')
                                 +profBar(25, 'Rails')
                                 +profBar(30, 'Wordpress')
+                        .grid-33
+                            | Toolkit
+                            ul 
+                                li Grunt.js
+                                li Require.js
                 #technology.tab
                     .gridlock
                         .grid-40
@@ -89,7 +94,8 @@ block content
                                             span.tool SPDY
                                             .tip if (yourBrowser==='Chrome') { goTo('chrome://net-internals/#spdy'); }
                                 li 
-                                    span.tool Nginx
+                                    span.tool 
+                                        a(href='/static/misc/nginx.conf', target='_blank') Nginx
                                     .tip The static content on this server was delivered with nginx.
                                 li LAMP stack deployment
                         .grid-40 
@@ -135,7 +141,7 @@ block content
                             li English
                             li Vietnamese
                             li Writing 
-                                a(href='/misc/dehase.pdf', target='_blank') sample
+                                a(href='/static/misc/dehase.pdf', target='_blank') sample
 
         .experience 
             .category Experience

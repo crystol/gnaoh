@@ -537,25 +537,26 @@
             },
             // Actions to perform when the page is at a certain Y position
             scrollspy: function () {
+                return;
                 // Delay function to prevent scroll event from firing too often
-                var This = this;
-                var stopDropRoll;
-                function delayer() {
-                    window.clearTimeout(stopDropRoll);
-                    stopDropRoll = window.setTimeout(function () {
-                        navlistDock();
-                    }, 10);
-                }
-                function navlistDock() {
-                    This.isMini();
+                // var This = this;
+                // var stopDropRoll;
+                // function delayer() {
+                //     window.clearTimeout(stopDropRoll);
+                //     stopDropRoll = window.setTimeout(function () {
+                //         navlistDock();
+                //     }, 10);
+                // }
+                // function navlistDock() {
+                    // This.isMini();
                     // var currentY = window.pageYOffset;
                     // if (currentY <= 144) {
                     // } else if (currentY > 144) {
                     // } else {
                     // return;
                     // }
-                }
-                $window.off('scroll').on('scroll', delayer).trigger('scroll');
+                // }
+                // $window.off('scroll').on('scroll', delayer).trigger('scroll');
             },
             // Changing the colors!
             rainbow: function () {
@@ -592,8 +593,7 @@
                 gnaoh.popState = true;
             };
         } catch (e) {
-            log(e);
-        }
+            log(e);        }
         // Nav list functions for each link
         $navList.on('click', 'a', function (event) {
             var $this = $(this);

@@ -4,12 +4,12 @@ module.exports = function () {
     grunt.initConfig({
         package: grunt.file.readJSON('package.json'),
         static: '../static',
-        // clean directories
+        // Clean build and temp directories
         clean: {
             start: ['build/'],
             finish: ['build/.temp/', 'build/less/', 'build/private/']
         },
-        //clone source tree to build
+        // Clone source tree to build directory
         copy: {
             everything: {
                 files: [{
@@ -61,7 +61,7 @@ module.exports = function () {
                 }],
             }
         },
-        //javascript linting
+        // Lint js files
         jshint: {
             options: {
                 curly: true,
@@ -89,7 +89,7 @@ module.exports = function () {
             },
             source: ['Gruntfile.js', 'source/**/*.js']
         },
-        //javascript minimizer/obfuscater 
+        // Javascript minimizer/obfuscater 
         uglify: {
             main: {
                 options: {
@@ -112,7 +112,7 @@ module.exports = function () {
                 }]
             }
         },
-        //stringing scripts and stylesheets
+        // Concatinate scripts and stylesheets
         concat: {
             all: {
                 files: [{
@@ -121,7 +121,7 @@ module.exports = function () {
                 }]
             }
         },
-        //less css preprocessor
+        // Render Less to  CSS
         less: {
             development: {
                 options: {
@@ -208,7 +208,7 @@ module.exports = function () {
     grunt.loadNpmTasks('grunt-nodemon');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    // Assign tasks
+    // Assign tasks names
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);
     grunt.registerTask('development', ['jshint', 'clean:start', 'copy', 'concat', 'less:development']);
