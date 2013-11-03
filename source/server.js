@@ -1,13 +1,21 @@
-// module to start the server
+// Module to start the server
 'use strict';
-// dependencies
+// Dependencies
 var http = require('http');
 var express = require('express');
 var router = require('./router.js');
 var fs = require('fs');
-// init express
+// Init express
 var gnaoh = express();
-// Serving gnaoh
+// Serving gnaoh.com
+// Proxied through nginx
+gnaoh.configure('production', function () {
+    http.createServer(gnaoh).listen(1337);
+});
+// Developmental environment (http://localhost:1337)
+gnaoh.configure('development', function () {
+    http.createServer(gnaoh).listen(1337);
+});
 // Standalone environment (without nginx proxy)
 gnaoh.configure('standalone', function () {
     // SPDY options 
@@ -29,20 +37,14 @@ gnaoh.configure('standalone', function () {
     }).listen(80);
     spdy.createServer(spdyOptions, gnaoh).listen(443);
 });
-// Proxied through nginx
-gnaoh.configure('production', function () {
-    http.createServer(gnaoh).listen(1337);
-});
-// Developmental environment (http://localhost:1337)
-gnaoh.configure('development', function () {
-    http.createServer(gnaoh).listen(1337);
-});
 // Universial application settings
 gnaoh.configure(function () {
     gnaoh.use(express.compress());
     gnaoh.set('view engine', 'jade');
     gnaoh.set('views', __dirname + '/views');
     gnaoh.disable('x-powered-by');
+    // Enable logging for requested routes
+    gnaoh.use(express.logger('dev'));
     // route stack   
     gnaoh.use(express.methodOverride());
     gnaoh.use(express.bodyParser());
@@ -51,11 +53,11 @@ gnaoh.configure(function () {
         // Remove www prefix
         if (request.host.substr(0, 4) === 'www.') {
             var url = '//' + request.host.slice(4) + request.path;
-            response.redirect(301, url);
+            return response.redirect(301, url);
         }
         // Strip forward slashes at the end
         if (request.url.substr(-1) === '/' && request.url.length > 1) {
-            response.redirect(301, request.url.slice(0, -1));
+            return response.redirect(301, request.url.slice(0, -1));
         }
         // Default headers
         response.set({
@@ -74,8 +76,6 @@ gnaoh.configure(function () {
     gnaoh.use('/static/', express.static(__dirname + '/../../static'));
     gnaoh.use('/misc/', express.static(__dirname + '/../../static/misc'));
     gnaoh.use('/assets/', express.static(__dirname + '/../../static/misc'));
-    // Enable logging for requested routes
-    // gnaoh.use(express.logger('dev'));
     // Primary views router 
     gnaoh.use(gnaoh.router);
     // 404 page at the end of the stack

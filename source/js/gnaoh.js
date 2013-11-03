@@ -355,7 +355,7 @@
             loadVideo: function () {
                 var This = this;
                 $video.each(function () {
-                    var $wrapper = $(this); 
+                    var $wrapper = $(this);
                     var id = this.id;
                     var options = this.dataset;
                     var vidSrc = This.static + '/vid/' + id;
@@ -548,13 +548,13 @@
                 //     }, 10);
                 // }
                 // function navlistDock() {
-                    // This.isMini();
-                    // var currentY = window.pageYOffset;
-                    // if (currentY <= 144) {
-                    // } else if (currentY > 144) {
-                    // } else {
-                    // return;
-                    // }
+                // This.isMini();
+                // var currentY = window.pageYOffset;
+                // if (currentY <= 144) {
+                // } else if (currentY > 144) {
+                // } else {
+                // return;
+                // }
                 // }
                 // $window.off('scroll').on('scroll', delayer).trigger('scroll');
             },
@@ -593,7 +593,8 @@
                 gnaoh.popState = true;
             };
         } catch (e) {
-            log(e);        }
+            log(e);
+        }
         // Nav list functions for each link
         $navList.on('click', 'a', function (event) {
             var $this = $(this);
