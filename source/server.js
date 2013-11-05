@@ -45,7 +45,7 @@ gnaoh.configure(function () {
     gnaoh.disable('x-powered-by');
     // Enable logging for requested routes
     gnaoh.use(express.logger('dev'));
-    // route stack   
+    // Route stack   
     gnaoh.use(express.methodOverride());
     gnaoh.use(express.bodyParser());
     // URL Cannonicalizer
@@ -89,8 +89,6 @@ routeList.forEach(function (value) {
     if (value === '/') {
         // 404 the root for now
         gnaoh.get('/', router['404']);
-    } else if (value === 'projects') {
-        gnaoh.get('/projects', router['index']);
     } else {
         gnaoh.get('/' + value, router[value]);
     }

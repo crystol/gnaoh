@@ -304,209 +304,238 @@ html {
         }
     }
 }   
-    .about {
-        .self {
-            margin-bottom: 1em;
-        }
-        li {    
-            margin: 0.25em 0 0.25em 1.5em;
-            list-style: circle;
-            li {
-                margin-left: 1em;
-                list-style-type: disc;
-            }
-        }
-        .tool {
-            border-bottom: 1px dashed @color;
-            a {
-                text-decoration: none !important;
-            }
-            &:hover + .tip {
-                .show;
-              }
-        }
-        .tip {
-            .hide;
-            color: @bg-color;
-            z-index: 5;
-            height: 3em;
-            padding: 1em;
-            .absolute;
-            background: rgba(0, 0, 0, 0.7);
-        }
-        .category {
-            margin: 0.75em 0;
-            font-size: 175%;
-            color: @color-dark;
-            padding-bottom: 0.25em;
-            border-bottom: 1px solid @color-dark;
-        }
-        .skills {
-            .title {
-                display: inline-block;
-                margin: 0 1em 0.5em 0;
-                cursor: s-resize;
-                font-size: 125%;
-                &.active {
-                    border-bottom: 2px solid @color;
-                }
-            }
-            .tabs {
-                .relative;
-                height: 450px;
-                overflow: hidden;
-            }
-            .tab {
-                width: 100%;
-                .absolute;
-                .animated(500ms);
-                .transform(translateY, -110%);
-                [class *= 'bar-'] {
-                    .transform(translateX, -100%);
-                }
-                &.active {
-                    .delay(550ms);
-                    .transform(translateY, 0);
-                    [class *= 'bar-'] {
-                        .transform(translateX, 0);
-                    }
-                }
-            }
-            [class *= 'bar'] {
-                display: inline-block;
-            }
-            .bar {
-                width: 10em;
-                height: 1em;
-                float: right;
-                overflow: hidden;
-                border-radius: 5px;
-                border: 1px solid @color;
-                .relative;
-                span {
-                    left: 0.5em;
-                    top: -0.25em;
-                    color: @bg-color;
-                    font-size: 80%;
-                    .absolute;
-                }
-            }
-            [class *= 'bar-length'] {
-                height: 125%;
-                .animated;
-                .delay;
-                background: @color;
-            }
-            .bar-length-10 {width: 10%;}
-            .bar-length-20 {width: 20%;}
-            .bar-length-25 {width: 25%;}
-            .bar-length-30 {width: 30%;}
-            .bar-length-40 {width: 40%;}
-            .bar-length-50 {width: 50%;}
-            .bar-length-60 {width: 60%;}
-            .bar-length-70 {width: 70%;}
-            .bar-length-80 {width: 80%;}
-            .bar-length-90 {width: 90%;}
-            .bar-length-100 {width: 100%;}
-        }
-        .position {
-            margin-bottom: 2em;
-            .animated(200ms, all);
-
-            &.active {
-                margin-bottom: 1.5em;
-                font-size: @font-size * 1.25;
-                line-height: 125%;
-                padding-left: 1em;
-                border-left: 5px solid @color-dark;
-            }
-            .title {
-                font-size: 120%;
-            }
-            .date {
-                color: @color-dark;
-                margin-bottom: 0.5em;
-            }
-            .description {
-                 
-            }
-            .genus-species {
-                font-style: italic;
-            }
-        }
+.banner {
+    margin: 2em auto;
+    display: block;
+    &>div, >img {
+        .animated(250ms);
     }
-    // Image galleries
-    .gallery {
-        margin: 10px 0;
-        overflow: hidden;
-        }
-        .image {
-            margin: 10px 0;
-            .relative();
-            // Displays captions on hover
-            .caption {
-                bottom: 0;
-                width: 100%;
-                color: #fff;
-                opacity: 0;
-                padding: 0 0 0 1%;
-                background: rgba(0, 0, 0, 0.75);
-                .absolute();
-                .animated(300ms);
-            }
-            //displays captions on hover
-            &:hover > .caption {
-                opacity: 1;
-                padding: 1.5% 0 1.5% 1%;
-            }
-        }
-        // The resizable gallery (isotope)
-        &.wall, .brick,  {
-            .animated(400ms);
-        }
-        &.wall {
-            .brick {
-                margin: 0.25% 0;
-                max-width: 24.5%;
-                &.biggie {
-                    max-width:  49.5%;
-                    .caption {
-                        opacity: 1;
-                        padding: 1.5% 0 1.5% 1%;
-                    }
-                }
-                &.top {
-                    z-index: 5 !important;
-                }
-                &.brick-hidden {
-                    z-index: 0;
-                    pointer-events: none;
-                }
-            }
-            //hides the gallery when it's initializing to ensure proper positioning
-            &.mortar, .mortar .brick {
-                opacity: 0;
-                .animated(0) !important;
-            }
-        }
-    //video wrapper and UI
-    .video {
-        width: 100%;
-        overflow: hidden;
+    .title {
+        z-index: 5;
+        color: @bg-color;
+        margin: 25px;
+        padding-right: 0.25em;
+        border-right: 0px solid @bg-color;
+        font-size: 200%;
+        .absolute;
+    }
+    .subtitle {
+        z-index: 5;
+    }
+    img {
+       -webkit-filter: none;
+    }
+    &:hover img {
+        -webkit-filter: blur(2px) grayscale(1);
+        filter: blur(1px) grayscale(1); 
+       filter: none;
+    }
+    &:hover .title {
+        border-right: 100px solid @bg-color;
+    }
+}
+.about {
+    .self {
         margin-bottom: 1em;
-        .relative();
-
-        .poster {
-            width: 100%;
-            background-size:100%;
-            background-repeat: no-repeat;
-            background-clip: content-box;
-            .absolute();
-        }
-        video {
-            max-width: 100%;
+    }
+    li {    
+        margin: 0.25em 0 0.25em 1.5em;
+        list-style: circle;
+        li {
+            margin-left: 1em;
+            list-style-type: disc;
         }
     }
+    .tool {
+        border-bottom: 1px dashed @color;
+        a {
+            text-decoration: none !important;
+        }
+        &:hover + .tip {
+            .show;
+          }
+    }
+    .tip {
+        .hide;
+        color: @bg-color;
+        z-index: 5;
+        padding: 1em;
+        .absolute;
+        background: rgba(0, 0, 0, 0.7);
+    }
+    .category {
+        margin: 0.75em 0;
+        font-size: 175%;
+        color: @color-dark;
+        padding-bottom: 0.25em;
+        border-bottom: 1px solid @color-dark;
+    }
+    .skills {
+        .title {
+            display: inline-block;
+            margin: 0 1em 0.5em 0;
+            cursor: s-resize;
+            font-size: 125%;
+            &.active {
+                border-bottom: 2px solid @color;
+            }
+        }
+        .tabs {
+            .relative;
+            height: 450px;
+            overflow: hidden;
+        }
+        .tab {
+            width: 100%;
+            .absolute;
+            .animated(500ms);
+            .transform(translateY, -110%);
+            [class *= 'bar-'] {
+                .transform(translateX, -100%);
+            }
+            &.active {
+                .delay(550ms);
+                .transform(translateY, 0);
+                [class *= 'bar-'] {
+                    .transform(translateX, 0);
+                }
+            }
+        }
+        [class *= 'bar'] {
+            display: inline-block;
+        }
+        .bar {
+            width: 10em;
+            height: 1em;
+            float: right;
+            overflow: hidden;
+            border-radius: 5px;
+            border: 1px solid @color;
+            .relative;
+            span {
+                left: 0.5em;
+                top: -0.25em;
+                color: @bg-color;
+                font-size: 80%;
+                .absolute;
+            }
+        }
+        [class *= 'bar-length'] {
+            height: 125%;
+            .animated;
+            .delay;
+            background: @color;
+        }
+        .bar-length-10 {width: 10%;}
+        .bar-length-20 {width: 20%;}
+        .bar-length-25 {width: 25%;}
+        .bar-length-30 {width: 30%;}
+        .bar-length-40 {width: 40%;}
+        .bar-length-50 {width: 50%;}
+        .bar-length-60 {width: 60%;}
+        .bar-length-70 {width: 70%;}
+        .bar-length-80 {width: 80%;}
+        .bar-length-90 {width: 90%;}
+        .bar-length-100 {width: 100%;}
+    }
+    .position {
+        margin-bottom: 2em;
+        .animated(200ms, all);
+
+        &.active {
+            margin-bottom: 1.5em;
+            font-size: @font-size * 1.25;
+            line-height: 125%;
+            padding-left: 1em;
+            border-left: 5px solid @color-dark;
+        }
+        .title {
+            font-size: 120%;
+        }
+        .date {
+            color: @color-dark;
+            margin-bottom: 0.5em;
+        }
+        .description {
+             
+        }
+        .genus-species {
+            font-style: italic;
+        }
+    }
+}
+// Image galleries
+.gallery {
+    margin: 10px 0;
+    overflow: hidden;
+    }
+    .image {
+        margin: 10px 0;
+        .relative();
+        // Displays captions on hover
+        .caption {
+            bottom: 0;
+            width: 100%;
+            color: #fff;
+            opacity: 0;
+            padding: 0 0 0 1%;
+            background: rgba(0, 0, 0, 0.75);
+            .absolute();
+            .animated(300ms);
+        }
+        //displays captions on hover
+        &:hover > .caption {
+            opacity: 1;
+            padding: 1.5% 0 1.5% 1%;
+        }
+    }
+    // The resizable gallery (isotope)
+    &.wall, .brick,  {
+        .animated(400ms);
+    }
+    &.wall {
+        .brick {
+            margin: 0.25% 0;
+            max-width: 24.5%;
+            &.biggie {
+                max-width:  49.5%;
+                .caption {
+                    opacity: 1;
+                    padding: 1.5% 0 1.5% 1%;
+                }
+            }
+            &.top {
+                z-index: 5 !important;
+            }
+            &.brick-hidden {
+                z-index: 0;
+                pointer-events: none;
+            }
+        }
+        //hides the gallery when it's initializing to ensure proper positioning
+        &.mortar, .mortar .brick {
+            opacity: 0;
+            .animated(0) !important;
+        }
+    }
+//video wrapper and UI
+.video {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 1em;
+    .relative();
+
+    .poster {
+        width: 100%;
+        background-size:100%;
+        background-repeat: no-repeat;
+        background-clip: content-box;
+        .absolute();
+    }
+    video {
+        max-width: 100%;
+    }
+}
 
 
 // responsive fluid grids

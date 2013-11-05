@@ -1,0 +1,10 @@
+extends skeleton
+block content
+    mixin banner(href, title, description, img)
+        a(class='banner', href=href)
+            .title=title
+            img(src=img)
+
+    +banner('/projects/photos', 'Photos', 'Photos...', '/static/img/banner/35w.jpg')
+    +banner('/projects/videos', 'Videos', 'Photos...', '/static/img/banner/35w.jpg')
+    +banner('/projects/code', 'Code', 'Photos...', '/static/img/banner/35w.jpg')
