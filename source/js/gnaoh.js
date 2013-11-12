@@ -587,10 +587,9 @@
         // History navigation (back/forward buttons) for ajax loaded pages
         try {
             window.onpopstate = function () {
-                if (gnaoh.popState && gnaoh.currentPage.path !== document.location.pathname) {
+                if (gnaoh.currentPage.path !== document.location.pathname) {
                     gnaoh.getPage(document.location, true);
                 }
-                gnaoh.popState = true;
             };
         } catch (e) {
             log(e);

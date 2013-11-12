@@ -40,6 +40,7 @@ gnaoh.configure('standalone', function () {
 // Universial application settings
 gnaoh.configure(function () {
     gnaoh.use(express.compress());
+    gnaoh.locals.basedir = './build';
     gnaoh.set('view engine', 'jade');
     gnaoh.set('views', __dirname + '/views');
     gnaoh.disable('x-powered-by');

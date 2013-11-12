@@ -9,8 +9,9 @@ var routes = [
     'videos',
     // Projects
     'projects',
-    'projects/devdev',
-    'projects/videos'
+    'projects/videos',
+    'projects/photos',
+    'projects/devdev'
 ];
 // Append private routes (pages not included in repo) if they exist
 try {
