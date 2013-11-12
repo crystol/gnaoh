@@ -7,7 +7,7 @@ module.exports = function () {
         // Clean build and temp directories
         clean: {
             start: ['build/'],
-            finish: ['build/.temp/', 'build/less/', 'build/private/']
+            finish: ['build/.temp/', 'build/less/', 'build/private/', 'build/js/']
         },
         // Clone source tree to build directory
         copy: {
@@ -25,7 +25,16 @@ module.exports = function () {
                     flatten: true,
                     cwd: 'source/',
                     src: 'js/*.js',
-                    dest: 'build/js/'
+                    dest: 'build/public/js/'
+                }]
+            },
+            css: {
+                files: [{
+                    expand: true,
+                    flatten: true,
+                    cwd: 'source/',
+                    src: 'css/*.css',
+                    dest: 'build/public/css/'
                 }]
             },
             views: {
@@ -42,7 +51,7 @@ module.exports = function () {
                     flatten: true,
                     cwd: 'source/',
                     src: 'less/*.less',
-                    dest: 'build/css/'
+                    dest: 'build/public/css/'
                 }]
             },
             private: {
@@ -97,7 +106,7 @@ module.exports = function () {
                     report: 'gzip'
                 },
                 src: 'source/js/<%= package.name %>.js',
-                dest: 'build/js/<%= package.name %>.js'
+                dest: 'build/public/js/<%= package.name %>.js'
             },
             assets: {
                 options: {
@@ -107,7 +116,7 @@ module.exports = function () {
                     expand: true,
                     cwd: 'source/js',
                     src: ['*', '!gnaoh.js'],
-                    dest: 'build/js/',
+                    dest: 'build/public/js/',
                     ext: '.js'
                 }]
             }
@@ -116,8 +125,8 @@ module.exports = function () {
         concat: {
             all: {
                 files: [{
-                    src: ['<%= static %>/js/require.js', 'build/js/loader.js'],
-                    dest: 'build/js/loader.js'
+                    src: ['<%= static %>/js/require.js', 'build/public/js/loader.js'],
+                    dest: 'build/public/js/loader.js'
                 }]
             }
         },
@@ -131,7 +140,7 @@ module.exports = function () {
                     expand: true,
                     cwd: 'source/less',
                     src: ['*.less'],
-                    dest: 'build/css/',
+                    dest: 'build/public/css/',
                     ext: '.css'
                 }]
             },
@@ -144,7 +153,7 @@ module.exports = function () {
                     expand: true,
                     cwd: 'source/less',
                     src: ['*.less'],
-                    dest: 'build/css/',
+                    dest: 'build/public/css/',
                     ext: '.css'
                 }]
             }

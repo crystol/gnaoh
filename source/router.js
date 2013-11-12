@@ -19,9 +19,7 @@ module.exports['routes'] = routes;
 // Exports a module per route
 routes.forEach(function (value) {
     module.exports[value] = function (request, response) {
-        response.set({
-            'Cache-Control': 'must-revalidate, private, max-age=0',
-        }).render(value, {
+        response.render(value, {
             title: value,
             pretty: true
         });
