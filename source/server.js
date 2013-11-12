@@ -71,11 +71,9 @@ gnaoh.configure(function () {
     // Public root directories for files such as robots.txt, favicon.ico, humans.txt, etc
     gnaoh.use('/', express.static(__dirname + '/public/'));
     // Static files
-    gnaoh.use('/css/', express.static(__dirname + '/css/'));
-    gnaoh.use('/js/', express.static(__dirname + '/js/'));
+    gnaoh.use('/css/', express.static(__dirname + '/public/css/'));
+    gnaoh.use('/js/', express.static(__dirname + '/public/js/'));
     gnaoh.use('/static/', express.static(__dirname + '/../../static'));
-    gnaoh.use('/misc/', express.static(__dirname + '/../../static/misc'));
-    gnaoh.use('/assets/', express.static(__dirname + '/../../static/misc'));
     // Primary views router 
     gnaoh.use(gnaoh.router);
     // 404 page at the end of the stack

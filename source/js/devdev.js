@@ -13,7 +13,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
             this.height = this.width * 0.75;
             this.centered = undefined;
             // Query server for json data and initialize the map
-            d3.json('/assets/sampledata.json', function (error, data) {
+            d3.json('/static/misc/sampledata.json', function (error, data) {
                 if (error) {
                     throw error;
                 }
@@ -37,7 +37,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('height', This.height);
                 This.states = This.svg.append('g');
                 // Grab the JSON files with vectors of the US
-                d3.json('/assets/Murica.json', function (data) {
+                d3.json('/static/misc/Murica.json', function (data) {
                     This.states.append('g')
                         .attr('class', 'states')
                         .selectAll('path')
@@ -141,7 +141,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('height', This.height)
             };
             // Request data from the server and draw the pi chart
-            d3.json('/assets/sampledata.json', function (error, data) {
+            d3.json('/static/misc/sampledata.json', function (error, data) {
                 if (error) {
                     throw error;
                 }
@@ -356,7 +356,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 var This = this;
                 This.options.city = city;
                 // XHR for new data.
-                d3.json('/assets/sampledata.json', function (error, data) {
+                d3.json('/static/misc/sampledata.json', function (error, data) {
                     if (error) {
                         throw error;
                     }
@@ -422,7 +422,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .interpolate('monotone')
             };
             // Request data from the server and initialize the line graph
-            d3.json('/assets/sampledata.json', function (error, data) {
+            d3.json('/static/misc/sampledata.json', function (error, data) {
                 if (error) {
                     throw error;
                 }
@@ -579,7 +579,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 var This = this;
                 This.options.city = city;
                 // XHR for new data.
-                // d3.json('/assets/sampledata.json', function (error, data) {
+                // d3.json('/static/misc/sampledata.json', function (error, data) {
                 //     if (error) {
                 //         throw error;
                 //     }
@@ -646,7 +646,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     })
             };
             // Request data from the server and initialize the line graph
-            d3.json('/assets/sampledata.json', function (error, data) {
+            d3.json('/static/misc/sampledata.json', function (error, data) {
                 if (error) {
                     throw error;
                 }
@@ -810,7 +810,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 var This = this;
                 This.options.city = city;
                 // XHR for new data.
-                // d3.json('/assets/sampledata.json', function (error, data) {
+                // d3.json('/static/misc/sampledata.json', function (error, data) {
                 //     if (error) {
                 //         throw error;
                 //     }
