@@ -174,7 +174,7 @@ module.exports = function () {
                 tasks: ['jshint', 'copy:js', 'concat']
             },
             views: {
-                files: ['source/views/**'],
+                files: ['source/views/**', 'source/views/**/**'],
                 tasks: ['copy:views']
             },
             less: {

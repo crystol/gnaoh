@@ -1,9 +1,16 @@
 // Lists of all of the possible routes used by the server
 var routes = [
     // Common
-    '/', '404', 'index', 'about', 'gallery', 'videos',
+    '/',
+    '404',
+    'index',
+    'about',
+    'gallery',
+    'videos',
     // Projects
-    'projects', 'projects/devdev'
+    'projects',
+    'projects/devdev',
+    'projects/videos'
 ];
 // Append private routes (pages not included in repo) if they exist
 try {
