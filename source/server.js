@@ -75,7 +75,7 @@ gnaoh.configure(function () {
     // Static files
     gnaoh.use('/css/', express.static(__dirname + '/public/css/'));
     gnaoh.use('/js/', express.static(__dirname + '/public/js/'));
-    gnaoh.use('/static/', express.static(__dirname + '/../../static'));
+    gnaoh.use('/static/', express.static('/kadmin/server/www/static/'));
     // Primary views router 
     gnaoh.use(gnaoh.router);
     // 404 page at the end of the stack
@@ -84,12 +84,15 @@ gnaoh.configure(function () {
     });
 });
 // Routes through express to render from jade templates
-var routeList = router.routes;
-routeList.forEach(function (value) {
-    if (value === '/') {
+var routeList = router._list;
+// Declares a possible path & render function for each route that exists
+routeList.forEach(function (route) {
+    var path = route.path;
+    // Fetch the requested pages
+    if (path === '/') {
         // 404 the root for now
         gnaoh.get('/', router['404']);
     } else {
-        gnaoh.get('/' + value, router[value]);
+        gnaoh.get('/' + path, router[path]);
     }
 });

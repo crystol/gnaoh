@@ -11,6 +11,14 @@ module.exports = function () {
         },
         // Clone source tree to build directory
         copy: {
+            everything: {
+                files: [{
+                    expand: true,
+                    cwd: 'source/',
+                    src: '**/**',
+                    dest: 'build/',
+                }]
+            },
             server: {
                 files: [{
                     expand: true,
@@ -41,14 +49,6 @@ module.exports = function () {
                     cwd: 'source/',
                     src: 'views/**',
                     dest: 'build/'
-                }]
-            },
-            publics: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    src: 'source/public/*',
-                    dest: 'build/public'
                 }]
             },
             privates: {
@@ -150,7 +150,7 @@ module.exports = function () {
                 }]
             }
         },
-         // Concatinate scripts and stylesheets
+        // Concatinate scripts and stylesheets
         concat: {
             require: {
                 src: ['<%= staticDir %>/js/require.js', 'build/public/js/loader.js'],
@@ -195,7 +195,7 @@ module.exports = function () {
                     env: {
                         'NODE_ENV': 'development'
                     },
-                    delayTime: 5,
+                    delayTime: 3,
                     watchedExtensions: ['js'],
                     watchedFolders: ['source/', 'source/private/'],
                     ignoredFiles: ['source/js/**']

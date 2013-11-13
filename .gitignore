@@ -1,7 +1,8 @@
 # Directories
 build
-node_modules
+trash
 logs
+node_modules
 source/private
 
 # Files

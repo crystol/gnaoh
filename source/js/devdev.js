@@ -1,5 +1,5 @@
 require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
-    gnaoh.requireCss('devdev.css');
+    gnaoh.requireCss('/css/devdev.css');
     (function (doc, $, d3) {
         'use strict';
         var window = this;

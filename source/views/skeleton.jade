@@ -1,10 +1,8 @@
-//-JS stuff hoisted up top
-- var properTitle = title.charAt(0).toUpperCase() + title.substring(1);
-- properTitle = (properTitle === 'Index') ? 'Kenny Hoang' : properTitle;
+//- Predefined variables: title
 doctype 5
 html
     head
-        title #{properTitle}
+        title=title
         meta(charset='utf-8')
         meta(name='description', content='Homepage of Kenny Hoang')
         meta(name='viewport', content='width=device-width, initial-scale=1.0')
@@ -15,6 +13,6 @@ html
     body
         include blocks/navigator
         #content
-            #post(data-name='#{title}')
+            #post(data-name=title.toLowerCase())
                 block content
         

@@ -1,18 +1,41 @@
 // Lists of all of the possible routes used by the server
-var routes = [
-    // Common
-    '/',
-    '404',
-    'index',
-    'about',
-    'gallery',
-    'videos',
-    // Projects
-    'projects',
-    'projects/videos',
-    'projects/photos',
-    'projects/devdev'
-];
+var routes = [{
+    path: '/',
+    title: 'Kenny Hoang'
+}, {
+    path: '404',
+    title: '404!'
+}, {
+    path: 'about',
+    title: 'About'
+}, {
+    path: 'projects',
+    title: 'Projects'
+}, {
+    path: 'projects/videos',
+    title: 'Videos'
+}, {
+    path: 'projects/photos',
+    title: 'Photos'
+}, {
+    path: 'projects/devdev',
+    title: 'Devdev'
+}];
+// Append extra routes from source/routes/ directory if they exist
+try {
+    var extraRoutes = [];
+    // Loops through directory and recursively require all of the files
+    require('fs').readdirSync(__dirname + '/routes')
+        .forEach(function (file) {
+            extraRoutes.push(require(__dirname + '/routes/' + file));
+        });
+    // Push the values to the existing stack
+    extraRoutes.forEach(function (value) {
+        routes.push(value);
+    });
+} catch (error) {
+    console.log('No extra routes were found. ' + error);
+}
 // Append private routes (pages not included in repo) if they exist
 try {
     var privateRoutes = require('./privateRoutes.js');
@@ -23,13 +46,13 @@ try {
     console.log('No private routes were found. ' + error);
 }
 // Export the routes array as a module
-module.exports['routes'] = routes;
+module.exports['_list'] = routes;
 // Exports a module per route
-routes.forEach(function (value) {
-    module.exports[value] = function (request, response) {
-        response.render(value, {
-            title: value,
-            pretty: true
-        });
+routes.forEach(function (route) {
+    // Read-able HTML
+    route.pretty = true;
+    // When a route is requested from the array, a response will init jade's rendering.
+    module.exports[route.path] = function (request, response) {
+        response.render(route.path, route);
     };
 });
