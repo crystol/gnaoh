@@ -203,7 +203,7 @@
             // Load a css file from the static library or local /css directory
             requireCss: function (name, staticLib) {
                 var stylesheet = document.createElement('link');
-                var href = (staticLib) ? this.static + '/css/' + name : '/css/' + name;
+                var href = (staticLib) ? this.static + '/css/' + name : name;
                 stylesheet.rel = /less/.test(name) ? 'stylesheet/less' : 'stylesheet';
                 stylesheet.href = href;
                 document.getElementsByTagName('head')[0].appendChild(stylesheet);
@@ -576,7 +576,7 @@
                     });
                 }
                 if (!window.less) {
-                    this.requireCss('gnaoh.less');
+                    this.requireCss('/less/gnaoh.less');
                     window.require(['static/less'], modify);
                 } else {
                     modify();

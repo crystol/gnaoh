@@ -11,30 +11,28 @@ module.exports = function () {
         },
         // Clone source tree to build directory
         copy: {
-            everything: {
+            server: {
                 files: [{
                     expand: true,
-                    cwd: 'source/',
-                    src: '**/**',
-                    dest: 'build/',
-                }]
+                    flatten: true,
+                    src: 'source/*.js',
+                    dest: 'build/'
+                }, ]
             },
             js: {
                 files: [{
                     expand: true,
                     flatten: true,
-                    cwd: 'source/',
-                    src: 'js/*.js',
+                    src: 'source/js/*.js',
                     dest: 'build/public/js/'
                 }]
             },
-            css: {
+            less: {
                 files: [{
                     expand: true,
                     flatten: true,
-                    cwd: 'source/',
-                    src: 'css/*.css',
-                    dest: 'build/public/css/'
+                    src: 'source/less/*.less',
+                    dest: 'build/public/less/'
                 }]
             },
             views: {
@@ -45,21 +43,19 @@ module.exports = function () {
                     dest: 'build/'
                 }]
             },
-            less: {
+            publics: {
                 files: [{
                     expand: true,
                     flatten: true,
-                    cwd: 'source/',
-                    src: 'less/*.less',
-                    dest: 'build/public/css/'
+                    src: 'source/public/*',
+                    dest: 'build/public'
                 }]
             },
             privates: {
                 files: [{
                     expand: true,
                     flatten: true,
-                    cwd: 'source/',
-                    src: 'private/*.js',
+                    src: 'source/private/*.js',
                     dest: 'build/'
                 }, {
                     expand: true,
@@ -99,33 +95,30 @@ module.exports = function () {
         },
         // Javascript minimizer/obfuscater 
         uglify: {
+            options: {
+                report: 'gzip'
+            },
             main: {
                 options: {
-                    banner: '/*\nThis is the file that makes me tick! \nYou\'re probably not a robot (or are you?) and would most likely prefer looking at this version: https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js\n*/ \n',
-                    report: 'gzip'
+                    banner: '/*\n<%= package.name %>.js is the file that makes me tick! \nYou\'re probably not a robot (or are you?) and would most likely prefer looking at this version: https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js\n*/ \n',
                 },
-                src: 'source/js/<%= package.name %>.js',
-                dest: 'build/public/js/<%= package.name %>.js'
+                src: 'source/js/gnaoh.js',
+                dest: 'build/public/js/gnaoh.js'
+            },
+            loader: {
+                options: {
+                    banner: '\n//Loader script for the site. Source: https://github.com/crystol/gnaoh/blob/master/source/js/loader.js\n',
+                },
+                src: 'source/js/loader.js',
+                dest: 'build/public/js/loader.js'
             },
             assets: {
-                options: {
-                    report: 'gzip'
-                },
                 files: [{
                     expand: true,
                     cwd: 'source/js',
-                    src: ['*', '!gnaoh.js'],
+                    src: ['*', '!gnaoh.js', '!loader.js'],
                     dest: 'build/public/js/',
                     ext: '.js'
-                }]
-            }
-        },
-        // Concatinate scripts and stylesheets
-        concat: {
-            all: {
-                files: [{
-                    src: ['<%= staticDir %>/js/require.js', 'build/public/js/loader.js'],
-                    dest: 'build/public/js/loader.js'
                 }]
             }
         },
@@ -157,6 +150,13 @@ module.exports = function () {
                 }]
             }
         },
+         // Concatinate scripts and stylesheets
+        concat: {
+            require: {
+                src: ['<%= staticDir %>/js/require.js', 'build/public/js/loader.js'],
+                dest: 'build/public/js/loader.js'
+            }
+        },
         //watches for changes within files & perform tasks if found
         watch: {
             options: {
@@ -165,8 +165,8 @@ module.exports = function () {
                 livereload: 35729
             },
             server: {
-                files: ['source/*.js', 'source/private/*.js'],
-                tasks: ['copy', 'concat']
+                files: ['source/*.js'],
+                tasks: ['copy:server']
             },
             js: {
                 files: ['source/js/*.js'],
@@ -177,7 +177,7 @@ module.exports = function () {
                 tasks: ['copy:views']
             },
             privates: {
-                files: ['source/private/views/**/**'],
+                files: ['source/private/*.js', 'source/private/views/**/**'],
                 tasks: ['copy:privates']
             },
             less: {
@@ -189,14 +189,16 @@ module.exports = function () {
         nodemon: {
             prod: {
                 options: {
-                    // Sets the environment for node to dev
+                    cwd: __dirname,
+                    file: 'build/server.js',
+                    // Sets the environment for node to development(configuration purposes)
                     env: {
                         'NODE_ENV': 'development'
                     },
                     delayTime: 5,
+                    watchedExtensions: ['js'],
                     watchedFolders: ['source/', 'source/private/'],
-                    ignoredFiles: ['source/**/**'],
-                    cwd: __dirname
+                    ignoredFiles: ['source/js/**']
                 }
             }
         },
@@ -211,15 +213,15 @@ module.exports = function () {
         }
     });
     // Load tasks
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-concurrent');
-    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.loadNpmTasks('grunt-nodemon');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-concurrent');
+    grunt.loadNpmTasks('grunt-nodemon');
     // Assign tasks names
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);

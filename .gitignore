@@ -1,7 +1,11 @@
+# Directories
 build
 node_modules
 logs
-npm-debug.log
 source/private
-sftp-config.json
+
+# Files
+npm-debug.log
 .nodemonignore
+sftp-config.json
+
