@@ -165,6 +165,11 @@
                 $.ajax({
                     type: 'GET',
                     url: link
+                }).error(function () {
+                    var names = $('.kenny').add('.hoang').add('.gnaoh');
+                    names.addClass('error').wait(1000, function () {
+                        names.removeClass('error');
+                    });
                 }).done(function (data) {
                     // Wraps the old page and replaces it with the data fetched from ajax request
                     var $data = $(data);
@@ -594,8 +599,8 @@
         } catch (e) {
             log(e);
         }
-        // Nav list functions for each link
-        $navList.on('click', 'a', function (event) {
+        // Ajax fetching of links with 'ajax' class 
+        $body.on('click', '.ajax', function (event) {
             var $this = $(this);
             // Don't break middle mouse/ctrl+click functionality
             if (event.which === 2 || event.ctrlKey) {

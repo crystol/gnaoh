@@ -223,6 +223,9 @@ html {
             left: @aromatics-size;
             .absolute();
 			.animated(300ms);
+            &.error{
+                color: red;
+            }
         }
         .kenny {
             top: 0;
@@ -465,6 +468,17 @@ html {
         .genus-species {
             font-style: italic;
         }
+    }
+}
+.letter {
+    p {
+        margin: 1em 0;
+    }
+    span {
+        display: block;
+    }
+    .signature {
+        display: block;
     }
 }
 // Image galleries

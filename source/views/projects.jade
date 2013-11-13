@@ -1,7 +1,7 @@
 extend /views/skeleton
 block content
     mixin banner(href, title, description, img)
-        a(class='banner', href=href)
+        a(class='banner ajax', href=href)
             .title=title
             img(src=img)
 

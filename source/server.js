@@ -39,6 +39,7 @@ gnaoh.configure('standalone', function () {
 });
 // Universial application settings
 gnaoh.configure(function () {
+    gnaoh.enable('trust proxy');
     gnaoh.use(express.compress());
     gnaoh.locals.basedir = __dirname;
     gnaoh.set('view engine', 'jade');
