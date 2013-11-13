@@ -3,7 +3,7 @@ module.exports = function () {
     var grunt = require('grunt');
     grunt.initConfig({
         package: grunt.file.readJSON('package.json'),
-        static: '../static',
+        staticDir: '../static',
         // Clean build and temp directories
         clean: {
             start: ['build/'],
@@ -54,7 +54,7 @@ module.exports = function () {
                     dest: 'build/public/css/'
                 }]
             },
-            private: {
+            privates: {
                 files: [{
                     expand: true,
                     flatten: true,
@@ -63,9 +63,8 @@ module.exports = function () {
                     dest: 'build/'
                 }, {
                     expand: true,
-                    flatten: true,
-                    cwd: 'source/',
-                    src: 'private/views/*.jade',
+                    cwd: 'source/private/views',
+                    src: '**/*.jade',
                     dest: 'build/views/'
                 }],
             }
@@ -125,7 +124,7 @@ module.exports = function () {
         concat: {
             all: {
                 files: [{
-                    src: ['<%= static %>/js/require.js', 'build/public/js/loader.js'],
+                    src: ['<%= staticDir %>/js/require.js', 'build/public/js/loader.js'],
                     dest: 'build/public/js/loader.js'
                 }]
             }
@@ -177,6 +176,10 @@ module.exports = function () {
                 files: ['source/views/**', 'source/views/**/**'],
                 tasks: ['copy:views']
             },
+            privates: {
+                files: ['source/private/views/**/**'],
+                tasks: ['copy:privates']
+            },
             less: {
                 files: ['source/less/*.less'],
                 tasks: ['less:development']
@@ -191,7 +194,7 @@ module.exports = function () {
                         'NODE_ENV': 'development'
                     },
                     delayTime: 5,
-                    watchedFolders: ['source/'],
+                    watchedFolders: ['source/', 'source/private/'],
                     ignoredFiles: ['source/**/**'],
                     cwd: __dirname
                 }
@@ -220,6 +223,6 @@ module.exports = function () {
     // Assign tasks names
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);
-    grunt.registerTask('development', ['jshint', 'clean:start', 'copy', 'concat', 'less:development']);
+    grunt.registerTask('development', ['jshint', 'clean:start', 'copy', 'concat', 'less:development', 'clean:finish']);
     grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat', 'less:production', 'clean:finish']);
 };
