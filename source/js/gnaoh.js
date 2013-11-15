@@ -66,26 +66,20 @@
                     $('#old-post').remove();
                     $('#new-post').contents().unwrap();
                 }
-                $window.off();
+                // $window.off();
                 // Activate markings and sizing functions
                 This.activate();
                 This.size();
-                $loader.addClass('loading');
+                This.loadToggle();
                 // Promises and callbacks
                 This.initPromise = new $.Deferred();
                 This.initCallbacks = new $.Callbacks();
                 This.resizeCallbacks = new $.Callbacks();
                 // Add functions post-init callbacks list
                 This.initCallbacks.add(function () {
-                    This.loading = false;
+                    This.loadToggle('off');
                     // Pagescroll observer
                     This.scrollspy();
-                    // Removeloading animation after next iteration
-                    $loader.on('animationiteration webkitAnimationIteration', function (event) {
-                        $loader.off().on(event.type, function () {
-                            $loader.removeClass('loading').off();
-                        });
-                    });
                 });
                 // Exectue the callbacks after init is finished
                 This.initPromise.done(function () {
@@ -129,6 +123,22 @@
                 });
                 return This;
             },
+            // Toggle loading animation 
+            loadToggle: function (toggle) {
+                var This = this;
+                if (toggle === 'on') {
+                    This.loading = true;
+                    $loader.off().addClass('loading');
+                } else if (toggle === 'off') {
+                    This.loading = false;
+                    // Remove loading animation after next iteration
+                    $loader.on('animationiteration webkitAnimationIteration', function (event) {
+                        $loader.off().on(event.type, function () {
+                            $loader.removeClass('loading').off();
+                        });
+                    });
+                }
+            },
             // Media query: will set mini || medium || massive to true appropiately
             size: function () {
                 var width = document.body.clientWidth;
@@ -155,22 +165,28 @@
                 }
             },
             // Ajax loading of pages
-            getPage: function (link, skipAnimation) {
+            getPage: function (link, skipAnimation, noHistory) {
                 // Need to save context of this to pass to jquery callbacks
                 var This = this;
-                This.loading = true;
-                gnaoh.smoothScroll(null, null, 'navigator');
-                $loader.addClass('loading');
+                This.loadToggle('on');
                 // Sends ajax request for the specific page
                 $.ajax({
                     type: 'GET',
                     url: link
                 }).error(function () {
                     var names = $('.kenny').add('.hoang').add('.gnaoh');
-                    names.addClass('error').wait(1000, function () {
+                    // Flash the names to be red
+                    names.addClass('error').wait(2000, function () {
                         names.removeClass('error');
                     });
-                }).done(function (data) {
+                    This.loadToggle('off');
+                }).success(function (data) {
+                    // Scroll up top
+                    gnaoh.smoothScroll(null, null, 'navigator');
+                    // Mark link active & push page/hash to history
+                    if (!noHistory) {
+                        window.history.pushState({}, '', link);
+                    }
                     // Wraps the old page and replaces it with the data fetched from ajax request
                     var $data = $(data);
                     var name = $data.find('#post').data('name');
@@ -190,8 +206,6 @@
                         window._gaq.push(['_trackPageview', document.location.pathname]);
                     }
                     // Animating the pages
-                    // Skip on mobile devices and browsers that isn't chrome
-                    // var notChrome = !/Chrome/.test(window.navigator.userAgent);
                     if (This.mini || skipAnimation) {
                         cleanUp();
                     } else {
@@ -593,7 +607,7 @@
         try {
             window.onpopstate = function () {
                 if (gnaoh.currentPage.path !== document.location.pathname) {
-                    gnaoh.getPage(document.location, true);
+                    gnaoh.getPage(document.location, true, true);
                 }
             };
         } catch (e) {
@@ -622,8 +636,6 @@
             } else {
                 gnaoh.getPage(link);
             }
-            // Mark link active & push page/hash to history
-            window.history.pushState({}, '', href);
             return false;
         });
         // Navlist toggle for smaller devices
