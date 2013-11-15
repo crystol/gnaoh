@@ -1,14 +1,14 @@
 extend /views/skeleton
 block content
-    mixin banner(href, title, description, img)
+    mixin banner(href, title, description, img, colorClass)
         a(class='banner ajax', href=href)
-            .title=title
-            .description=description
-            img(src=img)
+            .title(class=colorClass)=title
+            .description(class=colorClass)=description
+            img(src='/static/img/banner/' + img)
 
-    +banner('/projects/photos/inline', 'Photos', 'Mock inline gallery', '/static/img/banner/35w.jpg')
-    +banner('/projects/photos/isotope', 'Photos 2', 'Mock isotopic gallery', '/static/img/banner/35w.jpg')
-    +banner('/projects/videos/multi', 'Videos', 'Mock HTML5 mp4/webM video layout', '/static/img/banner/35w.jpg')
-    +banner('/projects/videos/single', 'Videos 2', 'Mock of a single video page', '/static/img/banner/35w.jpg')
-    +banner('/projects/devdev', 'Data Representation', 'Mock of a D3.js page', '/static/img/banner/35w.jpg')
-    +banner('/projects/code', 'Code', 'Cooming soon... This just serves as a 404 test case.', '/static/img/banner/35w.jpg')
+    +banner('/projects/photos/inline', 'Photos', 'Mock inline gallery', 'Vinpearl.jpg')
+    +banner('/projects/photos/isotope', 'Photos Two', 'Mock isotopic gallery', 'stranger.jpg')
+    +banner('/projects/videos/multi', 'Videos', 'Mock HTML5 mp4/webM video layout', '35w.jpg')
+    +banner('/projects/videos/single', 'Videos Two', 'Mock of a single video page', 'SingelStreet.jpg', 'gray')
+    +banner('/projects/devdev', 'Data Representation', 'Mock of a D3.js page', 'graph.png')
+    +banner('/projects/code', 'Code', 'Cooming soon...', 'bcrp.png')

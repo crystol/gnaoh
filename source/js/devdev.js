@@ -4,97 +4,6 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         'use strict';
         var window = this;
         var DevDev = window.DevDev || {};
-        // Constructor function for the maps.
-        var Map = DevDev.Map = function () {
-            var This = this;
-            // Define with of the map as the size of the container
-            this.width = $('.map')
-                .width();
-            this.height = this.width * 0.75;
-            this.centered = undefined;
-            // Query server for json data and initialize the map
-            d3.json('/static/misc/sampledata.json', function (error, data) {
-                if (error) {
-                    throw error;
-                }
-                This.init(data.states);
-            });
-        };
-        Map.prototype = {
-            // Define the d3 projection for the map.
-            init: function (json) {
-                // Referencing the instance in order to be able to pass it to other callbacks
-                var This = this;
-                This.data = json;
-                var projection = d3.geo.albersUsa()
-                    .scale(This.width * 1.25)
-                    .translate([This.width / 2, This.height / 2]);
-                This.path = d3.geo.path()
-                    .projection(projection);
-                This.svg = d3.select('.map')
-                    .append('svg')
-                    .attr('width', This.width)
-                    .attr('height', This.height);
-                This.states = This.svg.append('g');
-                // Grab the JSON files with vectors of the US
-                d3.json('/static/misc/Murica.json', function (data) {
-                    This.states.append('g')
-                        .attr('class', 'states')
-                        .selectAll('path')
-                        .data(topojson.feature(data, data.objects.state).features)
-                        .enter()
-                        .append('path')
-                    // Marks the ID of each path as the state abbreviation
-                        .attr('id', function (obj) {
-                            return obj.properties.STUSPS10;
-                        })
-                        .on('click', function (data) {
-                            This.click.call(this, data, This);
-                        })
-                        .attr('d', This.path);
-                    // Calls colorize when the map has been initialized.
-                    This.colorize();
-                });
-                return This;
-            },
-            // Event listener for clicks
-            click: function (data, This) {
-                var x;
-                var y;
-                var k;
-                if (data && This.centered !== data) {
-                    var centroid = This.path.centroid(data);
-                    x = centroid[0];
-                    y = centroid[1];
-                    k = 4;
-                    This.centered = data;
-                } else {
-                    x = This.width / 2;
-                    y = This.height / 2;
-                    k = 1;
-                    This.centered = null;
-                }
-                // Centering on the map.
-                This.states.selectAll('path')
-                    .classed('active', This.centered && function (data) {
-                        return data === This.centered;
-                    });
-                // Transitions for zooming in
-                This.states.transition()
-                    .duration(400)
-                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')')
-                    .style('stroke-width', 1 / k + 'px');
-            },
-            // Color code states depending on which language is most popular.
-            colorize: function () {
-                // Loops through the JSON object and uses the key value for state and language.
-                for (var state in this.data) {
-                    var language = this.data[state]['dominant language'];
-                    $('#' + state)
-                        .attr('class', language);
-                }
-            }
-        };
         // Pi chart constructor
         var Pi = DevDev.Pi = function (object) {
             // Cache 'this' to pass into callbacks.
@@ -109,8 +18,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Thickness of the pi
                 thickness: object.thickness || '30',
             };
-            This.width = $(This.options.element)
-                .width();
+            This.width = $(This.options.element).width() || document.body.clientWidth*0.75;
             This.height = This.width * 0.5;
             This.radius = Math.min(This.width, This.height) * 0.4;
             // Collection of D3 specific methods
@@ -391,7 +299,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 tweenTime: object.tweenTime || 1000,
                 element: object.element || '.area',
             };
-            This.width = $(This.options.element).width();
+            This.width = $(This.options.element).width() || document.body.clientWidth*0.75;
             This.height = This.width * 0.5;
             // Each graph has 1/4 of the height of the main svg container
             This.singleHeight = This.height * 0.2;
@@ -600,7 +508,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 tweenTime: object.tweenTime || 1000,
                 element: object.element || '.line',
             };
-            This.width = $(This.options.element).width();
+            This.width = $(This.options.element).width() || document.body.clientWidth*0.75;
             This.height = This.width * 0.5;
             This.margin = {
                 top: This.height * 0.125,
@@ -770,7 +678,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 This.d3.graph.labels.append('text')
                     .text('/dev/deviation')
                     .attr('class', 'brand')
-                    .attr('dx', This.margin.left*1.5)
+                    .attr('dx', This.margin.left * 1.5)
                     .attr('dy', function () {
                         return this.scrollHeight * 2;
                     });
@@ -823,6 +731,96 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     city: city
                 });
             },
+        };
+        // Constructor function for the maps.
+        var Map = DevDev.Map = function () {
+            var This = this;
+            // Define with of the map as the size of the container
+            This.width = $('.map').width()|| document.body.clientWidth*0.75;
+            This.height = This.width * 0.75;
+            This.centered = undefined;
+            // Query server for json data and initialize the map
+            d3.json('/static/misc/sampledata.json', function (error, data) {
+                if (error) {
+                    throw error;
+                }
+                This.init(data.states);
+            });
+        };
+        Map.prototype = {
+            // Define the d3 projection for the map.
+            init: function (json) {
+                // Referencing the instance in order to be able to pass it to other callbacks
+                var This = this;
+                This.data = json;
+                var projection = d3.geo.albersUsa()
+                    .scale(This.width * 1.25)
+                    .translate([This.width / 2, This.height / 2]);
+                This.path = d3.geo.path()
+                    .projection(projection);
+                This.svg = d3.select('.map')
+                    .append('svg')
+                    .attr('width', This.width)
+                    .attr('height', This.height);
+                This.states = This.svg.append('g');
+                // Grab the JSON files with vectors of the US
+                d3.json('/static/misc/Murica.json', function (data) {
+                    This.states.append('g')
+                        .attr('class', 'states')
+                        .selectAll('path')
+                        .data(topojson.feature(data, data.objects.state).features)
+                        .enter()
+                        .append('path')
+                    // Marks the ID of each path as the state abbreviation
+                        .attr('id', function (obj) {
+                            return obj.properties.STUSPS10;
+                        })
+                        .on('click', function (data) {
+                            This.click.call(this, data, This);
+                        })
+                        .attr('d', This.path);
+                    // Calls colorize when the map has been initialized.
+                    This.colorize();
+                });
+                return This;
+            },
+            // Event listener for clicks
+            click: function (data, This) {
+                var x;
+                var y;
+                var k;
+                if (data && This.centered !== data) {
+                    var centroid = This.path.centroid(data);
+                    x = centroid[0];
+                    y = centroid[1];
+                    k = 4;
+                    This.centered = data;
+                } else {
+                    x = This.width / 2;
+                    y = This.height / 2;
+                    k = 1;
+                    This.centered = null;
+                }
+                // Centering on the map.
+                This.states.selectAll('path')
+                    .classed('active', This.centered && function (data) {
+                        return data === This.centered;
+                    });
+                // Transitions for zooming in
+                This.states.transition()
+                    .duration(400)
+                    .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')scale(' + k + ')translate(' + -x + ',' + -y + ')')
+                    .style('stroke-width', 1 / k + 'px');
+            },
+            // Color code states depending on which language is most popular.
+            colorize: function () {
+                // Loops through the JSON object and uses the key value for state and language.
+                for (var state in this.data) {
+                    var language = this.data[state]['dominant language'];
+                    $('#' + state)
+                        .attr('class', language);
+                }
+            }
         };
         // Exporting the DevDev object to window scope
         window.DevDev = DevDev;

@@ -22,11 +22,13 @@
  *      - Media Queries for Responsive functionality.
  */
 //variables
-@font: 'Titillium', 'ubuntu', 'droid sans', monospace, sans-serif;                  //default font
+@font: 'Titillium', 'ubuntu', 'droid sans', monospace, sans-serif;              //default font
 @font-size: 15px;                                                               //default font size
 @color: #9371B3;                                                                //highlighted color
-@color-dark: darken(@color,5%);                                                 //highlighted color
+@color-light: lighten(@color,15%);                                              //lighter color
+@color-dark: darken(@color,5%);                                                 //darker color
 @selection: darken(@color,25%);                                                 //selection color
+@color-gray: #555;                                                              //gray
 @bg-color: #fff;                                                                //background color
 @navigator-h: 50px;                                                             //height of sidebar
 @navigator-w: 100%;                                                             //with of sidebar
@@ -313,6 +315,9 @@ html {
 .banner {
     margin: 2em auto;
     display: block;
+    max-height: 125px;
+    overflow: hidden;
+    .relative;
     &>div, >img {
         .animated(250ms);
     }
@@ -320,15 +325,20 @@ html {
         z-index: 5;
         color: @bg-color;
         .absolute;
+        left: 5%;
+        &.gray {
+            color: @color-gray;
+        }
     }
     .title {
-        margin: 25px;
+        top: 10%;
         font-size: 200%;
         padding-right: 0.25em;
         border-right: 0px solid @bg-color;
     }
     .description {
-        margin: 50px;
+        top: 40%;
+        padding-left: 0.25em;
     }
     img {
        -webkit-filter: none;
@@ -340,6 +350,9 @@ html {
     }
     &:hover .title {
         border-right: 100px solid @bg-color;
+        &.gray {
+            border-right: 100px solid  @color-gray;
+        }
     }
 }
 .about {
