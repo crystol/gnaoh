@@ -91,7 +91,7 @@ module.exports = function () {
                 },
                 force: true
             },
-            source: ['Gruntfile.js', 'source/**/*.js']
+            source: ['*.js', 'source/*.js', 'source/**/*.js', 'source/**/**/*.js', ]
         },
         // Javascript minimizer/obfuscater 
         uglify: {
@@ -166,11 +166,11 @@ module.exports = function () {
             },
             server: {
                 files: ['source/*.js'],
-                tasks: ['copy:server']
+                tasks: ['copy:server', 'jshint']
             },
             js: {
                 files: ['source/js/*.js'],
-                tasks: ['jshint', 'copy:js', 'concat']
+                tasks: ['copy:js', 'concat', 'jshint']
             },
             views: {
                 files: ['source/views/**', 'source/views/**/**'],
@@ -195,7 +195,7 @@ module.exports = function () {
                     env: {
                         'NODE_ENV': 'development'
                     },
-                    delayTime: 3,
+                    delayTime: 2,
                     watchedExtensions: ['js'],
                     watchedFolders: ['source/', 'source/private/'],
                     ignoredFiles: ['source/js/**']

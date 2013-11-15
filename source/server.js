@@ -7,7 +7,7 @@ var router = require('./router.js');
 var fs = require('fs');
 // Init express
 var gnaoh = express();
-// Serving gnaoh.com
+// Configuring gnaoh under different environments (set by shell init.conf script with NODE_ENV)
 // Proxied through nginx
 gnaoh.configure('production', function () {
     http.createServer(gnaoh).listen(1337);
@@ -39,17 +39,17 @@ gnaoh.configure('standalone', function () {
 });
 // Universial application settings
 gnaoh.configure(function () {
-    gnaoh.enable('trust proxy');
-    gnaoh.use(express.compress());
     gnaoh.locals.basedir = __dirname;
+    gnaoh.enable('trust proxy');
     gnaoh.set('view engine', 'jade');
     gnaoh.set('views', __dirname + '/views');
     gnaoh.disable('x-powered-by');
-    // Enable logging for requested routes
+    // Enable logging for requested routes--should only generate single line success/error codes for rendered requests
     gnaoh.use(express.logger('dev'));
-    // Route stack   
-    gnaoh.use(express.methodOverride());
-    gnaoh.use(express.bodyParser());
+    // Gzipper
+    gnaoh.use(express.compress());
+    // Simulate PUT and DELETE requests
+    // gnaoh.use(express.methodOverride());
     // URL Cannonicalizer
     gnaoh.use(function (request, response, next) {
         // Remove www prefix
@@ -70,27 +70,32 @@ gnaoh.configure(function () {
         next();
     });
     // Route stack
+    // Serving static files -- this is a redundancy in case Nginx isn't working or node is running in standalone mode
     // Public root directories for files such as robots.txt, favicon.ico, humans.txt, etc
     gnaoh.use('/', express.static(__dirname + '/public/'));
-    // Static files
     gnaoh.use('/css/', express.static(__dirname + '/public/css/'));
     gnaoh.use('/js/', express.static(__dirname + '/public/js/'));
     gnaoh.use('/static/', express.static('/kadmin/server/www/static/'));
     // Primary views router 
     gnaoh.use(gnaoh.router);
-    // 404 page at the end of the stack
-    gnaoh.use(function (request, response) {
+    // Handling 404 errors
+    gnaoh.use(function (request, response, next) {
         response.status(404).render('404');
     });
+    // Handling all other errors and logging to stdout
+    gnaoh.use(function (error, request, response, next) {
+        console.log(error);
+        response.status(500).render('404');
+    });
 });
-// Routes through express to render from jade templates
+// Connecting to the router
 var routeList = router._list;
 // Declares a possible path & render function for each route that exists
 routeList.forEach(function (route) {
+    // Attempts to go through the route and etch the requested pages
     var path = route.path;
-    // Fetch the requested pages
+    // 404 the root for now
     if (path === '/') {
-        // 404 the root for now
         gnaoh.get('/', router['404']);
     } else {
         gnaoh.get('/' + path, router[path]);

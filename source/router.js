@@ -12,12 +12,6 @@ var routes = [{
     path: 'projects',
     title: 'Projects'
 }, {
-    path: 'projects/videos',
-    title: 'Videos'
-}, {
-    path: 'projects/photos',
-    title: 'Photos'
-}, {
     path: 'projects/devdev',
     title: 'Devdev'
 }];
@@ -31,7 +25,13 @@ try {
         });
     // Push the values to the existing stack
     extraRoutes.forEach(function (value) {
-        routes.push(value);
+        if (value.length > 1) {
+            for (var i = 0; i < value.length; i++) {
+                routes.push(value[i]);
+            }
+        } else {
+            routes.push(value);
+        }
     });
 } catch (error) {
     console.log('No extra routes were found. ' + error);
