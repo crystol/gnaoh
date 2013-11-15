@@ -316,17 +316,19 @@ html {
     &>div, >img {
         .animated(250ms);
     }
-    .title {
+    .title, .description {
         z-index: 5;
         color: @bg-color;
-        margin: 25px;
-        padding-right: 0.25em;
-        border-right: 0px solid @bg-color;
-        font-size: 200%;
         .absolute;
     }
-    .subtitle {
-        z-index: 5;
+    .title {
+        margin: 25px;
+        font-size: 200%;
+        padding-right: 0.25em;
+        border-right: 0px solid @bg-color;
+    }
+    .description {
+        margin: 50px;
     }
     img {
        -webkit-filter: none;
