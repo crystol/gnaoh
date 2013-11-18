@@ -356,7 +356,7 @@ html {
     }
 }
 .cv {
-    a {
+    a, .link {
         &:before, &:after {
             content: '';
             margin: 0 0.1em;
@@ -494,6 +494,9 @@ html {
     }
 }
 .letter {
+    a {
+        .cv.link;
+    }
     p {
         margin: 1em 0;
     }
@@ -707,9 +710,18 @@ html {
             }
         }
     #content {
-        margin: 1em 0.5em;
+        margin: 2em 0.5em;
         padding: 0;
     }
+        .banner {
+            margin: 1em auto;
+            .title {
+                font-size: 125%;
+            }
+            .description {
+                top: 45%;
+            }
+        }
         .gallery.wall, .gallery .brick {
             .animated(0ms) !important;
         }

@@ -5,10 +5,10 @@ block content
         p Please don't mind any of the beta bugs since they're not here to stay (hopefully).
     | Contact: 
     +link('mailto:kenny@gnaoh.com?subject=Hi%20Kenny', 'kenny@gnaoh.com')
-    //- .image
-    //-     img(src='/static/img/gallery/twelve/4.jpg', alt='Venturing circa Amlies grocery store in Montmartre.')
-    //-     .caption Venturing circa Amélie's grocercy store in Montmartre.
     - var randint = Math.ceil(Math.random()*15);
     .image
         img(src='/static/img/gallery/strangers/' + randint + '.jpg', alt='This is photo number ' + randint)
-        .caption Randomly selected photo. Refresh for a new one!
+        .caption Randomly selected photo.
+    //- .image
+    //-     img(src='/static/img/gallery/twelve/4.jpg', alt='Venturing circa Amlies grocery store in Montmartre.')
+    //-     .caption Venturing circa Amélie's grocercy store in Montmartre.

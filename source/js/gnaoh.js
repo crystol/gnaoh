@@ -2,8 +2,8 @@
     define(['jquery'], function ($) {
         'use strict';
         // Lazy logging in dev env
-        var developement = true;
-        var log = window.log = developement ? function (args) {
+        var development = true;
+        var log = window.log = development ? function (args) {
                 window.console.log(args);
             } : function () {};
         // Common jquery selectors cache
