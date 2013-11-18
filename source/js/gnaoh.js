@@ -15,7 +15,7 @@
         var $loader = $('#navigator .pyrimidine');
         var $gallery;
         var $video;
-        var $about;
+        var $cv;
         // Extending jQuery functions
         // Stall function that can be used more versitile from $().delay()
         $.prototype.wait = $.wait = function (time, callback) {
@@ -97,15 +97,15 @@
                 // Loading additional sections on the page
                 $gallery = $('#post .gallery');
                 $video = $('#post .video');
-                $about = $('#post .about');
+                $cv = $('#post .cv');
                 // Update currentpage for navigation
                 This.currentPage = {
                     path: document.location.pathname,
                     href: document.location.href
                 };
                 // Load about section if it exists
-                if ($about[0]) {
-                    This.loadAbout();
+                if ($cv[0]) {
+                    This.loadCV();
                 }
                 // Loads videos if they exist
                 if ($video[0]) {
@@ -471,27 +471,27 @@
                 This.initPromise.resolve();
             },
             // Curriculum Vitae section
-            loadAbout: function () {
+            loadCV: function () {
                 // Skills section
-                $about.find('.skills .title').on({
+                $cv.find('.skills .title').on({
                     click: function () {
-                        $about.find('.skills .active').removeClass('active');
+                        $cv.find('.skills .active').removeClass('active');
                         // Mark the label and the tab active
-                        $about.find(this.dataset.tab).addClass('active');
+                        $cv.find(this.dataset.tab).addClass('active');
                         $(this).addClass('active');
                     }
                 });
                 // Experience section
-                $about.find('.position:not(.active)').on({
+                $cv.find('.position:not(.active)').on({
                     click: function () {
-                        $about.find('.position.active').removeClass(' active');
+                        $cv.find('.position.active').removeClass(' active');
                         $(this).addClass(' active');
                     },
                     // Adds active status on hover. Cancels if mouse leaves within 1000ms
                     mouseenter: function () {
                         var $this = $(this);
                         var countdown = window.setTimeout(function () {
-                            $about.find('.position.active').removeClass('active');
+                            $cv.find('.position.active').removeClass('active');
                             $this.addClass('active');
                         }, 1000);
                         $this.on('mouseleave', function (event) {

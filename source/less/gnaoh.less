@@ -355,9 +355,17 @@ html {
         }
     }
 }
-.about {
+.cv {
+    a {
+        &:before, &:after {
+            content: '';
+            margin: 0 0.1em;
+        }
+    }
     .self {
-        margin-bottom: 1em;
+        span {
+            display: block;
+        }
     }
     li {    
         margin: 0.25em 0 0.25em 1.5em;
@@ -388,8 +396,8 @@ html {
         margin: 0.75em 0;
         font-size: 175%;
         color: @color-dark;
-        padding-bottom: 0.25em;
-        border-bottom: 1px solid @color-dark;
+        padding: 0.25em 0;
+        border-top: 1px solid @color-dark;
     }
     .skills {
         .title {
@@ -491,6 +499,9 @@ html {
     }
     span {
         display: block;
+    }
+    .date {
+        color: @color;
     }
     .signature {
         display: block;
@@ -716,10 +727,13 @@ html {
                 max-width: 100%;
             }
         }
-        .about {
+        .cv {
             .skills {
                 .bar {
                     width: 7.5em;
+                }
+                .tabs {
+                    height: 500px;
                 }
             }
             .position {
@@ -738,5 +752,12 @@ html {
      [class *= 'grid-'] {
         width:100% !important;
         margin: auto 0;
+    }
+    .cv {
+        .skills {
+            .tabs {
+                height: 550px;
+            }
+        }
     }
 }
