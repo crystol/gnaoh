@@ -165,7 +165,7 @@
                 }
             },
             // Ajax loading of pages
-            getPage: function (link, skipAnimation, noHistory) {
+            getPage: function (link, animate, noHistory) {
                 // Need to save context of this to pass to jquery callbacks
                 var This = this;
                 This.loadToggle('on');
@@ -206,11 +206,11 @@
                         window._gaq.push(['_trackPageview', document.location.pathname]);
                     }
                     // Animating the pages
-                    if (This.mini || skipAnimation) {
-                        cleanUp();
-                    } else {
+                    if (!This.mini && animate) {
                         $old.add($new).addClass('move');
                         $.wait(This.cssDelay, cleanUp);
+                    } else {
+                        cleanUp();
                     }
                 });
             },
@@ -607,7 +607,7 @@
         try {
             window.onpopstate = function () {
                 if (gnaoh.currentPage.path !== document.location.pathname) {
-                    gnaoh.getPage(document.location, true, true);
+                    gnaoh.getPage(document.location, false, true);
                 }
             };
         } catch (e) {
@@ -631,8 +631,10 @@
             var hash = href.match(/\#.*/);
             var samePage = formattedHref === gnaoh.currentPage.href.replace(/\#\w*/, '');
             if (hash && samePage) {
-                // If there's a hash match, it will be extracted;
+                // If there's a hash match, it will be extracted and focused
                 gnaoh.smoothScroll(undefined, undefined, hash[0]);
+            } else if ($this.hasClass('move')) {
+                gnaoh.getPage(link, true);
             } else {
                 gnaoh.getPage(link);
             }
