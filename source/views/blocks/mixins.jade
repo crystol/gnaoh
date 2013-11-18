@@ -1,5 +1,9 @@
 //- File containing mixins used within jade templates
 
+//- Open link in new tab
+mixin link(href, text, classes)
+    a(href=href, target='_blank', class=classes)=text
+
 //- Banners used in projects pages
 mixin banner(href, title, description, img, colorClass, linkClass)
         a(class='banner ajax '+ linkClass, href=href)

@@ -1,8 +1,8 @@
 extend /views/skeleton
 block content
     p   This is a sample of my Strangers collection. This gallery was scripted using 
-        a(href='http://isotope.metafizzy.co/', target='_blank') isotope.
+        +link('http://isotope.metafizzy.co/', 'isotope.')
     p   Please take a gander at method 
-        a(href='https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L320', target='_blank') Gnaoh.layBricks
+        +link('https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L320', 'Gnaoh.layBricks')
         |  for more information.
     #strangers(data-amount='15', class='gallery wall')
