@@ -11,9 +11,6 @@ var routes = [{
 }, {
     path: 'projects',
     title: 'Projects'
-}, {
-    path: 'projects/devdev',
-    title: 'Devdev'
 }];
 // Append extra routes from source/routes/ directory if they exist
 try {
