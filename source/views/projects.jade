@@ -1,13 +1,6 @@
 extend /views/skeleton
 block content
-    mixin banner(href, title, description, img, colorClass)
-        a(class='banner ajax', href=href)
-            .title(class=colorClass)=title
-            .description(class=colorClass)=description
-            img(src='/static/img/banner/' + img)
-
-    +banner('/projects/photos/inline', 'Photos', 'Mock inline gallery', 'Vinpearl.jpg')
-    +banner('/projects/photos/isotope', 'Photos Two', 'Mock isotopic gallery', 'stranger.jpg')
+    +banner('/projects/photos', 'Photos', 'Mock image galleries', 'tilt.jpg')
     +banner('/projects/videos/multi', 'Videos', 'Mock HTML5 mp4/webM video layout', '35w.jpg')
     +banner('/projects/videos/single', 'Videos Two', 'Mock of a single video page', 'SingelStreet.jpg', 'gray')
     +banner('/projects/devdev', 'Data Representation', 'Mock of a D3.js page', 'graph.png')
