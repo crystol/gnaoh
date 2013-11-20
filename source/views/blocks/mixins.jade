@@ -8,6 +8,14 @@ mixin link(href, text, classes)
     if block
         block
 
+//- Lightbox link
+mixin lightbox(img, caption, text)
+    -if (!caption) caption = '';
+    -var source = 'gnaoh.lightbox("' + img + '", "' + caption + '")';
+    a(href='#lightbox', onclick=source, class='inline')=text
+    if block
+        block
+
 //- Banners used in projects pages
 mixin banner(href, title, description, img, colorClass, linkClass)
         a(class='banner ajax '+ linkClass, href=href)
