@@ -296,6 +296,21 @@ html {
     p {
         margin: 1em 0;
     }
+    ul.inline {
+        margin-left: 2.5em;
+        li {
+            list-style: circle;
+            ul {
+                margin-left: 1em;
+                li {
+                    list-style: disc;
+                }
+            }
+        }
+    }
+    .textblock {
+        margin: 0.5em 0;
+    }
     //ajax page switching
     #old-post, #new-post {
         max-width: @post-width;
@@ -362,6 +377,7 @@ html {
     }
 }
 
+// curriculum vitae section
 .cv {
     .self {
         span {
@@ -510,7 +526,7 @@ html {
 }
 // Image galleries
 .gallery {
-    margin: 10px 0;
+    margin: 1em 0;
     overflow: hidden;
     }
     .image {
@@ -623,6 +639,7 @@ html {
 .grid-offset-25    {margin-left:25%;}
 .grid-offset-20    {margin-left:20%;}
 .grid-offset-10    {margin-left:10%;}
+.grid-offset-5     {margin-left:5%;}
 
 // Media queries
 // Tablets

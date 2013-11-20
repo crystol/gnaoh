@@ -5,6 +5,8 @@ mixin link(href, text, classes)
     -if (classes) classes += ' inline';
     -else classes = 'inline';
     a(href=href, target='_blank', class=classes)=text
+    if block
+        block
 
 //- Banners used in projects pages
 mixin banner(href, title, description, img, colorClass, linkClass)

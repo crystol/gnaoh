@@ -1,8 +1,13 @@
 extend /views/skeleton
 block content
-    p   This is a sample of my Strangers collection. This gallery was scripted using 
-        +link('http://isotope.metafizzy.co/', 'isotope.')
-    p   Please take a gander at method 
-        +link('https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L320', 'Gnaoh.layBricks')
-        |  for more information.
+    .textblock - Sample from my Strangers collection.
+    .textblock - Loading steps:
+        ul.inline
+            li Photos are automatically populated by gnaoh.loadGallery()
+            li After populating, a promise callback initiates
+                +link('https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L320', 'gnaoh.layBricks().')
+            li Scripts and stylesheets from
+                +link('http://isotope.metafizzy.co/', 'Isotope') are asynchronously appended to the page.
+            li Isotope script does its arrangement magic from the configurations provided.
+            li Push a function into the pre-existing callback array--that gets called and debounced (200ms) with each window.resize event--that "rebricks" the layout gallery.
     #strangers(data-amount='15', class='gallery wall')

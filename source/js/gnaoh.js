@@ -317,17 +317,19 @@
                     This.smoothScroll.call(this, event);
                 });
             },
-            // Lay the brick elements from wall-typ galleries
+            // Lay the brick elements using isotope.js from galleries with .wall classes
             layBricks: function () {
                 var This = this;
                 var $foundation = $('.wall');
+                // Append isotope.js asynchronously
                 window.require(['static/isotope'], function () {
+                    // Images.loaded() helps increases position accurary when the gallery is animated
                     $foundation.imagesLoaded(function () {
                         $foundation.isotope({
                             itemSelector: '.image',
                             layoutMode: 'masonry',
                             masonry: {
-                                // 2 per column on big screens; 4 per column on smaller screens
+                                // 2 photos per column on bigger screens (>1024px); 4 per column on mobile
                                 columnWidth: This.mini ? $post.width() / 2 : $post.width() / 4
                             },
                             containerClass: 'wall',

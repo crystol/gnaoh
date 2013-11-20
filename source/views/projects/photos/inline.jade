@@ -1,7 +1,25 @@
 extend /views/skeleton
 block content
-    p - Gallery is automatically populated with
-        +link('https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L248', 'javascript.')
-    p - Designed to be quick and easy: a div tag with the gallery's #ID will load photos from the directory of the same name.
-    p - Ajax grabs a JSON file containing text for the captions.
+    .textblock - Designed to be quick and easy: a div tag with the gallery's #ID will load photos from the directory of the same name.
+    .textblock - Loading steps: 
+        ul.inline
+            li= 'A <div> tag with .gallery class is detected and'
+                +link('https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L250', 'gnaoh.loadGallery()') is called.
+            li Options are extracted from the div tag and applied:
+                ul
+                    li id = 'ID' : Source directory/path of the photos (ex: /static/img/gallery/ID/).
+                    li data-start = '1'' : Starting index (photos are named with /\d{1}\.jpg/ pattern).
+                    li data-captions='true' : Specifies if a captions exist.
+            li= 'The loop creates and appends <img> tags to the gallery.'
+            li An AJAX request is made to obtain the 
+                +link('/static/img/gallery/sample/captions.JSON', 'JSON') file with the captions.
+            li Separate loop matches the caption to the proper photo according to its key:value pair.
+    .textblock - Logic and thoughts:
+        ul.inline
+            li Quick and easy way to load series of photos exported from Photoshop/Lightroom.
+            li This method allows the page to load (DOMready ~500ms) without hindrance. 
+            li The progressive photos takeare asynchronously loaded 
+            li Will NOT work with browsers sans javascript. A future revision will port this function to Node.js and have the backend generate the markup instead.
+
+
     #sample(class='gallery', data-start='1', data-amount='21', data-captions='true')
