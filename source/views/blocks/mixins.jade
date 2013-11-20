@@ -1,7 +1,9 @@
 //- File containing mixins used within jade templates
 
-//- Open link in new tab
+//- Open inline link in new tab
 mixin link(href, text, classes)
+    -if (classes) classes += ' inline';
+    -else classes = 'inline';
     a(href=href, target='_blank', class=classes)=text
 
 //- Banners used in projects pages

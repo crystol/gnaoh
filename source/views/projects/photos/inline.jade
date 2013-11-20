@@ -1,4 +1,7 @@
 extend /views/skeleton
 block content
-    p Gallery is loaded automatically with javascript. 
+    p - Gallery is automatically populated with
+        +link('https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L248', 'javascript.')
+    p - Designed to be quick and easy: a div tag with the gallery's #ID will load photos from the directory of the same name.
+    p - Ajax grabs a JSON file containing text for the captions.
     #sample(class='gallery', data-start='1', data-amount='21', data-captions='true')

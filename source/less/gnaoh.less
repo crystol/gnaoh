@@ -287,6 +287,15 @@ html {
         color: @color;
         text-decoration: underline;
     }
+    a.inline {
+        &:before, &:after {
+            content: '';
+            margin: 0 0.1em;
+        }
+    }
+    p {
+        margin: 1em 0;
+    }
     //ajax page switching
     #old-post, #new-post {
         max-width: @post-width;
@@ -307,9 +316,6 @@ html {
              opacity: 1;
             .transform(translateX, 0);
         }
-    }
-    .text {
-        margin-bottom: 1em;
     }
 }   
 .banner {
@@ -355,13 +361,8 @@ html {
         }
     }
 }
+
 .cv {
-    a, .link {
-        &:before, &:after {
-            content: '';
-            margin: 0 0.1em;
-        }
-    }
     .self {
         span {
             display: block;
@@ -496,12 +497,6 @@ html {
 .letter {
     .heading {
         margin-bottom: 3em;
-    }
-    a {
-        .cv.link;
-    }
-    p {
-        margin: 1em 0;
     }
     span {
         display: block;
