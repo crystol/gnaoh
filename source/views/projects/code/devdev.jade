@@ -34,5 +34,34 @@ block content
         .box.javascript
         span Javascript
         .box.ruby
-        span Ruby            
-    script(src='/js/devdev.js')
+        span Ruby
+    script.
+        window.require(['devdev'], function () {
+            var sampleLineGraph = new DevDev.Line({
+                city: $('.line input:checked').val()
+            });
+            $('.line .city-select input').on('change', function () {
+                sampleLineGraph.changeCity(this.value);
+            });
+            // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
+            var samplePiGraph = new DevDev.Pi({
+                city: $('.pi input:checked').val(),
+                thickness: 45,
+            });
+            // Example of binding the graph to a change event.
+            $('.pi input').on('change', function () {
+                samplePiGraph.changeCity(this.value);
+            });
+            // Sample area graph. Call the constructor with 'new DevDev.Area({arguments})'
+            var sampleAreaGraph = new DevDev.Area({
+                city: $('.area input:checked').val(),
+            });
+            // Binding the graph to a change event.
+            $('.area input').on('change', function () {
+                sampleAreaGraph.changeCity(this.value);
+            });
+            // Sample Map
+            window.setTimeout(function () {
+                var sampleMap = new DevDev.Map();
+            }, 2000);
+        });

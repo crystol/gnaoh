@@ -1,8 +1,7 @@
-require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
+define(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
     gnaoh.requireCss('/css/devdev.css');
-    (function (doc, $, d3) {
+    (function (window, document, $, d3) {
         'use strict';
-        var window = this;
         var DevDev = window.DevDev || {};
         // Pi chart constructor
         var Pi = DevDev.Pi = function (object) {
@@ -18,7 +17,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 // Thickness of the pi
                 thickness: object.thickness || '30',
             };
-            This.width = $(This.options.element).width() || document.body.clientWidth*0.75;
+            This.width = $(This.options.element).width() || document.body.clientWidth * 0.75;
             This.height = This.width * 0.5;
             This.radius = Math.min(This.width, This.height) * 0.4;
             // Collection of D3 specific methods
@@ -299,7 +298,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 tweenTime: object.tweenTime || 1000,
                 element: object.element || '.area',
             };
-            This.width = $(This.options.element).width() || document.body.clientWidth*0.75;
+            This.width = $(This.options.element).width() || document.body.clientWidth * 0.75;
             This.height = This.width * 0.5;
             // Each graph has 1/4 of the height of the main svg container
             This.singleHeight = This.height * 0.2;
@@ -508,7 +507,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                 tweenTime: object.tweenTime || 1000,
                 element: object.element || '.line',
             };
-            This.width = $(This.options.element).width() || document.body.clientWidth*0.75;
+            This.width = $(This.options.element).width() || document.body.clientWidth * 0.75;
             This.height = This.width * 0.5;
             This.margin = {
                 top: This.height * 0.125,
@@ -736,7 +735,7 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         var Map = DevDev.Map = function () {
             var This = this;
             // Define with of the map as the size of the container
-            This.width = $('.map').width()|| document.body.clientWidth*0.75;
+            This.width = $('.map').width() || document.body.clientWidth * 0.75;
             This.height = This.width * 0.75;
             This.centered = undefined;
             // Query server for json data and initialize the map
@@ -824,31 +823,31 @@ require(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
         };
         // Exporting the DevDev object to window scope
         window.DevDev = DevDev;
-    }).call(this, document, jQuery, d3, topojson);
-    // Sample Line graph. Call the constructor with 'new DevDev.Line({arguments})'
-    var sampleLineGraph = window.sampleLineGraph = new DevDev.Line({
-        city: $('.line input:checked').val()
-    });
-    $('.line .city-select input').on('change', function () {
-        sampleLineGraph.changeCity(this.value);
-    });
-    // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
-    var samplePiGraph = window.samplePiGraph = new DevDev.Pi({
-        city: $('.pi input:checked').val(),
-        thickness: 45,
-    });
-    // Example of binding the graph to a change event.
-    $('.pi input').on('change', function () {
-        samplePiGraph.changeCity(this.value);
-    });
-    // Sample area graph. Call the constructor with 'new DevDev.Area({arguments})'
-    var sampleAreaGraph = window.sampleAreaGraph = new DevDev.Area({
-        city: $('.area input:checked').val(),
-    });
-    // Binding the graph to a change event.
-    $('.area input').on('change', function () {
-        sampleAreaGraph.changeCity(this.value);
-    });
-    // Sample Map
-    new DevDev.Map();
+    })(window, document, $, d3, topojson);
+    
+    // var sampleLineGraph = new DevDev.Line({
+    //     city: $('.line input:checked').val()
+    // });
+    // $('.line .city-select input').on('change', function () {
+    //     sampleLineGraph.changeCity(this.value);
+    // });
+    // // Sample Pi graph. Call the constructor with 'new DevDev.Pi({arguments})'
+    // var samplePiGraph = new DevDev.Pi({
+    //     city: $('.pi input:checked').val(),
+    //     thickness: 45,
+    // });
+    // // Example of binding the graph to a change event.
+    // $('.pi input').on('change', function () {
+    //     samplePiGraph.changeCity(this.value);
+    // });
+    // // Sample area graph. Call the constructor with 'new DevDev.Area({arguments})'
+    // var sampleAreaGraph = new DevDev.Area({
+    //     city: $('.area input:checked').val(),
+    // });
+    // // Binding the graph to a change event.
+    // $('.area input').on('change', function () {
+    //     sampleAreaGraph.changeCity(this.value);
+    // });
+    // // Sample Map
+    // new DevDev.Map();
 });

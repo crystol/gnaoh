@@ -3,7 +3,7 @@ block content
     .textblock Loading steps: 
         ul.inline
             li= 'A <div> tag with .gallery class is detected and'
-                +link('https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L250', 'gnaoh.loadGallery') is called.
+                +link('https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L248', 'gnaoh.loadGallery') is called.
             li Options are extracted from the div tag and applied:
                 ul
                     li id = 'ID' : Source directory/path of the photos.
@@ -19,7 +19,7 @@ block content
             li This method allows the page to load without hindrance (DOMready ~400ms). 
             li The progressive photos are asynchronously loaded. With the SPDY protocol, more
                 +lightbox('misc/waterfall.png', 'SPDY on the left, plain http on the right.', 'concurrent') 
-                | requests for photos are possible.  
+                | data streams for photos are possible.  
             li Will NOT work with browsers sans javascript. A future revision will port this function to Node.js and have the backend generate the markup instead.
 
     #sample(class='gallery', data-start='1', data-amount='21', data-captions='true')
