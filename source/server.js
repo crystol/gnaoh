@@ -8,12 +8,16 @@ var fs = require('fs');
 // Init express
 var gnaoh = express();
 // Configuring gnaoh under different environments (set by shell init.conf script with NODE_ENV)
-// Proxied through nginx
-gnaoh.configure('production', function () {
-    http.createServer(gnaoh).listen(1337);
-});
 // Developmental environment (http://localhost:1337)
 gnaoh.configure('development', function () {
+    http.createServer(gnaoh).listen(1337);
+    gnaoh.use(express.errorHandler({
+        dumpExceptions: true,
+        showStack: true
+    }));
+});
+// Production mode proxied through nginx
+gnaoh.configure('production', function () {
     http.createServer(gnaoh).listen(1337);
 });
 // Standalone environment (without nginx proxy)
