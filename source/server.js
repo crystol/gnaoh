@@ -43,7 +43,6 @@ gnaoh.configure('standalone', function () {
 });
 // Universial application settings
 gnaoh.configure(function () {
-    gnaoh.locals.basedir = __dirname;
     gnaoh.enable('trust proxy');
     gnaoh.set('view engine', 'jade');
     gnaoh.set('views', __dirname + '/views');
@@ -76,7 +75,7 @@ gnaoh.configure(function () {
     // Route stack
     // Serving static files -- this is a redundancy in case Nginx isn't working or node is running in standalone mode
     // Public root directories for files such as robots.txt, favicon.ico, humans.txt, etc
-    gnaoh.use('/', express.static(__dirname + '/public/'));
+    // gnaoh.use('/', express.static(__dirname + '/public/'));
     gnaoh.use('/css/', express.static(__dirname + '/public/css/'));
     gnaoh.use('/js/', express.static(__dirname + '/public/js/'));
     gnaoh.use('/static/', express.static('/kadmin/server/www/static/'));
@@ -92,16 +91,14 @@ gnaoh.configure(function () {
         response.status(500).render('404');
     });
 });
-// Connecting to the router
-var routeList = router._list;
-// Declares a possible path & render function for each route that exists
-routeList.forEach(function (route) {
-    // Attempts to go through the route and etch the requested pages
-    var path = route.path;
-    // 404 the root for now
-    if (path === '/') {
-        gnaoh.get('/', router['404']);
-    } else {
-        gnaoh.get('/' + path, router[path]);
-    }
+// Register paths to the router
+for (var route in router) {
+    // Attempts to go through the route and fetch the requested pages
+    var path = '/' + route;
+    gnaoh.get(path, router[route].render);
+}
+// 404 the root for now
+gnaoh.get('/', function (request, response, next) {
+    // router['projects'].render(request, response, next);
+    response.status(404).render('404');
 });

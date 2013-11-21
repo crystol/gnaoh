@@ -1,8 +1,5 @@
 // Lists of all of the possible routes used by the server
 var routes = [{
-    path: '/',
-    title: 'Kenny Hoang'
-}, {
     path: '404',
     title: '404!'
 }, {
@@ -42,14 +39,32 @@ try {
 } catch (error) {
     console.log('No private routes were found. ' + error);
 }
-// Export the routes array as a module
-module.exports['_list'] = routes;
+// Object to store all of the routes and their rendering options/functions
+var routesList = {};
 // Exports a module per route
 routes.forEach(function (route) {
-    // Read-able HTML
-    route.pretty = true;
-    // When a route is requested from the array, a response will init jade's rendering.
-    module.exports[route.path] = function (request, response) {
-        response.render(route.path, route);
+    // Jade rendering options''
+    var options = {
+        path: '/',
+        title: 1337,
+        pretty: true,
+        basedir: __dirname
+    };
+    // Copy all properoptionsties over to options object
+    for (var prop in route) {
+        if (!route[prop]) {
+            route[prop] = 1337;
+        }
+        options[prop] = route[prop];
+    }
+    // Add each route to the list
+    routesList[route.path] = {
+        path: route.path,
+        options: options,
+        render: function (request, response) {
+            response.render(route.path, options);
+        }
     };
 });
+// Export the routes 
+module.exports = routesList;
