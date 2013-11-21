@@ -56,7 +56,7 @@ module.exports = function () {
                     expand: true,
                     flatten: true,
                     src: 'source/private/*.js',
-                    dest: 'build/'
+                    dest: 'build/routes/'
                 }, {
                     expand: true,
                     cwd: 'source/private/views',

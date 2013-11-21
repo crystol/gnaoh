@@ -1,4 +1,4 @@
-// Lists of all of the possible routes used by the server
+// Lists of the most common routes used by the server
 var routes = [{
     path: '404',
     title: '404!'
@@ -29,15 +29,6 @@ try {
     });
 } catch (error) {
     console.log('No extra routes were found. ' + error);
-}
-// Append private routes (pages not included in repo) if they exist
-try {
-    var privateRoutes = require('./privateRoutes.js');
-    privateRoutes.forEach(function (value) {
-        routes.push(value);
-    });
-} catch (error) {
-    console.log('No private routes were found. ' + error);
 }
 // Object to store all of the routes and their rendering options/functions
 var routesList = {};
