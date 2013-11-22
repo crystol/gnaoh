@@ -174,7 +174,7 @@ module.exports = function () {
             },
             views: {
                 files: ['source/views/**', 'source/views/**/**'],
-                tasks: ['copy:views']
+                tasks: ['copy:views', 'html']
             },
             privates: {
                 files: ['source/private/*.js', 'source/private/views/**/**'],
@@ -213,6 +213,7 @@ module.exports = function () {
         }
     });
     // Load tasks
+    grunt.loadTasks('tasks');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -225,6 +226,6 @@ module.exports = function () {
     // Assign tasks names
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);
-    grunt.registerTask('development', ['jshint', 'clean:start', 'copy', 'concat', 'less:development', 'clean:finish']);
-    grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat', 'less:production', 'clean:finish']);
+    grunt.registerTask('development', ['jshint', 'clean:start', 'copy', 'concat', 'less:development', 'html', 'clean:finish']);
+    grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat', 'less:production', 'html', 'clean:finish']);
 };
