@@ -226,6 +226,6 @@ module.exports = function () {
     // Assign tasks names
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);
-    grunt.registerTask('development', ['jshint', 'clean:start', 'copy', 'concat', 'less:development', 'html', 'clean:finish']);
+    grunt.registerTask('development', ['clean:start', 'copy', 'concat', 'less:development', 'html', 'clean:finish', 'jshint']);
     grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat', 'less:production', 'html', 'clean:finish']);
 };

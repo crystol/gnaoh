@@ -18,7 +18,9 @@ module.exports = function (grunt) {
             if (routeFrags.length > 1 && !fs.existsSync(htmlDir)) {
                 mkdirp.sync(htmlDir);
             }
-            fs.writeFileSync(buildDir + 'public/' + route + '.html', html);
+            var htmlFile = buildDir + 'public/' + route + '.html';
+            fs.writeFileSync(htmlFile, html);
+            console.log('Generated ' + htmlFile);
         }
         // Loop through the routes list and call write function for each.
         for (var route in routesList) {
