@@ -36,7 +36,7 @@
         };
         // Adds the animate class to selected element, wait for animation, and removes the class
         $.prototype.deanimate = function (removee, styleClear, time) {
-            time = time || gnaoh.cssDelay;
+            time = time || 1000;
             var removees = 'animated ' + removee;
             this.addClass('animated').wait(time).done(function () {
                 this.removeClass(removees);
@@ -58,6 +58,7 @@
             // Function to initialize the page on first load or ajax loaded sections
             init: function () {
                 var This = this;
+                console.time('load');
                 // Clear sticky settings and unbind listeners
                 if ($('#new-post')[0] || $('#old-post')[0]) {
                     $('#old-post').remove();
@@ -73,6 +74,7 @@
                 This.resizeCallbacks = new $.Callbacks();
                 // Add functions post-init callbacks list
                 This.initCallbacks.add(function () {
+                    console.timeEnd('load');
                     This.loadToggle();
                     This.historian();
                     This.scrollspy();
@@ -101,20 +103,24 @@
                     prettify: $('#post .prettyprint'),
                 };
                 // Loops through the sections and call their respective functions
-                var itemsPassed = 0;
-                var itemsTotal = 0;
+                This.sectionsDone = 0;
+                var sectionsPassed = 0;
+                var sectionsTotal = 0;
                 for (var loader in thingsToLoad) {
                     var loadee = thingsToLoad[loader];
                     if (loadee[0]) {
                         This[loader](loadee);
                     } else {
-                        itemsPassed++;
+                        sectionsPassed++;
                     }
-                    itemsTotal++;
+                    sectionsTotal++;
                 }
-                // Resolve the init promise if nothing needs to be loaded
-                if (itemsPassed === itemsTotal) {
-                    This.initPromise.resolve();
+                // Resolves the promise after the sections are loaded
+                while (true) {
+                    if (This.sectionsDone + sectionsPassed >= sectionsTotal) {
+                        This.initPromise.resolve();
+                        break;
+                    }
                 }
                 return This;
             },
@@ -276,8 +282,7 @@
                         start: Number(options.start || 1),
                         // Stops at the provided start point plus the amount needed to load
                         amount: Number(options.start || 1) + Number(options.amount),
-                        wall: $this.hasClass('wall'),
-                        lastOne: (element === $gallery.length - 1)
+                        wall: $this.hasClass('wall')
                     });
                     // If a wall-type gallery exists, it will be added to the init callback queue
                     if (options.wall) {
@@ -286,10 +291,6 @@
                             // Call laybricks with This since $.Callbacks forces the 'this' context to itself
                             This.layBricks.call(This);
                         });
-                    }
-                    // If it's the last gallery to load, it will resolve the init promise
-                    if (options.lastOne) {
-                        galleryPromise.done(This.initPromise.resolve);
                     }
                     // Grab the JSON captions file
                     if (options.captions) {
@@ -327,6 +328,8 @@
                     This.isMini();
                     This.smoothScroll.call(this, event);
                 });
+                // Help resolve init promise
+                This.sectionsDone++;
             },
             // Lay the brick elements using isotope.js from galleries with .wall classes
             layBricks: function () {
@@ -480,39 +483,8 @@
                         $this.css('height', $this.width() * (9 / 16));
                     });
                 });
-                // Resolve init promise
-                This.initPromise.resolve();
-            },
-            // Curriculum Vitae section
-            loadCV: function ($cv) {
-                // Skills section
-                $cv.find('.skills .title').on({
-                    click: function () {
-                        $cv.find('.skills .active').removeClass('active');
-                        // Mark the label and the tab active
-                        $cv.find(this.dataset.tab).addClass('active');
-                        $(this).addClass('active');
-                    }
-                });
-                // Experience section
-                $cv.find('.position:not(.active)').on({
-                    click: function () {
-                        $cv.find('.position.active').removeClass(' active');
-                        $(this).addClass(' active');
-                    },
-                    // Adds active status on hover. Cancels if mouse leaves within 1000ms
-                    mouseenter: function () {
-                        var $this = $(this);
-                        var countdown = window.setTimeout(function () {
-                            $cv.find('.position.active').removeClass('active');
-                            $this.addClass('active');
-                        }, 1000);
-                        $this.on('mouseleave', function (event) {
-                            window.clearTimeout(countdown);
-                            $this.off(event);
-                        });
-                    }
-                });
+                // Help resolve init promise
+                This.sectionsDone++;
             },
             // Animated smoothScroll to next sibbling element or specified target
             smoothScroll: function (event, direction, customTarget) {
@@ -557,7 +529,9 @@
                     this.scrolling = true;
                     $body.animate(selector, scrollOptions);
                     $('html').animate(selector, scrollOptions);
-                } catch (e) {}
+                } catch (e) {
+                    log(e);
+                }
             },
             // Highlights the current page
             activate: function () {
@@ -614,12 +588,47 @@
                 window.require(['static/prettify'], function () {
                     window.prettyPrint();
                 });
+                // Help resolve init promise
+                this.sectionsDone++;
+            },
+            // Curriculum Vitae section
+            loadCV: function ($cv) {
+                // Skills section
+                $cv.find('.skills .title').on({
+                    click: function () {
+                        $cv.find('.skills .active').removeClass('active');
+                        // Mark the label and the tab active
+                        $cv.find(this.dataset.tab).addClass('active');
+                        $(this).addClass('active');
+                    }
+                });
+                // Experience section
+                $cv.find('.position:not(.active)').on({
+                    click: function () {
+                        $cv.find('.position.active').removeClass(' active');
+                        $(this).addClass(' active');
+                    },
+                    // Adds active status on hover. Cancels if mouse leaves within 1000ms
+                    mouseenter: function () {
+                        var $this = $(this);
+                        var countdown = window.setTimeout(function () {
+                            $cv.find('.position.active').removeClass('active');
+                            $this.addClass('active');
+                        }, 1000);
+                        $this.on('mouseleave', function (event) {
+                            window.clearTimeout(countdown);
+                            $this.off(event);
+                        });
+                    }
+                });
+                // Help resolve init promise
+                this.sectionsDone++;
             },
             // Miscellaneous DOM bindings
             dominatrix: function () {
                 var This = this;
                 // Return
-                if (!This.firstLoad){
+                if (!This.firstLoad) {
                     return;
                 } else {
                     This.firstLoad = false;

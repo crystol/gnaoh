@@ -8,7 +8,7 @@
         paths: {
             static: staticLocation,
             jquery: [
-                '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min',
+                '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min',
                 staticLocation + '/jQuery'
             ],
             analytics: [
