@@ -1,10 +1,11 @@
 # Directories
-build
-trash
-logs
-node_modules
-source/private
-test
+build/
+trash/
+logs/
+node_modules/
+source/private/
+test/
+
 # Files
 npm-debug.log
 .nodemonignore

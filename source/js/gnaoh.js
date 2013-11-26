@@ -13,6 +13,7 @@
         var $post = $('#post');
         var $navList = $('#navlist');
         var $loader = $('#navigator .pyrimidine');
+        var $prettify;
         var $gallery;
         var $video;
         var $cv;
@@ -95,6 +96,7 @@
                     }, 200);
                 });
                 // Loading additional sections on the page
+                $prettify = $('#post .prettyprint');
                 $gallery = $('#post .gallery');
                 $video = $('#post .video');
                 $cv = $('#post .cv');
@@ -114,6 +116,10 @@
                 // Loads galleries if they exist
                 if ($gallery[0]) {
                     This.loadGallery();
+                }
+                // Load pretty print if code segments exist
+                if ($prettify[0]) {
+                    This.prettify();
                 }
                 // Resolve the init promise if it fails to fire through other means
                 $.wait(500, function () {
@@ -597,6 +603,12 @@
                 } else {
                     modify();
                 }
+            },
+            // Executes Google Prettify script and provide syntax highlighting
+            prettify: function () {
+                window.require(['static/prettify'], function(){
+                    window.prettyPrint();
+                });
             }
         };
         // Initializing everything and exporting it to the global scope

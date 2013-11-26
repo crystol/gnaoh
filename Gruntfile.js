@@ -177,8 +177,8 @@ module.exports = function () {
                 tasks: ['copy:views', 'html']
             },
             privates: {
-                files: ['source/private/*.js', 'source/private/views/**/**'],
-                tasks: ['copy:privates']
+                files: ['source/private/*.js', 'source/private/views/**', 'source/private/views/**/**'],
+                tasks: ['copy:privates', 'html']
             },
             less: {
                 files: ['source/less/*.less'],

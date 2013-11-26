@@ -96,6 +96,42 @@
     font-style: normal;
     src: url('//themes.googleusercontent.com/static/fonts/titilliumweb/v1/anMUvcNT0H1YN4FII8wprwwHpU-8OKeXrGSDRtNNsHg.ttf') format('truetype');
 }
+// Code prettifier
+.prettyprint {
+    margin: 0.5em 0; 
+    padding: 0.5em; 
+    font-family: monospace;
+    overflow-wrap: break-word;
+    background-color: #141414;
+    // Line numbering
+    li[class ^= 'L'] { 
+        color: @color-gray;
+        list-style: octal inside;
+    }
+    // Every other line
+    li { 
+        &.L1, &.L3, &.L5, &.L7, &.L9 {
+            background: #171717;
+        }
+    }
+}
+pre {
+    // Comments
+    .com                { color: #888888; }
+     // Capitalized classes and constructors
+    .typ                { color: #FBCBFF; }
+    // None-formatted code
+    .nocode             { color: #000000; }
+    // Keywords and Tags
+    .kwd, .tag          { color: #FFA96F; }
+    // Strings and attribute values
+    .str, .atv          { color: #B2E9FF; } 
+    // Punctuation, plain text, and attribute names
+    .pun, .pln, .atn    { color: #ffffff; }
+    // Ints and floats
+    .lit, .dec          { color: #68B68F; }
+}
+
 // Normalizers
 * {
     margin: 0;
@@ -648,6 +684,11 @@ html {
 
 // Phones in landscape & Tablets in portrait
 @media (max-width:768px) {
+    // Scroll for prettyprint boxes
+    .prettyprint {
+        overflow-wrap: normal;
+        overflow-x: scroll;
+    }
     // Converts the smaller grids to be 50%
     .grid-25,
     .grid-20,
@@ -735,6 +776,7 @@ html {
             }
             .description {
                 top: 45%;
+                font-size: 90%;
             }
         }
         .gallery.wall, .gallery .brick {
