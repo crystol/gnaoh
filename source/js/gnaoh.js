@@ -1,5 +1,5 @@
 (function (window, document) {
-    define(['jquery'], function ($) {
+    define('gnaoh', ['jquery'], function ($) {
         'use strict';
         // Lazy logging in dev env
         var development = true;
@@ -13,11 +13,6 @@
         var $post = $('#post');
         var $navList = $('#navlist');
         var $loader = $('#navigator .pyrimidine');
-        var $prettify;
-        var $gallery;
-        var $video;
-        var $cv;
-        // Extending jQuery functions
         // Stall function that can be used more versitile from $().delay()
         $.prototype.wait = $.wait = function (time, callback) {
             var This = this;
@@ -57,9 +52,10 @@
             this.scrolling = false;
             this.cssDelay = 1000;
             this.static = '/static';
+            this.firstLoad = true;
         }
         Gnaoh.prototype = {
-            // Function to initialize the page on first load or ajax loaded sections. this usually deals with the big files.
+            // Function to initialize the page on first load or ajax loaded sections
             init: function () {
                 var This = this;
                 // Clear sticky settings and unbind listeners
@@ -67,25 +63,23 @@
                     $('#old-post').remove();
                     $('#new-post').contents().unwrap();
                 }
-                // $window.off();
                 // Activate markings and sizing functions
                 This.activate();
                 This.size();
-                This.loadToggle();
+                This.loadToggle('on');
                 // Promises and callbacks
                 This.initPromise = new $.Deferred();
                 This.initCallbacks = new $.Callbacks();
                 This.resizeCallbacks = new $.Callbacks();
                 // Add functions post-init callbacks list
                 This.initCallbacks.add(function () {
-                    This.loadToggle('off');
-                    // Pagescroll observer
+                    This.loadToggle();
+                    This.historian();
                     This.scrollspy();
+                    This.dominatrix();
                 });
-                // Exectue the callbacks after init is finished
-                This.initPromise.done(function () {
-                    This.initCallbacks.fire();
-                });
+                // Execute the callbacks after the page is initialized
+                This.initPromise.done(This.initCallbacks.fire);
                 // Add handlers for window's resize events
                 This.resizeCallbacks.add([This.scrollspy, This.size]);
                 // Bind said handlers to window and add a delay to prevent rapid firing
@@ -95,38 +89,33 @@
                         This.resizeCallbacks.fire.call(This);
                     }, 200);
                 });
-                // Loading additional sections on the page
-                $prettify = $('#post .prettyprint');
-                $gallery = $('#post .gallery');
-                $video = $('#post .video');
-                $cv = $('#post .cv');
-                // Update currentpage for navigation
-                This.currentPage = {
-                    path: document.location.pathname,
-                    href: document.location.href
+                // Series of sections that may exist on pages that need to be loaded
+                var thingsToLoad = {
+                    // Curriculum Vitae
+                    loadCV: $('#post .cv'),
+                    // Videos
+                    loadVideo: $('#post .video'),
+                    // Photo galleries
+                    loadGallery: $('#post .gallery'),
+                    // Codeblocks
+                    prettify: $('#post .prettyprint'),
                 };
-                // Load about section if it exists
-                if ($cv[0]) {
-                    This.loadCV();
-                }
-                // Loads videos if they exist
-                if ($video[0]) {
-                    This.loadVideo();
-                }
-                // Loads galleries if they exist
-                if ($gallery[0]) {
-                    This.loadGallery();
-                }
-                // Load pretty print if code segments exist
-                if ($prettify[0]) {
-                    This.prettify();
-                }
-                // Resolve the init promise if it fails to fire through other means
-                $.wait(500, function () {
-                    if (This.initPromise.state() === 'pending') {
-                        This.initPromise.resolve();
+                // Loops through the sections and call their respective functions
+                var itemsPassed = 0;
+                var itemsTotal = 0;
+                for (var loader in thingsToLoad) {
+                    var loadee = thingsToLoad[loader];
+                    if (loadee[0]) {
+                        This[loader](loadee);
+                    } else {
+                        itemsPassed++;
                     }
-                });
+                    itemsTotal++;
+                }
+                // Resolve the init promise if nothing needs to be loaded
+                if (itemsPassed === itemsTotal) {
+                    This.initPromise.resolve();
+                }
                 return This;
             },
             // Toggle loading animation 
@@ -135,11 +124,11 @@
                 if (toggle === 'on') {
                     This.loading = true;
                     $loader.off().addClass('loading');
-                } else if (toggle === 'off') {
-                    This.loading = false;
+                } else {
                     // Remove loading animation after next iteration
                     $loader.on('animationiteration webkitAnimationIteration', function (event) {
                         $loader.off().on(event.type, function () {
+                            This.loading = false;
                             $loader.removeClass('loading').off();
                         });
                     });
@@ -220,6 +209,24 @@
                     }
                 });
             },
+            historian: function () {
+                var This = this;
+                // Update currentpage for navigation
+                This.currentPage = {
+                    path: document.location.pathname,
+                    href: document.location.href
+                };
+                // History navigation (back/forward buttons) for ajax loaded pages
+                try {
+                    window.onpopstate = function () {
+                        if (This.currentPage.path !== document.location.pathname) {
+                            This.getPage(document.location, false, true);
+                        }
+                    };
+                } catch (e) {
+                    log(e);
+                }
+            },
             // Load a css file from the static library or local /css directory
             requireCss: function (name, staticLib) {
                 var stylesheet = document.createElement('link');
@@ -253,7 +260,7 @@
             },
             // Load an image gallery from a specified directory. 
             // Sample html code <div class='gallery' id='dirName' start='1' amount='10'></div>
-            loadGallery: function () {
+            loadGallery: function ($gallery) {
                 var This = this;
                 $gallery.each(function (element) {
                     var $this = $(this);
@@ -282,9 +289,7 @@
                     }
                     // If it's the last gallery to load, it will resolve the init promise
                     if (options.lastOne) {
-                        galleryPromise.done(function () {
-                            This.initPromise.resolve();
-                        });
+                        galleryPromise.done(This.initPromise.resolve);
                     }
                     // Grab the JSON captions file
                     if (options.captions) {
@@ -379,7 +384,7 @@
                 });
             },
             // Loads html5 video content from div tags with .video class.
-            loadVideo: function () {
+            loadVideo: function ($video) {
                 var This = this;
                 $video.each(function () {
                     var $wrapper = $(this);
@@ -479,7 +484,7 @@
                 This.initPromise.resolve();
             },
             // Curriculum Vitae section
-            loadCV: function () {
+            loadCV: function ($cv) {
                 // Skills section
                 $cv.find('.skills .title').on({
                     click: function () {
@@ -542,7 +547,7 @@
                 };
                 var scrollOptions = {
                     // Portrait oriented photos will scroll at 1s and landscape will be .5s
-                    duration: ($this.find('img').height() < 1000) ? 200 : 800,
+                    duration: ($this.find('img').height() < 1000) ? 200 : 400,
                     complete: function () {
                         This.scrolling = false;
                     }
@@ -606,62 +611,59 @@
             },
             // Executes Google Prettify script and provide syntax highlighting
             prettify: function () {
-                window.require(['static/prettify'], function(){
+                window.require(['static/prettify'], function () {
                     window.prettyPrint();
                 });
-            }
+            },
+            // Miscellaneous DOM bindings
+            dominatrix: function () {
+                var This = this;
+                // Return
+                if (!This.firstLoad){
+                    return;
+                } else {
+                    This.firstLoad = false;
+                }
+                // Ajax fetching of links with 'ajax' class 
+                $body.on('click', '.ajax', function (event) {
+                    var $this = $(this);
+                    // Don't break middle mouse/ctrl+click functionality
+                    if (event.which === 2 || event.ctrlKey) {
+                        return;
+                    }
+                    // Return if link is already active or page is currently loading
+                    if ($this.hasClass('active')) {
+                        return false;
+                    }
+                    var href = this.href;
+                    // Must pass relative link to ajax function to avoid time wasting SSL renegotiations
+                    var link = $this.attr('href');
+                    var formattedHref = href.replace(/\#\w/, '');
+                    var hash = href.match(/\#.*/);
+                    var samePage = formattedHref === This.currentPage.href.replace(/\#\w*/, '');
+                    if (hash && samePage) {
+                        // If there's a hash match, it will be extracted and focused
+                        This.smoothScroll(undefined, undefined, hash[0]);
+                    } else if ($this.hasClass('move')) {
+                        This.getPage(link, true);
+                    } else {
+                        This.getPage(link);
+                    }
+                    return false;
+                });
+                // Navlist toggle for smaller devices
+                $('.middle').on('click', function () {
+                    var $this = $('.flipper');
+                    var rotation = $this.css('transform') === 'none' ? 'rotate(90deg)' : 'none';
+                    $this.css({
+                        transform: rotation
+                    });
+                    $navList.toggleClass('show');
+                });
+            },
         };
         // Initializing everything and exporting it to the global scope
         var gnaoh = new Gnaoh().init();
         window.gnaoh = gnaoh;
-        // /*****************************************************************************************
-        //  * Misc. DOM event bindings and manipulations
-        //  * ****************************************************************************************
-        // History navigation (back/forward buttons) for ajax loaded pages
-        try {
-            window.onpopstate = function () {
-                if (gnaoh.currentPage.path !== document.location.pathname) {
-                    gnaoh.getPage(document.location, false, true);
-                }
-            };
-        } catch (e) {
-            log(e);
-        }
-        // Ajax fetching of links with 'ajax' class 
-        $body.on('click', '.ajax', function (event) {
-            var $this = $(this);
-            // Don't break middle mouse/ctrl+click functionality
-            if (event.which === 2 || event.ctrlKey) {
-                return;
-            }
-            // Return if link is already active or page is currently loading
-            if ($this.hasClass('active')) {
-                return false;
-            }
-            var href = this.href;
-            // Must pass relative link to ajax function to avoid time wasting SSL renegotiations
-            var link = $this.attr('href');
-            var formattedHref = href.replace(/\#\w/, '');
-            var hash = href.match(/\#.*/);
-            var samePage = formattedHref === gnaoh.currentPage.href.replace(/\#\w*/, '');
-            if (hash && samePage) {
-                // If there's a hash match, it will be extracted and focused
-                gnaoh.smoothScroll(undefined, undefined, hash[0]);
-            } else if ($this.hasClass('move')) {
-                gnaoh.getPage(link, true);
-            } else {
-                gnaoh.getPage(link);
-            }
-            return false;
-        });
-        // Navlist toggle for smaller devices
-        $('.middle').on('click', function () {
-            var $this = $('.flipper');
-            var rotation = $this.css('transform') === 'none' ? 'rotate(90deg)' : 'none';
-            $this.css({
-                transform: rotation
-            });
-            $navList.toggleClass('show');
-        });
     });
 })(window, document);
