@@ -8,8 +8,6 @@ block content
             $gallery = $gallery || $('#post .gallery');
             $gallery.each(function () {
                 var $this = $(this);
-                var imageArray = [];
-                var galleryPromise = $.Deferred();
                 // // Apply options and serialize the numbers
                 var options = {
                     id: this.id,
@@ -22,6 +20,41 @@ block content
                     // Wall-type gallery
                     wall: $this.hasClass('wall')
                 };
+                // Creates a div, append the appropiate image to itself, and then pushes to the array of images
+                var imageArray = [];
+                for (var i = options.start; i < options.amount; i++) {
+                    var image = document.createElement('img');
+                    var imageWrapper = document.createElement('div');
+                    image.src = This.static + '/img/gallery/' + options.id + '/' + i + '.jpg';
+                    imageWrapper.className = 'image';
+                    // Give the wrapper a unique ID to help with the captions
+                    imageWrapper.id = options.id + '-' + i;
+                    imageWrapper.appendChild(image);
+                    imageArray.push(imageWrapper);
+                }
+                $this.append(imageArray);
+                // Grab the JSON captions file if it exists
+                if (options.captions) {
+                    var captionsURL = This.static + '/img/gallery/' + options.id + '/captions.json';
+                    // Loop through and match the text with corresonponding image
+                    var captionator = function (data) {
+                        for (var key in data) {
+                            log(data[key]);
+                            var caption = document.createElement('div');
+                            caption.className = 'caption';
+                            caption.textContent = data[key];
+                            document.getElementById(options.id + '-' + key).appendChild(caption);
+                        }
+                    };
+                    // Make the ajax call
+                    $.ajax({
+                        url: captionsURL,
+                        success: captionator,
+                        error: function () {
+                            console.log('No captions file found at: ' + captionsURL);
+                        }
+                    });
+                }
                 // If a wall-type gallery exists, it will be added to the init callback queue
                 if (options.wall) {
                     $this.addClass('mortar');
@@ -30,34 +63,6 @@ block content
                         This.layBricks.call(This, options);
                     });
                 }
-                // Grab the JSON captions file
-                if (options.captions) {
-                    $.ajax({
-                        url: This.static + '/img/gallery/' + options.id + '/captions.JSON',
-                        success: function (data) {
-                            // The text will match with corresonponding image wrapper and insert a captions div
-                            galleryPromise.done(function () {
-                                for (var key in data) {
-                                    var caption = $('< div class="caption">' + data[key] + '< /div>');
-                                    $this.find('#' + options.id + '-' + key).append(caption);
-                                }
-                            });
-                        }
-                    });
-                }
-                // Creates a div, append the appropiate image to itself, and then pushes to the array of images
-                for (var i = options.start; i < options.amount; i++) {
-                    var image = document.createElement('img');
-                    var imageWrapper = document.createElement('div');
-                    image.src = This.static + '/img/gallery/' + options.id + '/' + i + '.jpg';
-                    imageWrapper.className = 'image';
-                    imageWrapper.id = options.id + '-' + i;
-                    imageWrapper.appendChild(image);
-                    imageArray.push(imageWrapper);
-                }
-                $this.append(imageArray);
-                // Resolves any promises that were waiting for the gallery to load
-                galleryPromise.resolve();
             });
             // If not mobile nor wall gallery, it will do a fancy scroll upon click
             $gallery.filter(':not(.wall)').on('click', '.image', function (event) {
@@ -66,4 +71,4 @@ block content
             });
             // Help resolve init promise
             This.sectionsDone++;
-        }
+        },
