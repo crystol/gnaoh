@@ -22,7 +22,7 @@
  *      - Media Queries for Responsive functionality.
  */
 //variables
-@font: 'Titillium', 'ubuntu', 'droid sans', monospace, sans-serif;              //default font
+@font: 'Roboto', 'ubuntu', 'droid sans', monospace, sans-serif;              //default font
 @font-size: 15px;                                                               //default font size
 @color: #9371B3;                                                                //highlighted color
 @color-light: lighten(@color,15%);                                              //lighter color
@@ -100,10 +100,15 @@
 .prettyprint {
     margin: 0.5em 0; 
     padding: 0.5em; 
-    font-family: monospace;
-    overflow-wrap: break-word;
     color: #ffffff;
+    border-radius: 3px;
     background-color: #141414;
+    font-family: inherit;
+    white-space: pre-wrap;
+    // Smaller box
+    &.condensed {
+        max-width: 80%;
+    }
     // Line numbering
     li[class ^= 'L'] { 
         color: @color-gray;
@@ -116,6 +121,7 @@
         }
     }
 }
+
 pre {
     // Comments
     .com                { color: #888888; }
@@ -141,7 +147,6 @@ pre {
     border: 0;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
-    text-rendering: optimizeLegibility;
 }
 table {
     border-collapse:collapse;
@@ -187,6 +192,7 @@ html {
         background: @bg-color;
         font-size: @font-size;
         line-height: 20px;
+        text-rendering: optimizeLegibility;
     }
     //selection colors
     ::-moz-selection {
@@ -687,8 +693,9 @@ html {
 @media (max-width:768px) {
     // Scroll for prettyprint boxes
     .prettyprint {
-        overflow-wrap: normal;
-        overflow-x: scroll;
+        &.condensed {
+            max-width: 90%;
+        }
     }
     // Converts the smaller grids to be 50%
     .grid-25,
@@ -707,7 +714,7 @@ html {
             left : auto;
             z-index: 10;
             opacity: .85;
-            right : @aromatics-size;
+            right : @aromatics-size*1.15;
             .absolute();
             // Hides everything but pyrimidine ring
              & >:not(.pyrimidine) {

@@ -13,39 +13,6 @@
         var $post = $('#post');
         var $navList = $('#navlist');
         var $loader = $('#navigator .pyrimidine');
-        // Stall function that can be used more versitile from $().delay()
-        $.prototype.wait = $.wait = function (time, callback) {
-            var This = this;
-            var procrastinate = $.Deferred();
-            if (typeof time !== 'number') {
-                time = 500;
-            }
-            // If callback exists, perform it after the delay and return jquery object for chaining
-            if (typeof callback === 'function') {
-                window.setTimeout(function () {
-                    callback.call(This);
-                }, time);
-                return This;
-            } else {
-                // Return promise--use withh .done()--if no callbacks are provided
-                window.setTimeout(function () {
-                    procrastinate.resolveWith(This);
-                }, time);
-                return procrastinate;
-            }
-        };
-        // Adds the animate class to selected element, wait for animation, and removes the class
-        $.prototype.deanimate = function (removee, styleClear, time) {
-            time = time || 1000;
-            var removees = 'animated ' + removee;
-            this.addClass('animated').wait(time).done(function () {
-                this.removeClass(removees);
-                if (styleClear) {
-                    this.removeAttr('style');
-                }
-            });
-            return this;
-        };
         // An object to wield the burden of responsibilities--it will be the one...
         function Gnaoh() {
             // Global scope variables
@@ -58,7 +25,6 @@
             // Function to initialize the page on first load or ajax loaded sections
             init: function () {
                 var This = this;
-                console.time('load');
                 // Clear sticky settings and unbind listeners
                 if ($('#new-post')[0] || $('#old-post')[0]) {
                     $('#old-post').remove();
@@ -74,7 +40,6 @@
                 This.resizeCallbacks = new $.Callbacks();
                 // Add functions post-init callbacks list
                 This.initCallbacks.add(function () {
-                    console.timeEnd('load');
                     This.loadToggle();
                     This.historian();
                     This.scrollspy();
@@ -93,14 +58,14 @@
                 });
                 // Series of sections that may exist on pages that need to be loaded
                 var thingsToLoad = {
-                    // Curriculum Vitae
-                    loadCV: $('#post .cv'),
-                    // Videos
-                    loadVideo: $('#post .video'),
-                    // Photo galleries
-                    loadGallery: $('#post .gallery'),
                     // Codeblocks
                     prettify: $('#post .prettyprint'),
+                    // Curriculum Vitae
+                    loadCV: $('#post .cv'),
+                    // Photo galleries
+                    loadGallery: $('#post .gallery'),
+                    // Videos
+                    loadVideo: $('#post .video')
                 };
                 // Loops through the sections and call their respective functions
                 This.sectionsDone = 0;
@@ -268,37 +233,36 @@
             // Sample html code <div class='gallery' id='dirName' start='1' amount='10'></div>
             loadGallery: function ($gallery) {
                 var This = this;
-                $gallery.each(function (element) {
+                $gallery = $gallery || $('#post .gallery');
+                $gallery.each(function () {
                     var $this = $(this);
-                    var options = {};
                     var imageArray = [];
                     var galleryPromise = $.Deferred();
-                    // Apply data from HTML tag to the options object
-                    $.extend(options, this.dataset);
-                    // Apply additional options and serialize the numbers
-                    $.extend(options, {
+                    // // Apply options and serialize the numbers
+                    var options = {
                         id: this.id,
                         // Starts at provided image index or 1
-                        start: Number(options.start || 1),
+                        start: Number(this.dataset.start || 1),
                         // Stops at the provided start point plus the amount needed to load
-                        amount: Number(options.start || 1) + Number(options.amount),
+                        amount: Number(this.dataset.start || 1) + Number(this.dataset.amount),
+                        // Does a captions file exist?
+                        captions: Boolean(this.dataset.captions === 'true'),
+                        // Wall-type gallery
                         wall: $this.hasClass('wall')
-                    });
+                    };
                     // If a wall-type gallery exists, it will be added to the init callback queue
                     if (options.wall) {
                         $this.addClass('mortar');
                         This.initCallbacks.add(function () {
                             // Call laybricks with This since $.Callbacks forces the 'this' context to itself
-                            This.layBricks.call(This);
+                            This.layBricks.call(This, options);
                         });
                     }
                     // Grab the JSON captions file
                     if (options.captions) {
-                        var captions;
                         $.ajax({
                             url: This.static + '/img/gallery/' + options.id + '/captions.JSON',
                             success: function (data) {
-                                captions = data;
                                 // The text will match with corresonponding image wrapper and insert a captions div
                                 galleryPromise.done(function () {
                                     for (var key in data) {
@@ -389,6 +353,7 @@
             // Loads html5 video content from div tags with .video class.
             loadVideo: function ($video) {
                 var This = this;
+                $video = $video || $('#post .video');
                 $video.each(function () {
                     var $wrapper = $(this);
                     var id = this.id;
@@ -674,5 +639,38 @@
         // Initializing everything and exporting it to the global scope
         var gnaoh = new Gnaoh().init();
         window.gnaoh = gnaoh;
+        // Stall function that can be used more versitile from $().delay()
+        $.prototype.wait = $.wait = function (time, callback) {
+            var This = this;
+            var procrastinate = $.Deferred();
+            if (typeof time !== 'number') {
+                time = 500;
+            }
+            // If callback exists, perform it after the delay and return jquery object for chaining
+            if (typeof callback === 'function') {
+                window.setTimeout(function () {
+                    callback.call(This);
+                }, time);
+                return This;
+            } else {
+                // Return promise--use withh .done()--if no callbacks are provided
+                window.setTimeout(function () {
+                    procrastinate.resolveWith(This);
+                }, time);
+                return procrastinate;
+            }
+        };
+        // Adds the animate class to selected element, wait for animation, and removes the class
+        $.prototype.deanimate = function (removee, styleClear, time) {
+            time = time || 1000;
+            var removees = 'animated ' + removee;
+            this.addClass('animated').wait(time).done(function () {
+                this.removeClass(removees);
+                if (styleClear) {
+                    this.removeAttr('style');
+                }
+            });
+            return this;
+        };
     });
 })(window, document);

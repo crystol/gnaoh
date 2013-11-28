@@ -4,14 +4,22 @@ block content
         ul.inline
             li= 'A <div> tag with .gallery class is detected and'
                 +link('https://github.com/crystol/gnaoh/blob/master/source/js/gnaoh.js#L248', 'gnaoh.loadGallery') is called.
+            pre.prettyprint.condensed
+                = '<div class="gallery" id="ID" data-start="1" data-amount="10" data-captions="true">'
+        ul.inline
             li Options are extracted from the div tag and applied:
                 ul
                     li id = 'ID' : Source directory/path of the photos.
                     li data-start = '1' : Starting index (photos are named with /\d{1}\.jpg/ pattern).
                     li data-captions='true' : Specifies if a captions exist.
             li= 'The loop creates and appends <img> tags to the gallery.'
-            li An AJAX request is made to obtain the 
-                +link('/static/img/gallery/sample/captions.JSON', 'JSON') file with the captions.
+            li An AJAX request is made to obtain the JSON file with the captions.
+            pre.prettyprint.condensed.
+                {
+                    "1": "Japanese Lantern Festival - Como Zoo, St. Paul",
+                    "2": "Amsterdam, Holland",
+                    "3": "Minnesnowta - Minneapolis",
+                }
             li Separate loop matches the caption to the proper photo according to its key:value pair.
     .textblock Logic and thoughts:
         ul.inline
