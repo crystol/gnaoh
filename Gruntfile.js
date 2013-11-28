@@ -155,6 +155,10 @@ module.exports = function () {
             require: {
                 src: ['<%= staticDir %>/js/require.js', 'build/public/js/loader.js'],
                 dest: 'build/public/js/loader.js'
+            },
+            analytics: {
+                src: ['build/public/js/loader.js', 'build/public/js/analytics.js'],
+                dest: 'build/public/js/loader.js'
             }
         },
         //watches for changes within files & perform tasks if found
@@ -170,7 +174,7 @@ module.exports = function () {
             },
             js: {
                 files: ['source/js/*.js'],
-                tasks: ['copy:js', 'concat', 'jshint']
+                tasks: ['copy:js', 'concat:require', 'jshint']
             },
             views: {
                 files: ['source/views/**', 'source/views/**/**'],
@@ -202,7 +206,7 @@ module.exports = function () {
                 }
             }
         },
-        // Run watch and nodemon at the same time
+        // Run watch and nodemon at the same time to serve the site live
         concurrent: {
             target: {
                 tasks: ['nodemon', 'watch'],
@@ -226,6 +230,6 @@ module.exports = function () {
     // Assign tasks names
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);
-    grunt.registerTask('development', ['clean:start', 'copy', 'concat', 'less:development', 'html', 'clean:finish', 'jshint']);
+    grunt.registerTask('development', ['clean:start', 'copy', 'concat:require', 'less:development', 'html', 'clean:finish', 'jshint']);
     grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat', 'less:production', 'html', 'clean:finish']);
 };

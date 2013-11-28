@@ -1,9 +1,9 @@
-//loading configuration & analytics
-(function (win, document) {
+// Loading configuration for require.js
+(function (window, document) {
     'use strict';
     //CDN hosted scripts and their local fallbacks
     var staticLocation = '/static/js';
-    win.require.config({
+    window.require.config({
         baseUrl: '/js/',
         paths: {
             static: staticLocation,
@@ -17,12 +17,5 @@
         }
     });
     //load the main script
-    win.require(['gnaoh']);
-    //Google analytics
-    win.onload = function () {
-        var _gaq = win._gaq || [];
-        _gaq.push(['_setAccount', 'UA-38948913-1'], ['_setDomainName', 'none'], ['_trackPageview']);
-        win._gaq = _gaq;
-        win.require(['analytics']);
-    };
+    window.require(['gnaoh']);
 })(window, document);

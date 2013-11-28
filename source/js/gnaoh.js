@@ -1,11 +1,6 @@
 (function (window, document) {
     define('gnaoh', ['jquery'], function ($) {
         'use strict';
-        // Lazy logging in dev env
-        var development = true;
-        var log = window.log = development ? function (args) {
-                window.console.log(args);
-            } : function () {};
         // Common jquery selectors cache
         var $window = $(window);
         var $body = $('body');
@@ -639,6 +634,12 @@
         // Initializing everything and exporting it to the global scope
         var gnaoh = new Gnaoh().init();
         window.gnaoh = gnaoh;
+        // Lazy logging in dev env
+        var development = true;
+        var log = window.log = development ? function (args) {
+                window.console.log(args);
+            } : function () {};
+        // Extensions to jQuery
         // Stall function that can be used more versitile from $().delay()
         $.prototype.wait = $.wait = function (time, callback) {
             var This = this;
