@@ -4,14 +4,12 @@ block content
     pre.prettyprint.linenums.
         # Server configurations
         # Gnoah.com
-        # nginx 1.5.x on Ubuntu 13.02
+        # nginx 1.5.x on Ubuntu Precise
         http {
             # Proxy to node.js server
             upstream node {
                 server 127.0.0.1:1337;
             }
-            # Proxy Settings
-            proxy_cache_path  /kadmin/server/nginx/temp/proxycache levels=1:2 keys_zone=proxycache:15m max_size=1000m inactive=600m;
 
             server {
                 listen 80;
@@ -48,25 +46,25 @@ block content
                 }
                 # Main route to node server
                 location @proxy {
+                    access_log         on;
                     proxy_set_header   Host             $http_host;
                     proxy_set_header   X-Real-IP        $remote_addr;
                     proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
                     proxy_set_header   X-NginX-Proxy    true;
-                    
-                    proxy_cache proxycache;
-                    proxy_http_version 1.1;
-                    proxy_ignore_headers 'Set-Cookie';
-                    proxy_cache_valid    any 1m;
-                    expires              1m;
-                    
-                    proxy_pass http://node;
+                    proxy_pass         http://node;
                 }
                 # Directory root
                 location / {
                      root /kadmin/server/www/gnaoh/build/public;
-                     try_files $uri $uri/ $uri.html @proxy;
+                     try_files $uri $uri.html @proxy;
                 }
             }
+            # Proxy Settings
+            proxy_cache_path        /kadmin/server/nginx/temp/proxycache levels=1:2 keys_zone=proxycache:5m max_size=1000m inactive=600m;
+            proxy_cache             proxycache;
+            proxy_http_version      1.1;
+            proxy_ignore_headers    'Set-Cookie';
+            proxy_cache_valid       any 1m;
 
             # Larger collection of server names
             server_names_hash_bucket_size  128;
@@ -86,7 +84,7 @@ block content
             # SPDY settings
             spdy_headers_comp 5;    
             spdy_keepalive_timeout 5m;
-            spdy_max_concurrent_streams 500;
+            spdy_max_concurrent_streams 1000;
             
             # tsl settings
             ssl_certificate /kadmin/server/shared/ssl/certs/gnaoh.crt;
@@ -99,7 +97,7 @@ block content
             
             # logging
             access_log off;
-            # access_log /kadmin/server/nginx/log/access.log;
+            access_log /kadmin/server/nginx/log/access.log;
             error_log /kadmin/server/nginx/log/error.log crit;
 
             # misc. headers
@@ -116,95 +114,4 @@ block content
 
             #default charset
             charset utf-8;
-
-            # normalization of mime types
-            types {
-                text/html                                             html htm shtml;
-                text/css                                              css less sass scss;
-
-                application/x-javascript                              js jsonp;
-                application/json                                      json;
-
-                application/font-woff                                 woff;
-                application/vnd.ms-fontobject                         eot;
-                application/x-font-ttf                                ttc ttf;
-                font/opentype                                         otf;
-
-                image/gif                                             gif;
-                image/jpeg                                            jpeg jpg;
-
-                audio/mp4                                             m4a f4a f4b;
-                audio/ogg                                             oga ogg spx;
-                audio/midi                                            mid midi kar;
-                audio/mpeg                                            mpga mpega mp2 mp3;
-                audio/x-realaudio                                     ra;
-                audio/webm                                            weba;
-
-                video/mp4                                             mp4 m4v f4v f4p;
-                video/ogg                                             ogv;
-                video/webm                                            webm;
-                video/x-flv                                           flv;
-                video/3gpp                                            3gpp 3gp;
-                video/mpeg                                            mpeg mpg mpe;
-                video/quicktime                                       mov;
-                video/x-mng                                           mng;
-                video/x-ms-asf                                        asx asf;
-                video/x-ms-wmv                                        wmv;
-                video/x-msvideo                                       avi;
-
-                application/octet-stream                              safariextz;
-                application/x-chrome-extension                        crx;
-                application/x-opera-extension                         oex;
-                application/x-shockwave-flash                         swf;
-                application/x-web-app-manifest+json                   webapp;
-                application/x-xpinstall                               xpi;
-                application/xml                                       atom rdf rss xml;
-
-                image/webp                                            webp;
-                image/x-icon                                          ico;
-                image/svg+xml                                         svg svgz;
-                image/png                                             png;
-                image/tiff                                            tif tiff;
-                image/vnd.wap.wbmp                                    wbmp;
-                image/x-jng                                           jng;
-                image/x-ms-bmp                                        bmp;
-
-                text/cache-manifest                                   appcache manifest;
-                text/vtt                                              vtt;
-                text/x-component                                      htc;
-                text/x-vcard                                          vcf;
-                text/mathml                                           mml;
-                text/plain                                            txt;
-                text/vnd.sun.j2me.app-descriptor                      jad;
-                text/vnd.wap.wml                                      wml;
-
-                application/java-archive                              jar war ear;
-                application/mac-binhex40                              hqx;
-                application/msword                                    doc;
-                application/pdf                                       pdf;
-                application/postscript                                ps eps ai;
-                application/rtf                                       rtf;
-                application/vnd.ms-excel                              xls;
-                application/vnd.ms-powerpoint                         ppt;
-                application/vnd.wap.wmlc                              wmlc;
-                application/vnd.google-earth.kml+xml                  kml;
-                application/vnd.google-earth.kmz                      kmz;
-                application/x-7z-compressed                           7z;
-                application/x-cocoa                                   cco;
-                application/x-java-archive-diff                       jardiff;
-                application/x-java-jnlp-file                          jnlp;
-                application/x-makeself                                run;
-                application/x-perl                                    pl pm;
-                application/x-pilot                                   prc pdb;
-                application/x-rar-compressed                          rar;
-                application/x-redhat-package-manager                  rpm;
-                application/x-sea                                     sea;
-                application/x-stuffit                                 sit;
-                application/x-tcl                                     tcl tk;
-                application/x-x509-ca-cert                            der pem crt;
-                application/xhtml+xml                                 xhtml;
-                application/zip                                       zip;
-                application/octet-stream                              bin exe dll deb dmg iso img msi msp msm;
-                application/ogg                                       ogx;
-            }
-         }
+        }
