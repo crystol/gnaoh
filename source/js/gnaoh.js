@@ -162,9 +162,11 @@
                     function cleanUp() {
                         $old.remove();
                         $new.contents().unwrap();
-                        // Push new page to analytics and browser history
+                        // Push to analytics and initialize the new page
+                        if (typeof (window.ga) === 'function') {
+                            window.ga('send', 'pageview', document.location.pathname);
+                        }
                         This.init();
-                        window._gaq.push(['_trackPageview', document.location.pathname]);
                     }
                     // Animating the pages
                     if (!This.mini && animate) {
@@ -475,7 +477,7 @@
                 var target = customTarget ? customTarget : getNext($this);
                 // If custom target is not specified, default offsets for next/prev elements are used
                 var selector = {
-                    scrollTop: $(target).offset() ? $(target).offset().top - 5 : 0
+                    scrollTop: $(target).offset() ? $(target).offset().top - 50 : 0
                 };
                 var scrollOptions = {
                     // Portrait oriented photos will scroll at 1s and landscape will be .5s

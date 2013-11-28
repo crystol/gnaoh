@@ -2,9 +2,12 @@
 (function (window) {
     'use strict';
     window.onload = function () {
-        var _gaq = window._gaq || [];
-        _gaq.push(['_setAccount', 'UA-38948913-1'], ['_setDomainName', 'none'], ['_trackPageview']);
-        window._gaq = _gaq;
+        window['ga'] = window['ga'] || function () {
+            (window['ga'].q = window['ga'].q || []).push(arguments);
+        };
+        window['ga'].l = 1 * new Date();
+        window.ga('create', 'UA-45841326-1', 'gnaoh.com');
+        window.ga('send', 'pageview');
         window.require(['analytics']);
     };
 })(window);
