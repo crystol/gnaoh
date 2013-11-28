@@ -5,4 +5,10 @@ module.exports = [{
 }, {
     path: 'projects/code/devdev',
     title: '/dev/deviation',
+}, {
+    path: 'projects/code/gists/nginx.conf',
+    title: 'Nginx Config',
+}, {
+    path: 'projects/code/gists/loadgallery',
+    title: 'loadGallery',
 }];

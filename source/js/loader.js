@@ -1,5 +1,5 @@
 // Loading configuration for require.js
-(function (window, document) {
+(function (window) {
     'use strict';
     //CDN hosted scripts and their local fallbacks
     var staticLocation = '/static/js';
@@ -19,4 +19,4 @@
     });
     //load the main script
     window.require(['gnaoh']);
-})(window, document);
+})(window);

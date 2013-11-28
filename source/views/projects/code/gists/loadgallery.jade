@@ -1,0 +1,69 @@
+extend /views/skeleton
+block content
+    h1 loadGallery
+    pre.prettyprint.
+        // Load an image gallery from a specified directory. 
+        loadGallery: function ($gallery) {
+            var This = this;
+            $gallery = $gallery || $('#post .gallery');
+            $gallery.each(function () {
+                var $this = $(this);
+                var imageArray = [];
+                var galleryPromise = $.Deferred();
+                // // Apply options and serialize the numbers
+                var options = {
+                    id: this.id,
+                    // Starts at provided image index or 1
+                    start: Number(this.dataset.start || 1),
+                    // Stops at the provided start point plus the amount needed to load
+                    amount: Number(this.dataset.start || 1) + Number(this.dataset.amount),
+                    // Does a captions file exist?
+                    captions: Boolean(this.dataset.captions === 'true'),
+                    // Wall-type gallery
+                    wall: $this.hasClass('wall')
+                };
+                // If a wall-type gallery exists, it will be added to the init callback queue
+                if (options.wall) {
+                    $this.addClass('mortar');
+                    This.initCallbacks.add(function () {
+                        // Call laybricks with This since $.Callbacks forces the 'this' context to itself
+                        This.layBricks.call(This, options);
+                    });
+                }
+                // Grab the JSON captions file
+                if (options.captions) {
+                    $.ajax({
+                        url: This.static + '/img/gallery/' + options.id + '/captions.JSON',
+                        success: function (data) {
+                            // The text will match with corresonponding image wrapper and insert a captions div
+                            galleryPromise.done(function () {
+                                for (var key in data) {
+                                    var caption = $('< div class="caption">' + data[key] + '< /div>');
+                                    $this.find('#' + options.id + '-' + key).append(caption);
+                                }
+                            });
+                        }
+                    });
+                }
+                // Creates a div, append the appropiate image to itself, and then pushes to the array of images
+                for (var i = options.start; i < options.amount; i++) {
+                    var image = document.createElement('img');
+                    var imageWrapper = document.createElement('div');
+                    image.src = This.static + '/img/gallery/' + options.id + '/' + i + '.jpg';
+                    imageWrapper.className = 'image';
+                    imageWrapper.id = options.id + '-' + i;
+                    imageWrapper.appendChild(image);
+                    imageArray.push(imageWrapper);
+                }
+                $this.append(imageArray);
+                // Resolves any promises that were waiting for the gallery to load
+                galleryPromise.resolve();
+            });
+            // If not mobile nor wall gallery, it will do a fancy scroll upon click
+            $gallery.filter(':not(.wall)').on('click', '.image', function (event) {
+                This.isMini();
+                This.smoothScroll.call(this, event);
+            });
+            // Help resolve init promise
+            This.sectionsDone++;
+        }
