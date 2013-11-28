@@ -61,7 +61,7 @@ gnaoh.configure(function () {
             return response.redirect(301, url);
         }
         // Strip forward slashes at the end
-        if (request.url.substr(-1) === '/' && request.url.length > 1) {
+        if (request.url.substr(-1) === '/' && request.url.length > 1 && !/static|css|js/.test(request.url)) {
             return response.redirect(301, request.url.slice(0, -1));
         }
         // Default headers
@@ -75,7 +75,7 @@ gnaoh.configure(function () {
     // Route stack
     // Serving static files -- this is a redundancy in case Nginx isn't working or node is running in standalone mode
     // Public root directories for files such as robots.txt, favicon.ico, humans.txt, etc
-    // gnaoh.use('/', express.static(__dirname + '/public/'));
+    gnaoh.use('/', express.static(__dirname + '/public/'));
     gnaoh.use('/css/', express.static(__dirname + '/public/css/'));
     gnaoh.use('/js/', express.static(__dirname + '/public/js/'));
     gnaoh.use('/static/', express.static('/kadmin/server/www/static/'));

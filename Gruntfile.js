@@ -139,7 +139,7 @@ module.exports = function () {
             production: {
                 options: {
                     paths: ['source/less'],
-                    yuicompress: true,
+                    cleancss: true
                 },
                 files: [{
                     expand: true,

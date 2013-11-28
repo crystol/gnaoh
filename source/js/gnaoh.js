@@ -266,7 +266,6 @@
                         // Loop through and match the text with corresonponding image
                         var captionator = function (data) {
                             for (var key in data) {
-                                log(data[key]);
                                 var caption = document.createElement('div');
                                 caption.className = 'caption';
                                 caption.textContent = data[key];
@@ -499,7 +498,7 @@
                     $body.animate(selector, scrollOptions);
                     $('html').animate(selector, scrollOptions);
                 } catch (e) {
-                    log(e);
+                    console.log(e);
                 }
             },
             // Highlights the current page
