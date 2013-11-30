@@ -1,7 +1,7 @@
 // Photo galleries
 module.exports = [{
     path: 'projects/photos',
-    title: 'Sample Galleries',
+    title: 'Photos',
 }, {
     path: 'projects/photos/inline',
     title: 'Inline Gallery',

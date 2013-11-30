@@ -1,4 +1,6 @@
 //- Predefined variables: title
+- title = title || 'Kenny Hoang';
+- path = (path || '/').toLowerCase();
 doctype 5
 html
     head
@@ -14,6 +16,6 @@ html
         include blocks/mixins
         include blocks/navigator
         #content
-            #post(data-name=title.toLowerCase())
+            #post(data-name=path)
                 block content
         

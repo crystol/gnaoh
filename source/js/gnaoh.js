@@ -151,9 +151,9 @@
                         window.history.pushState({}, '', link);
                     }
                     // Wraps the old page and replaces it with the data fetched from ajax request
-                    var $data = $(data);
-                    var name = $data.find('#post').data('name');
-                    var $postPrep = $('<div id="new-post">').append($data.find('#post').contents());
+                    var $data = $(data).find('#post');
+                    var name = $data.data('name');
+                    var $postPrep = $('<div id="new-post">').append($data.contents());
                     // Changes page name and title
                     $post.data('name', name);
                     document.title = name.charAt(0).toUpperCase() + name.substring(1);
@@ -389,7 +389,7 @@
                             break;
                         }
                         // If the key is a function, the video will execute it. If it's a property, it will be applied to the video tag.
-                        if (typeof video[key] === 'function') {
+                        if (typeof (video[key]) === 'function') {
                             video[key]();
                         } else {
                             video[key] = options[key];
@@ -561,6 +561,7 @@
             },
             // Curriculum Vitae section
             loadCV: function ($cv) {
+                $cv = $cv || $('#post .cv');
                 // Skills section
                 $cv.find('.skills .title').on({
                     click: function () {
@@ -656,11 +657,11 @@
         $.prototype.wait = $.wait = function (time, callback) {
             var This = this;
             var procrastinate = $.Deferred();
-            if (typeof time !== 'number') {
+            if (typeof (time) !== 'number') {
                 time = 500;
             }
             // If callback exists, perform it after the delay and return jquery object for chaining
-            if (typeof callback === 'function') {
+            if (typeof (callback) === 'function') {
                 window.setTimeout(function () {
                     callback.call(This);
                 }, time);

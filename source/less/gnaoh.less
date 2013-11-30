@@ -422,7 +422,7 @@ html {
             display: block;
         }
     }
-    li {    
+    li {
         margin: 0.25em 0 0.25em 1.5em;
         list-style: circle;
         li {
@@ -434,6 +434,9 @@ html {
         border-bottom: 1px dashed @color;
         a {
             text-decoration: none !important;
+            &:before, &:after {
+                margin: 0 !important;
+            }
         }
         &:hover + .tip {
             .show;
@@ -441,8 +444,8 @@ html {
     }
     .tip {
         .hide;
-        color: @bg-color;
         z-index: 5;
+        color: @bg-color;
         padding: 1em;
         .absolute;
         background: rgba(0, 0, 0, 0.7);
@@ -505,9 +508,11 @@ html {
             }
         }
         [class *= 'bar-length'] {
+            z-index: -1;
             height: 125%;
             .animated;
             .delay;
+            .relative;
             background: @color;
         }
         .bar-length-10 {width: 10%;}
