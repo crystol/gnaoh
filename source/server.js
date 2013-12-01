@@ -43,16 +43,17 @@ gnaoh.configure('standalone', function () {
 });
 // Universial application settings
 gnaoh.configure(function () {
-    gnaoh.enable('trust proxy');
     gnaoh.set('view engine', 'jade');
     gnaoh.set('views', __dirname + '/views');
+    gnaoh.enable('trust proxy');
+    gnaoh.disable('etag');
     gnaoh.disable('x-powered-by');
     // Enable logging for requested routes--should only generate single line success/error codes for rendered requests
     gnaoh.use(express.logger('dev'));
     // Gzipper
     gnaoh.use(express.compress());
     // Simulate PUT and DELETE requests
-    // gnaoh.use(express.methodOverride());
+    gnaoh.use(express.methodOverride());
     // URL Cannonicalizer
     gnaoh.use(function (request, response, next) {
         // Remove www prefix
@@ -68,19 +69,17 @@ gnaoh.configure(function () {
         response.set({
             'Server': 'NodeGnaoh',
             'Cache-Control': 'public, max-age=13333337',
-            'Transfer-Encoding': 'chunked',
+            'Transfer-Encoding': 'chunked'
         });
         next();
     });
     // Route stack
-    // Serving static files -- this is a redundancy in case Nginx isn't working or node is running in standalone mode
-    // Public root directories for files such as robots.txt, favicon.ico, humans.txt, etc
-    gnaoh.use('/', express.static(__dirname + '/public/'));
-    gnaoh.use('/css/', express.static(__dirname + '/public/css/'));
-    gnaoh.use('/js/', express.static(__dirname + '/public/js/'));
-    gnaoh.use('/static/', express.static('/kadmin/server/www/static/'));
     // Primary views router 
     gnaoh.use(gnaoh.router);
+    // Public root directories for files such as robots.txt, favicon.ico, humans.txt, etc
+    gnaoh.use(express.static(__dirname + '/public/'));
+    // Serving static files -- this is a redundancy in case Nginx isn't working or node is running in standalone mode
+    gnaoh.use('/static/', express.static('/kadmin/server/www/static/'));
     // Handling 404 errors
     gnaoh.use(function (request, response, next) {
         response.status(404).render('404');

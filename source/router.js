@@ -53,6 +53,9 @@ routes.forEach(function (route) {
         path: route.path,
         options: options,
         render: function (request, response) {
+            response.set({
+                'Cache-Control': 'public, max-age=3600, must-revalidate'
+            });
             response.render(route.path, options);
         }
     };
