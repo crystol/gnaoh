@@ -1,6 +1,6 @@
-//- Predefined variables: title
+//- Predefined variables inherited from controller: title and path
 - title = title || 'Kenny Hoang';
-- path = (path || '/').toLowerCase();
+- path = '/'+ (path || '').toLowerCase();
 doctype 5
 html
     head
@@ -16,6 +16,6 @@ html
         include blocks/mixins
         include blocks/navigator
         #content
-            #post(data-name=path)
+            #post(data-title=title, data-path=path)
                 block content
         

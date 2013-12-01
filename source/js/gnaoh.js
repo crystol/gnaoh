@@ -152,11 +152,10 @@
                     }
                     // Wraps the old page and replaces it with the data fetched from ajax request
                     var $data = $(data).find('#post');
-                    var name = $data.data('name');
                     var $postPrep = $('<div id="new-post">').append($data.contents());
-                    // Changes page name and title
-                    $post.data('name', name);
-                    document.title = name.charAt(0).toUpperCase() + name.substring(1);
+                    // Changes page title and path
+                    $post.data('path', $data.data('path'));
+                    document.title = $data.data('title');
                     $post.wrapInner('<div id="old-post">').append($postPrep);
                     var $old = $('#old-post');
                     var $new = $('#new-post').css('width', $post.width());
@@ -503,8 +502,8 @@
             },
             // Highlights the current page
             activate: function () {
-                var pageName = $post.data('name');
-                var activists = $navList.find('a[href="/' + pageName + '"]');
+                var path = $post.data('path');
+                var activists = $navList.find('a[href="' + path + '"]');
                 activists = activists.add(activists.parent());
                 $navList.find('.active').removeClass('active');
                 activists.addClass('active');
