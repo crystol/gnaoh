@@ -159,6 +159,10 @@ module.exports = function () {
             analytics: {
                 src: ['build/public/js/loader.js', 'build/public/js/analytics.js'],
                 dest: 'build/public/js/loader.js'
+            },
+            clone: {
+                src: ['build/js/require.js', 'build/public/js/loader.js'],
+                dest: 'build/public/js/loader.js'
             }
         },
         //watches for changes within files & perform tasks if found
@@ -191,7 +195,7 @@ module.exports = function () {
         },
         // Auto restart the server if conditions meet
         nodemon: {
-            prod: {
+            dev: {
                 options: {
                     cwd: __dirname,
                     file: 'build/server.js',
@@ -231,5 +235,6 @@ module.exports = function () {
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);
     grunt.registerTask('development', ['clean:start', 'copy', 'concat:require', 'less:development', 'html', 'clean:finish', 'jshint']);
-    grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat', 'less:production', 'html', 'clean:finish']);
+    grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat:require', 'concat:analytics', 'less:production', 'html', 'clean:finish']);
+    grunt.registerTask('clone', ['clean:start', 'copy', 'concat:clone', 'less:development', 'html', 'clean:finish']);
 };

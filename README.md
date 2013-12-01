@@ -1,13 +1,15 @@
-# Author
-    Kenny@gnaoH.com
-
-# Running 
+# Cloning 
     (sans the images and videos unless you route /static to https://gnaoh.com/static)
 ```
     git clone https://github.com/crystol/gnaoh.git
     cd gnaoh
     npm install
-    grunt live
+```
+# Serving
+```
+    curl https://raw.github.com/jrburke/requirejs/master/require.js >> source/js/require.js
+    grunt clone
+    export NODE_ENV='clone' && node build/server.js
 ```
     Point browser to http://localhost:1337
 

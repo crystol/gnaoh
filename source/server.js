@@ -20,6 +20,10 @@ gnaoh.configure('development', function () {
 gnaoh.configure('production', function () {
     http.createServer(gnaoh).listen(8080);
 });
+// Clone from git
+gnaoh.configure('clone', function () {
+    http.createServer(gnaoh).listen(1337);
+});
 // Standalone environment (without nginx proxy)
 gnaoh.configure('standalone', function () {
     // SPDY options 
@@ -80,6 +84,12 @@ gnaoh.configure(function () {
     gnaoh.use(express.static(__dirname + '/public/'));
     // Serving static files -- this is a redundancy in case Nginx isn't working or node is running in standalone mode
     gnaoh.use('/static/', express.static('/kadmin/server/www/static/'));
+    // Static files for cloned projects
+    gnaoh.configure('clone', function () {
+        gnaoh.use('/static/', function (request, response) {
+            return response.redirect(302, 'http://gnaoh.com/static' + request.url);
+        });
+    });
     // Handling 404 errors
     gnaoh.use(function (request, response, next) {
         response.status(404).render('404');

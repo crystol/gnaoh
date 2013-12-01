@@ -1,11 +1,11 @@
 // Routes for video pages
 module.exports = [{
     path: 'projects/videos',
-    title: 'Videos',
+    title: 'Videos'
 }, {
     path: 'projects/videos/multi',
-    title: 'Multi Videos',
+    title: 'Multi Videos'
 }, {
     path: 'projects/videos/single',
-    title: 'Single Video',
+    title: 'Single Video'
 }];
