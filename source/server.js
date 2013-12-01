@@ -18,7 +18,7 @@ gnaoh.configure('development', function () {
 });
 // Production mode proxied through nginx
 gnaoh.configure('production', function () {
-    http.createServer(gnaoh).listen(1337);
+    http.createServer(gnaoh).listen(8080);
 });
 // Standalone environment (without nginx proxy)
 gnaoh.configure('standalone', function () {
