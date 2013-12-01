@@ -346,9 +346,7 @@
                         // Add rebrick as a handler for resizing events
                         This.resizeCallbacks.add(rebrick);
                         // Removes the opacity after the gallery is finished loading
-                        $.wait(100).done(function () {
-                            $foundation.removeClass('mortar');
-                        });
+                        $foundation.removeClass('mortar');
                     });
                 });
             },
@@ -482,7 +480,7 @@
                 var target = customTarget ? customTarget : getNext($this);
                 // If custom target is not specified, default offsets for next/prev elements are used
                 var selector = {
-                    scrollTop: $(target).offset() ? $(target).offset().top - 50 : 0
+                    scrollTop: $(target).offset() ? $(target).offset().top - $('#navigator').height() : 0
                 };
                 var scrollOptions = {
                     // Portrait oriented photos will scroll at 1s and landscape will be .5s
