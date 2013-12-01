@@ -100,12 +100,12 @@
 .prettyprint {
     margin: 0.5em 0; 
     padding: 0.5em; 
-    color: #ffffff;
-    background-color: #141414;
+    color: #000000;
+    background-color: #F5F5F5;
     font-family: inherit;
     white-space: pre-wrap;
     border-radius: 2px;
-    box-shadow: 1px 4px 4px #888888; 
+    box-shadow: 2px 3px 1px #B6B6B6;
     // Smaller box
     &.condensed {
         max-width: 80%;
@@ -119,19 +119,19 @@
 
 pre {
     // Comments
-    .com                { color: #888888; }
+    .com                { color: #666666; }
      // Capitalized classes and constructors
-    .typ                { color: #FBCBFF; }
+    .typ                { color: #BB0000; }
     // None-formatted code
     .nocode             { color: #000000; }
     // Keywords and Tags
-    .kwd, .tag          { color: #FFA96F; }
+    .kwd, .tag          { color: #CA5100; }
     // Strings and attribute values
-    .str, .atv          { color: #B2E9FF; } 
+    .str, .atv          { color: #078F12; } 
     // Punctuation, plain text, and attribute names
-    .pun, .pln, .atn    { color: #ffffff; }
+    .pun, .pln, .atn    { color: #000000; }
     // Ints and floats
-    .lit, .dec          { color: #68B68F; }
+    .lit, .dec          { color: #813DFC; }
 }
 
 // Normalizers
@@ -142,6 +142,7 @@ pre {
     border: 0;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
+    text-rendering: optimizeLegibility;
 }
 table {
     border-collapse:collapse;
@@ -187,7 +188,6 @@ html {
         background: @bg-color;
         font-size: @font-size;
         line-height: 20px;
-        text-rendering: optimizeLegibility;
     }
     //selection colors
     ::-moz-selection {
@@ -322,8 +322,11 @@ html {
         font-weight: normal;
     }
     a {
-        color: @color;
-        text-decoration: underline;
+        color: @color-dark;
+        text-decoration: none;
+        &:visited {
+            color: @color;
+        } 
     }
     a.inline {
         &:before, &:after {
@@ -543,6 +546,7 @@ html {
         }
         .date {
             color: @color-dark;
+            text-decoration: underline;
             margin-bottom: 0.5em;
         }
         .description {
