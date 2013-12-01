@@ -1,0 +1,57 @@
+extend /views/skeleton
+block content           
+    h1 gnaoh.layBricks
+    pre.prettyprint.
+        // Lay the brick elements using isotope.js from galleries with .wall classes
+        layBricks: function () {
+            var This = this;
+            var $foundation = $('.wall');
+            // Append isotope.js asynchronously
+            window.require(['static/isotope'], function () {
+                // Images.loaded() helps increases position accurary when the gallery is animated
+                $foundation.imagesLoaded(function () {
+                    $foundation.isotope({
+                        itemSelector: '.image',
+                        layoutMode: 'masonry',
+                        masonry: {
+                            // 2 photos per column on bigger screens (>1024px); 4 per column on mobile
+                            columnWidth: This.mini ? $post.width() / 2 : $post.width() / 4
+                        },
+                        containerClass: 'wall',
+                        itemClass: 'brick',
+                        resizable: false
+                    });
+                    function anotherBrickOnTheWall() {
+                        $foundation.isotope('reloadItems');
+                        $foundation.isotope('reLayout');
+                    }
+                    // Self-invoking function (on first init) that fixes the width on window resizes
+                    var rebrick = (function rebrick() {
+                        var delay = This.mini ? 0 : 500;
+                        $foundation.css({
+                            width: $content.width(),
+                            'max-width': $content.width()
+                        }).isotope('option', {
+                            masonry: {
+                                columnWidth: This.mini ? $post.width() / 2 : $post.width() / 4
+                            }
+                        });
+                        // Clicking on each image will toggle its enlargement.
+                        $foundation.off().on('click', '.image', function () {
+                            // Needs a animation delay in order for isotope to accurately calculate positions
+                            $.wait(delay, anotherBrickOnTheWall);
+                            $(this).addClass('top').toggleClass('biggie').wait(delay * 2, function () {
+                                this.removeClass('top');
+                            });
+                            return false;
+                        });
+                        $.wait(This.cssDelay * 0.5, anotherBrickOnTheWall);
+                        return rebrick;
+                    })();
+                    // Add rebrick as a handler for resizing events
+                    This.resizeCallbacks.add(rebrick);
+                    // Removes the opacity after the gallery is finished loading
+                    $foundation.removeClass('mortar');
+                });
+            });
+        },

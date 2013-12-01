@@ -29,6 +29,8 @@ block content
                 if ($301 = 1) {
                     return 301 https://gnaoh.com$request_uri;
                 }
+                # Dir root
+                root /kadmin/server/www/gnaoh/build/public;
                 # Error page
                 error_page 404 403 500 502 /errors/404.html;
                 location /errors {
@@ -37,6 +39,7 @@ block content
                 }
                 # Static serving -- max cache time and no logs 
                 location /static {
+                    access_log off;
                     root /kadmin/server/www;
                     expires max;
                 }
@@ -44,18 +47,20 @@ block content
                 location ~* /\. {
                     deny all;
                 }
+                location /(css|js) {
+                    expires 1w;
+                }
                 # Main route to node server
                 location @proxy {
-                    access_log         on;
                     proxy_set_header   Host             $http_host;
                     proxy_set_header   X-Real-IP        $remote_addr;
                     proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
                     proxy_set_header   X-NginX-Proxy    true;
                     proxy_pass         http://node;
                 }
-                # Directory root
+                # Root
                 location / {
-                     root /kadmin/server/www/gnaoh/build/public;
+                     add_header Cache-Control 'public, max-age=3600, must-revalidate';
                      try_files $uri $uri.html @proxy;
                 }
             }

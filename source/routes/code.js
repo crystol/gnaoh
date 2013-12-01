@@ -11,4 +11,7 @@ module.exports = [{
 }, {
     path: 'projects/code/gists/loadgallery',
     title: 'loadGallery',
+}, {
+    path: 'projects/code/gists/laybricks',
+    title: 'layBricks',
 }];
