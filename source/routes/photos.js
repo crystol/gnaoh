@@ -8,4 +8,7 @@ module.exports = [{
 }, {
     path: 'projects/photos/isotope',
     title: 'Isotopic Gallery',
+}, {
+    path: 'projects/photos/cinemagraphs',
+    title: 'Cinemagraphs',
 }];

@@ -1,0 +1,9 @@
+extend /views/skeleton
+block content
+    .textblock 
+        |I enjoy making 
+        +link('http://en.wikipedia.org/wiki/Cinemagraph', 'cinemagraphs')
+        | from films. The creation process is quite tedious but it's one of those things where the juice is worth the squeeze. Here's a cinnemagraph I made from the last Bond flick. 
+    img(src='/static/img/cinemagraph/skyfall.gif')
+    .textblock Movement in all frames is only allowed within the red masks.
+    img(src='/static/img/cinemagraph/skyfallMask.jpg')
