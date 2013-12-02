@@ -23,6 +23,7 @@ gnaoh.configure('production', function () {
 // Clone from git
 gnaoh.configure('clone', function () {
     http.createServer(gnaoh).listen(1337);
+    console.log('\nGood to go! Point your brower to http://localhost:1337/projects');
 });
 // Standalone environment (without nginx proxy)
 gnaoh.configure('standalone', function () {

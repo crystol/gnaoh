@@ -1,0 +1,34 @@
+extend /views/skeleton
+block content
+    h1 gnaoh
+    .textblock 
+        | Objectives:
+        ul.inline
+            li Learning experience
+            li Showcase things I've made
+            li Put the free year of Amazon micro EC2 server to use (besides being a VPN/wiki/file server)
+            
+    pre.prettyprint.linenums.
+        // Changing the colors!
+        var hello = 5;
+        var Hello = 13.37;
+        var Gnaoh = new GG();
+        rainbow: function () {
+            var colors = ['#52a87f', '#EE8080', '#9371b3', '#7C7C7C', '#0EAED6'];
+            var randomColor = Math.floor(Math.random() * colors.length);
+            function modify() {
+                $('link[rel=stylesheet]').remove();
+                $('body *').deanimate();
+                window.less.modifyVars({
+                    '@color': colors[randomColor],
+                    '@highlight': colors[randomColor]
+                });
+            }
+            if (!window.less) {
+                this.requireCss('/less/gnaoh.less');
+                window.require(['static/less'], modify);
+            } else {
+                gnaoh.modify();
+                Gnaoh.odify();
+            }
+        }

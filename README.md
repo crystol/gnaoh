@@ -1,5 +1,4 @@
-# Cloning 
-    (sans the images and videos unless you route /static to https://gnaoh.com/static)
+# Cloning
 ```
     git clone https://github.com/crystol/gnaoh.git
     cd gnaoh
@@ -11,7 +10,7 @@
     grunt clone
     export NODE_ENV='clone' && node build/server.js
 ```
-    Point browser to http://localhost:1337
+Point browser to http://localhost:1337
 
 # Things used to tran[scribe && slate] gnaoh.com:
     front: {

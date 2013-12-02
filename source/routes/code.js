@@ -1,17 +1,20 @@
 // Routes for previous code projects
 module.exports = [{
     path: 'projects/code',
-    title: 'Code',
+    title: 'Code'
+}, {
+    path: 'projects/code/gnaoh',
+    title: 'Gnaoh'
 }, {
     path: 'projects/code/devdev',
-    title: '/dev/deviation',
+    title: '/dev/deviation'
 }, {
     path: 'projects/code/gists/nginx.conf',
-    title: 'Nginx Config',
+    title: 'Nginx Config'
 }, {
     path: 'projects/code/gists/loadgallery',
-    title: 'loadGallery',
+    title: 'loadGallery'
 }, {
     path: 'projects/code/gists/laybricks',
-    title: 'layBricks',
+    title: 'layBricks'
 }];
