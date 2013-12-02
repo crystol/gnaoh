@@ -12,9 +12,10 @@ module.exports = function (grunt) {
             if (error) {
                 throw error;
             }
-            // Make the directory if it doesn't exist
+            // Checks path on each level
             var routeFrags = route.split('/');
             var htmlDir = buildDir + 'public/' + routeFrags.slice(0, routeFrags.length - 1).join('/');
+            // Make the directory if it doesn't exist
             if (routeFrags.length > 1 && !fs.existsSync(htmlDir)) {
                 mkdirp.sync(htmlDir);
             }
@@ -22,7 +23,7 @@ module.exports = function (grunt) {
             fs.writeFileSync(htmlFile, html);
             console.log('Generated ' + htmlFile);
         }
-        // Loop through the routes list and call write function for each.
+        // Loop through all possible routes and call write function for each.
         for (var route in routesList) {
             var jadeFile = buildDir + 'views/' + route + '.jade';
             jade.renderFile(jadeFile, routesList[route].options, write);
