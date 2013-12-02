@@ -1,7 +1,7 @@
 // Grunt task to convert all jade templates to .html files
 'use strict';
 module.exports = function (grunt) {
-    grunt.registerTask('html', function () {
+    grunt.registerTask('renderHTML', function () {
         var fs = require('fs');
         var jade = require('jade');
         var mkdirp = require('mkdirp');

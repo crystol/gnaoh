@@ -8,7 +8,6 @@
 ```
     curl https://raw.github.com/jrburke/requirejs/master/require.js >> source/js/require.js
     grunt clone
-    export NODE_ENV='clone' && node build/server.js
 ```
 Point browser to http://localhost:1337
 

@@ -182,11 +182,11 @@ module.exports = function () {
             },
             views: {
                 files: ['source/views/**', 'source/views/**/**'],
-                tasks: ['copy:views', 'html']
+                tasks: ['copy:views', 'renderHTML']
             },
             privates: {
                 files: ['source/private/*.js', 'source/private/views/**', 'source/private/views/**/**'],
-                tasks: ['copy:privates', 'html']
+                tasks: ['copy:privates', 'renderHTML']
             },
             less: {
                 files: ['source/less/*.less'],
@@ -195,7 +195,7 @@ module.exports = function () {
         },
         // Auto restart the server if conditions meet
         nodemon: {
-            dev: {
+            development: {
                 options: {
                     cwd: __dirname,
                     file: 'build/server.js',
@@ -208,12 +208,21 @@ module.exports = function () {
                     watchedFolders: ['source/', 'source/private/'],
                     ignoredFiles: ['source/js/**']
                 }
+            },
+            clone: {
+                options: {
+                    cwd: __dirname,
+                    file: 'build/server.js',
+                    env: {
+                        'NODE_ENV': 'clone'
+                    }
+                }
             }
         },
         // Run watch and nodemon at the same time to serve the site live
         concurrent: {
             target: {
-                tasks: ['nodemon', 'watch'],
+                tasks: ['nodemon:development', 'watch'],
                 options: {
                     logConcurrentOutput: true
                 }
@@ -234,7 +243,7 @@ module.exports = function () {
     // Assign tasks names
     grunt.registerTask('default', ['production']);
     grunt.registerTask('live', ['development', 'concurrent']);
-    grunt.registerTask('development', ['clean:start', 'copy', 'concat:require', 'less:development', 'html', 'clean:finish', 'jshint']);
-    grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat:require', 'concat:analytics', 'less:production', 'html', 'clean:finish']);
-    grunt.registerTask('clone', ['clean:start', 'copy', 'concat:clone', 'less:development', 'html', 'clean:finish']);
+    grunt.registerTask('development', ['clean:start', 'copy', 'concat:require', 'less:development', 'clean:finish', 'jshint']);
+    grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat:require', 'concat:analytics', 'less:production', 'renderHTML', 'clean:finish']);
+    grunt.registerTask('clone', ['clean:start', 'copy', 'concat:clone', 'less:development', 'renderHTML', 'clean:finish','nodemon:clone']);
 };
