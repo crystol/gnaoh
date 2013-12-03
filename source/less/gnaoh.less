@@ -97,7 +97,7 @@
     src: url('//themes.googleusercontent.com/static/fonts/titilliumweb/v1/anMUvcNT0H1YN4FII8wprwwHpU-8OKeXrGSDRtNNsHg.ttf') format('truetype');
 }
 // Code prettifier
-.prettyprint {
+.prettyprint, .pretty {
     margin: 0.5em 0; 
     padding: 0.5em 2em; 
     color: #000000;
@@ -315,12 +315,13 @@ html {
     margin: @navigator-h auto;
 }
 #post {
-    h1, h2, h3 {
+    h1, h2, h3, h4 {
         color: @color;
         font-weight: normal;
+        margin: 0.25em 0;
     }
     h1 {
-        margin: 10px 0;
+        margin: 0.5em 0;
     }
     a {
         color: @color-dark;

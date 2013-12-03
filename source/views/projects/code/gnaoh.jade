@@ -1,6 +1,10 @@
 extend /views/skeleton
 block content
     section
+        h1 Trials and tribulations of gnaoh
+        .textblock.
+            This page summerizes some the logic, challenges, and thought process behind this website.
+    section
         h3 Objectives:
         ul.inline
             li Learning experience
@@ -8,28 +12,60 @@ block content
             li Put the free year of Amazon micro EC2 server to use (besides being a VPN/wiki/file server)
     section
         h3 Clone and server gnaoh locally:
-        pre.prettyprint.
-            git clone 'https://github.com/crystol/gnaoh.git'
+        pre.pretty.
+            git clone https://github.com/crystol/gnaoh.git
+            curl https://raw.github.com/jrburke/requirejs/master/require.js >> gnaoh/source/js/require.js
+            
             cd gnaoh
-            curl https://raw.github.com/jrburke/requirejs/master/require.js >> source/js/require.js
             npm install
             grunt clone
             
             # point browser to <a href='http://localhost:1337/projects'>localhost:1337</a>
     section
-        h3 Trials and tribulations of gnaoh
+        h3 Node, just node.
         .textblock.
-            Node.js running Express is the application behind everything that you see on this website.
-            When it's serving requests on its own, it tends to choke a bit on this single core powered server.
-            A simple flood benchmark, normalized to 5000 total requests and 250 concurrent, shows its relative capacity.
-        img(src='')
+            Node.js running Express is the application behind everything that you see on this website. Simple flood benchmark results are provided to convey the relative capacity of each methods used.
+        pre.pretty.
+            # Primitive benchmarking server
+
+            Machine:                        Amazon Micro Instance (1x 1.8ghz CPU 613MB RAM)
+            Path:                           /projects
+            Requests:                       5000
+            Concurrent connections:         500
+            Total transferred:              11775000 bytes
+            Trials per test:                5
+
+            # Testing machine
+            Machine:                        Digital Ocoean VPS (1x 2.2ghz CPU 502MB RAM)
+            Tool:                           ApacheBench
+            Connection:                     1 gb/s
+
         .textblock.
-            It's even worse at serving pages over the TLS protocol.
-        img(src='')
+            When serving requests on its own, Node becomes the little engine that could. The midnight flagman was chugging along at an average of 800 requests per second. Not bad!
+        pre.pretty.
+            # Node Standalone http
+
+            Time taken for tests:           6.243 seconds
+            Requests per second:            800.86 [#/sec] (mean)
+            Time per request:               624.330 [ms] (mean)
+            Time per request:               1.249 [ms] (mean, across all concurrent requests)
+            Transfer rate:                  1841.82 [Kbytes/sec] received
+        .textblock.
+            Significant difference observed when benchmarked using the TLS protocol. The overhead for encryption on each request rendered Node into a Galápagos testudine. Mr. McShellyland yielded quite a large gap (~671) of requests per second when compared with his unencryted counterpart.
+        pre.pretty.
+            # Node Standalone https
+
+            Time taken for tests:           38.716 seconds
+            Requests per second:            129.15 [#/sec] (mean)
+            Time per request:               3871.580 [ms] (mean)
+            Time per request:               7.743 [ms] (mean, across all concurrent requests)
+            Transfer rate:                  297.01 [Kbytes/sec] received
+    
+    section
+        h3 Nginx to the rescue!
         .textblock.
             Nginx is added as an indentured servant--aka the serving workhorse.
         pre.prettyprint.
-            # Node.js server
             upstream node {
                 server 127.0.0.1:8080;
             }
@@ -41,6 +77,11 @@ block content
                 proxy_set_header   X-NginX-Proxy    true;
                 proxy_pass         http://node;
             }
+            # Root
+            location / {
+                 add_header Cache-Control 'public, max-age=3600, must-revalidate';
+                 try_files $uri $uri.html @proxy;
+            }
             # Cache settings
             proxy_cache              proxycache;
             proxy_cache_path         /kadmin/server/nginx/temp/proxycache levels=1:2 keys_zone=proxycache:5m max_size=1000m inactive=600m;
@@ -49,33 +90,29 @@ block content
             open_file_cache          max=1000 inactive=30s;
             open_file_cache_valid    30s;
             open_file_cache_min_uses 2;
-            # Root
-            location / {
-                 add_header Cache-Control 'public, max-age=3600, must-revalidate';
-                 try_files $uri $uri.html @proxy;
-            }
         .textblock.
-            Much of the stress on node.js was alleviated when nginx served all of the static contents requested.
-            To top it off, Nginx even proxy caches all of the pages generated by Express. 
-            In tandum with open cache for regular files, this system is much more efficient than the standalone node.js application.
-            How great!
-        img(src='')
-        pre.prettyprint.
-            location / {
-                 add_header Cache-Control 'public, max-age=3600, must-revalidate';
-                 try_files $uri $uri.html @proxy;
-            }
+            Much of the stress on Node was alleviated when Nginx, the F-22 jet, served the static contents requested. To top it off, Nginx proxy caches all of the pages previously generated by Express. Nginx was capable of supersonically serve more than 2000 requests per second than Node. In tandum with open cache for regular files, this dynamic duo is much more efficient than the standalone Node application. How great!
+        .textblock.
+            On the front end, the page load speed was also quite noticable--especially on pages with many photos. The difference between the two can range from 100 to 250ms.
+        pre.pretty.
+            # Node Nginx http
+            Time taken for tests:           1.476 seconds
+            Requests per second:            3387.15 [#/sec] (mean)
+            Time per request:               147.617 [ms] (mean)
+            Time per request:               0.295 [ms] (mean, across all concurrent requests)
+            Transfer rate:                  7677.32 [Kbytes/sec] received
         .textblock
-            | Nginx handles TLS encryption with ease. 
-            | Gnaoh's certificate was a free-tier (hey, the best things in life are free right?) obtained from
-            +link('http://www.startssl.com', 'StartSSL')
-            | . Considering the future of the
+            | Gnaoh's certificate is a free-tier (the best things in life are free right?) obtained from
+            +link('http://www.startssl.com', 'StartSSL.')
+            | Considering the future of the
             +link('http://lists.w3.org/Archives/Public/ietf-http-wg/2013OctDec/0625.html', 'HTTP/2') 
-            | protocol, it's neat to explore the seemingly endless depdths of crytography. 
+            | protocol, it was quite worthwhile to explore the, seemingly infinite, depths of crytography.
         .textblock.
-            The ciphers scheme used with gnaoh was eventually deduced with a few key points
+            The array of ciphers was eventually deduced with a few key points:
         ul.inline 
+            li Requests to port 80 are redirected to 443  
             li SSL is completely disabled
+            li SPDY is used on top of TLS
             li Forward secrecy is supported in newer browsers
             li Oldest supported protocol is 128 bit RC4 over TLSv1
             li Elliptic curve Diffie–Hellman key exchange protocol for 128bit AES encryption seem to perform the best without hindering other functionality 
@@ -84,11 +121,20 @@ block content
             ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
             ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-RC4-SHA:HIGH:!EDH:!MD5:!aNULL;
         .textblock.
-            The hit to server performance is definitely justifiable considering the features that SPDY offers:
-            stream multiplexing, headers compression, and the ability for the server to send data before it's even requested.
+            Nginx appears to handle TLS encryption with more grace in comparison to Node abeit having similar symptons of performance degradation. The F-22 went from supersonic to super slow: a difference of around 3157 requests per second was observed. Likewise with Node, Nginx's performance is throttled largely due to the CPU intensive nature of the TLS protocol. A single core can only do so much!
         .textblock.
-            To further optimize the flow, a Grunt task was written to bear the burden of pre-rendering each route that exists for this application.
-            This task is feasible due to the fact that this is a personal website with minute amounts of data--that's not managed by a database.
+            The large performance tax is justifiable through the features that SPDY offers: stream multiplexing, headers compression, and the ability for the server to send data before it's requested. Considering the volume of traffic this server will receive, Nginx will continue to use TLS/SPDY as default. 
+        pre.pretty.
+            # Node Nginx https
+            Time taken for tests:           21.749 seconds
+            Requests per second:            229.90 [#/sec] (mean)
+            Time per request:               2174.883 [ms] (mean)
+            Time per request:               4.350 [ms] (mean, across all concurrent requests)
+            Transfer rate:                  521.09 [Kbytes/sec] received
+    section
+        h3 Even more...?
+        .textblock.
+            To further optimize the flow, a Grunt task was written to bear the burden of pre-rendering each route that exists within the application. This task is feasible due to the fact that this is a personal website with minute amounts of data.
         pre.prettyprint.
             // Grunt task to convert all jade templates to .html files
             'use strict';
@@ -123,6 +169,24 @@ block content
                 });
             };
         .textblock.
-            Nginx's try_files method checks if the requested path matches with a file in the root directory. If not, it appends .html to the path and tries again. If that fails, it will defer to the node proxy to handle the request. Rendering all of the routes with static content into html will theoritically increase performance since the node.js application won't even lift a finger. If a request is made with a path that serves specific data, e.g., private user info or database access, node.js would handle it accordingly.
-        img(src='')
+            Nginx's try_files method checks if the requested path matches with a file in the root directory. If not, it appends .html to the path and tries again. Else, it will finally defer to the Node proxy to handle the request. Rendering all possible routes with static content into html should theoritically increase performance since the Node application remains asleep. If a request is made to a route that serves specific or dynamic data, e.g., private user info or database access, Node would handle it accordingly.
+        pre.pretty.
+            # Node Nginx http pre-rendered
+            Time taken for tests:           1.362 seconds
+            Requests per second:            3670.10 [#/sec] (mean)
+            Time per request:               136.236 [ms] (mean)
+            Time per request:               0.272 [ms] (mean, across all concurrent requests)
+            Transfer rate:                  8558.78 [Kbytes/sec] received
 
+            # Node Nginx https pre-rendered
+            Time taken for tests:           20.673 seconds
+            Requests per second:            241.86 [#/sec] (mean)
+            Time per request:               2067.288 [ms] (mean)
+            Time per request:               4.135 [ms] (mean, across all concurrent requests)
+            Transfer rate:                  564.03 [Kbytes/sec] received
+        .textblock.
+            Pre-rendered html increases the rate of requests in both http and https protocols by a small margin--around 283 and 12 per second respectively. If things were to scale linearly, this  9% increase would be highly beneficial on a highly trafficked website. 
+    section
+        h3 To be continued...
+
+            

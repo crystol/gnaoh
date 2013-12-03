@@ -1,15 +1,15 @@
 # Cloning
 ```
-    git clone https://github.com/crystol/gnaoh.git
-    cd gnaoh
-    npm install
+git clone https://github.com/crystol/gnaoh.git
+curl https://raw.github.com/jrburke/requirejs/master/require.js >> gnaoh/source/js/require.js
+
+cd gnaoh
+npm install
+grunt clone
+
+Point browser to <a href='http://localhost:1337/projects'>localhost:1337</a>
+
 ```
-# Serving
-```
-    curl https://raw.github.com/jrburke/requirejs/master/require.js >> source/js/require.js
-    grunt clone
-```
-Point browser to http://localhost:1337
 
 # Things used to tran[scribe && slate] gnaoh.com:
     front: {
