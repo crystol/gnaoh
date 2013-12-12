@@ -164,8 +164,10 @@
                         $old.remove();
                         $new.contents().unwrap();
                         // Push to analytics and initialize the new page
-                        if (typeof (window.ga) === 'function') {
-                            window.ga('send', 'pageview', document.location.pathname);
+                        if (window.mixpanel) {
+                            window.mixpanel.track('Navigation', {
+                                url: document.location.pathname
+                            });
                         }
                         This.init();
                     }
@@ -386,7 +388,7 @@
                             break;
                         }
                         // If the key is a function, the video will execute it. If it's a property, it will be applied to the video tag.
-                        if (typeof (video[key]) === 'function') {
+                        if (typeof video[key] === 'function') {
                             video[key]();
                         } else {
                             video[key] = options[key];
@@ -592,8 +594,11 @@
             },
             // Miscellaneous DOM bindings
             dominatrix: function () {
+                window.onunload = function () {
+                    window.mixpanel.track('unload');
+                };
                 var This = this;
-                // Return
+                // Return if page has already ben initialized
                 if (!This.firstLoad) {
                     return;
                 } else {
@@ -635,6 +640,12 @@
                     });
                     $navList.toggleClass('show');
                 });
+                // Mixpanel analytics
+                if (window.mixpanel) {
+                    window.mixpanel.track('Landing', {
+                        url: document.location.pathname
+                    });
+                }
             },
         };
         // Initializing everything and exporting it to the global scope
@@ -654,11 +665,11 @@
         $.prototype.wait = $.wait = function (time, callback) {
             var This = this;
             var procrastinate = $.Deferred();
-            if (typeof (time) !== 'number') {
+            if (typeof time !== 'number') {
                 time = 500;
             }
             // If callback exists, perform it after the delay and return jquery object for chaining
-            if (typeof (callback) === 'function') {
+            if (typeof callback === 'function') {
                 window.setTimeout(function () {
                     callback.call(This);
                 }, time);
