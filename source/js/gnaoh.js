@@ -26,7 +26,6 @@
                     $('#old-post').remove();
                     $('#new-post').contents().unwrap();
                 }
-                $window.off();
                 // Activate markings and sizing functions
                 This.activate();
                 This.size();
@@ -589,14 +588,18 @@
                         });
                     }
                 });
+                if (window.mixpanel) {
+                    $cv.find('a').on('click', function (data) {
+                        window.mixpanel.track('CV Click', {
+                            target: data.target.href
+                        });
+                    });
+                }
                 // Help resolve init promise
                 this.sectionsDone++;
             },
             // Miscellaneous DOM bindings
             dominatrix: function () {
-                window.onunload = function () {
-                    window.mixpanel.track('unload');
-                };
                 var This = this;
                 // Return if page has already ben initialized
                 if (!This.firstLoad) {
@@ -642,9 +645,25 @@
                 });
                 // Mixpanel analytics
                 if (window.mixpanel) {
+                    // User
+                    var user = window.localStorage.gnaohUser || Math.floor(Math.random() * 10000);
+                    window.localStorage.gnaohUser = user;
+                    log(user);
+                    window.mixpanel.identify(user);
+                    window.mixpanel.people.set({
+                        '$name': user,
+                        "$last_login": new Date()
+                    });
+                    // Logging landing page
                     window.mixpanel.track('Landing', {
                         url: document.location.pathname
                     });
+                    // Exit page
+                    window.onunload = function () {
+                        window.mixpanel.track('Unloading', {
+                            url: document.location.pathname
+                        });
+                    };
                 }
             },
         };
