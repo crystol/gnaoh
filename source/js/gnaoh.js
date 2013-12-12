@@ -645,14 +645,24 @@
                 });
                 // Mixpanel analytics
                 if (window.mixpanel) {
-                    // User
+                    // Grab user from LS or generate random number for new comers
                     var user = window.localStorage.gnaohUser || Math.floor(Math.random() * 10000);
                     window.localStorage.gnaohUser = user;
-                    log(user);
+                    // Identiy and set user metric
                     window.mixpanel.identify(user);
+                    // Parse remote IP address from cookie
+                    var remoteIP;
+                    var cookieTray = document.cookie.split(';');
+                    for (var i = 0; i < cookieTray.length; i++) {
+                        if (/^Remote=/.test(cookieTray[i])) {
+                            remoteIP = cookieTray[i].split('=')[1];
+                        }
+                    }
+                    // Push data to mixpanel
                     window.mixpanel.people.set({
                         '$name': user,
-                        "$last_login": new Date()
+                        '$last_login': new Date(),
+                        'IP': remoteIP
                     });
                     // Logging landing page
                     window.mixpanel.track('Landing', {

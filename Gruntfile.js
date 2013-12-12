@@ -89,9 +89,10 @@ module.exports = function () {
                     "gnaoh": true,
                     "DevDev": true
                 },
-                force: true
+                force: true,
+                ignores: ['source/js/analytics.js']
             },
-            source: ['*.js', 'source/*.js', 'source/**/*.js', 'source/**/**/*.js', ]
+            source: ['*.js', 'source/*.js', 'source/**/*.js', 'source/**/**/*.js'],
         },
         // Javascript minimizer/obfuscater 
         uglify: {
@@ -245,5 +246,5 @@ module.exports = function () {
     grunt.registerTask('live', ['development', 'concurrent']);
     grunt.registerTask('development', ['clean:start', 'copy', 'concat:require', 'less:development', 'clean:finish', 'jshint']);
     grunt.registerTask('production', ['clean:start', 'copy', 'uglify', 'concat:require', 'concat:analytics', 'less:production', 'renderHTML', 'clean:finish']);
-    grunt.registerTask('clone', ['clean:start', 'copy', 'concat:clone', 'less:development', 'renderHTML', 'clean:finish','nodemon:clone']);
+    grunt.registerTask('clone', ['clean:start', 'copy', 'concat:clone', 'less:development', 'renderHTML', 'clean:finish', 'nodemon:clone']);
 };
