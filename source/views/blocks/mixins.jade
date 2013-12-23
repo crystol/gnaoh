@@ -18,6 +18,7 @@ mixin lightbox(img, caption, text)
 
 //- Banners used in projects pages
 mixin banner(href, title, description, img, colorClass, linkClass)
+        -linkClass = linkClass || '';
         a(class='banner ajax '+ linkClass, href=href)
             .title(class=colorClass)=title
             .description(class=colorClass)=description

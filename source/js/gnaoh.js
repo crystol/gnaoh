@@ -123,7 +123,7 @@
                         $window.off(event);
                         return false;
                     });
-                    throw 'Mini detected';
+                    throw 'Mini mode detected, cancelling function.';
                 }
             },
             // Ajax loading of pages
@@ -591,7 +591,7 @@
                 if (window.mixpanel) {
                     $cv.find('a').on('click', function (data) {
                         window.mixpanel.track('CV Click', {
-                            target: data.target.href
+                            url: data.target.href
                         });
                     });
                 }
