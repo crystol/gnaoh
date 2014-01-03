@@ -119,16 +119,16 @@ define(['jquery', 'static/d3', 'static/topojson', 'gnaoh'], function () {
                     .attr('class', 'labels')
                     .attr('transform', 'translate(' + This.width / 2 + ',' + This.height / 2 + ')');
                 // /dev/deviation brand
-                This.d3.labels.name = This.d3.labels.append('text')
-                    .text('/dev/deviation')
-                    .attr('class', 'title')
+                // This.d3.labels.name = This.d3.labels.append('text')
+                //     .text('/dev/deviation')
+                //     .attr('class', 'title')
                 // Offset its x position by half its length
-                    .attr('dx', function () {
-                        return -this.scrollWidth * 0.5;
-                    })
-                    .attr('dy', function () {
-                        return -this.scrollHeight * 0.75;
-                    });
+                    // .attr('dx', function () {
+                    //     return -this.scrollWidth * 0.5;
+                    // })
+                    // .attr('dy', function () {
+                    //     return -this.scrollHeight * 0.75;
+                    // });
                 // Create an object to hold temporary interpolation data.
                 This.d3.interp = {};
                 // Functions to determine X and Y positions of the label. They're pinned near the center of the arc.

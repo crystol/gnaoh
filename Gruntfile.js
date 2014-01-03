@@ -183,11 +183,11 @@ module.exports = function () {
             },
             views: {
                 files: ['source/views/**', 'source/views/**/**'],
-                tasks: ['copy:views', 'renderHTML']
+                tasks: ['copy:views']
             },
             privates: {
                 files: ['source/private/*.js', 'source/private/views/**', 'source/private/views/**/**'],
-                tasks: ['copy:privates', 'renderHTML']
+                tasks: ['copy:privates']
             },
             less: {
                 files: ['source/less/*.less'],
