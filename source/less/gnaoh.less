@@ -21,8 +21,9 @@
  *              - Wall/Brick Styling
  *      - Media Queries for Responsive functionality.
  */
-//variables
-@font: 'Roboto', 'ubuntu', 'droid sans', monospace, sans-serif;              //default font
+
+// Variables
+@font: 'Roboto', 'ubuntu', 'droid sans', monospace, sans-serif;                 //default font
 @font-size: 15px;                                                               //default font size
 @color: #9371B3;                                                                //highlighted color
 @color-light: lighten(@color,15%);                                              //lighter color
@@ -39,19 +40,19 @@
 @cssTransitionTime: 900ms;                                                      //default time for css transitions
 @nl:`'\n'`;                                                                     //newline shorthand
 
-//common mixins
+// Common mixins
 .animated (@time: @cssTransitionTime; @type: all) {
     transition: ~'@{type}' @time cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .delay (@time: @cssTransitionTime) {
     transition-delay: @time;
 }
-//arguments as follows: name, duration, easing, delay, iteration count, direction, fill
+// Arguments as follows: name, duration, easing, delay, iteration count, direction, fill
 .key-animated (@name; @duration: 2s; @iteration: infinite; @easing: cubic-bezier(1,1,1,1); @delay: 0ms; @direction: normal; @fill: both) {
     animation: @name @duration @easing @delay @iteration @direction @fill;
     -webkit-animation: @name @duration @easing @delay @iteration @direction @fill;
 }
-//keyframe mixin. this is a really really ugly mixin hack. it's not possible until LESS implements mixins from variables.
+// Keyframe mixin. this is a really really ugly mixin hack. it's not possible until LESS implements mixins from variables.
 .keyframes(@name; @from: none; @to: 'none;';  @vendor:~'';){
      @open: ~'@@{vendor}keyframes @{name} {@{nl}  from {@{nl}    @{vendor}@{from}@{nl}  }@{nl}  to {@{nl}    @{vendor}@{to}@{nl}  }@{nl}}@{nl}.@{name}';
  	@{open} {
@@ -200,7 +201,7 @@ html {
         color: #fff;
         text-shadow: none;
     }
-//navigation bar
+// Navigation bar
 #navigator {
     top: 0;
     z-index: 10;
@@ -308,7 +309,7 @@ html {
             }
         }
     }
-//content page
+// Content page
 #content {
     padding: 2em 1em;
     max-width: @post-width;
@@ -358,7 +359,7 @@ html {
     .textblock {
         margin-bottom: 0.5em;
     }
-    //ajax page switching
+    // Ajax page switching
     #old-post, #new-post {
         max-width: @post-width;
         .absolute;
@@ -370,7 +371,7 @@ html {
             opacity: 0;
         }
     }
-    #new-post{
+    #new-post {
         .transform(translateX, -@post-width*1.25);
         opacity: 0;
         &.move {
@@ -379,7 +380,7 @@ html {
             .transform(translateX, 0);
         }
     }
-}   
+}
 .banner {
     margin: 1em auto;
     display: block;
@@ -424,7 +425,7 @@ html {
     }
 }
 
-// curriculum vitae section
+// Curriculum Vitae Section
 .cv {
     .self {
         span {
@@ -600,7 +601,7 @@ html {
             .absolute();
             .animated(300ms);
         }
-        //displays captions on hover
+        // Displays captions on hover
         &:hover > .caption {
             opacity: 1;
             padding: 1.5% 0 1.5% 1%;
@@ -629,13 +630,13 @@ html {
                 pointer-events: none;
             }
         }
-        //hides the gallery when it's initializing to ensure proper positioning
+        // Hides the gallery when it's initializing to ensure proper positioning
         &.mortar, &.mortar .brick {
             opacity: 0;
             .animated(0) !important;
         }
     }
-//video wrapper and UI
+// Video wrapper and UI
 .video {
     width: 100%;
     overflow: hidden;
@@ -655,13 +656,13 @@ html {
 }
 
 
-// responsive fluid grids
+// Responsive fluid grids
 [class *= 'grid-'] {
     display: inline;
     float: left;
     padding: 0 0.5%;
 }
-// parent wrappers of grid elements
+// Parent wrappers of grid elements
 .gridlock {
     float: none;
     & >:first-child {
@@ -672,7 +673,7 @@ html {
     }
     .clearfix();
 }
-//grid widths
+// Grid widths
 .grid-100   {width: 100%    !important;}
 .grid-80    {width:80%      !important;}
 .grid-75    {width:75%      !important;}
@@ -685,7 +686,7 @@ html {
 .grid-20    {width:20%      !important;}
 .grid-10    {width:10%      !important;}
 
-// grid blank offsets
+// Grid blank offsets
 .grid-offset-80    {margin-left:80%;}
 .grid-offset-75    {margin-left:75%;}
 .grid-offset-66    {margin-left:66%;}
@@ -715,8 +716,8 @@ html {
     .grid-25,
     .grid-20,
     .grid-10 {
-            .grid-50();
-        }
+        .grid-50();
+    }
     #navigator {
         height: auto;
         z-index: 5;
@@ -750,7 +751,6 @@ html {
                 background: @bg-color;
                 .absolute();
             }
-           
             .flipper:before {
                 top: -200%;
             }
@@ -833,10 +833,10 @@ html {
             }
         }
 }
-//Phones in portrait layout
+// Phones in portrait layout
 @media (max-width:480px) {
-    //makes all grid items turn into 100% width
-     [class *= 'grid-'] {
+    // Makes all grid items turn into 100% width
+    [class *= 'grid-'] {
         width:100% !important;
         margin: auto 0;
     }

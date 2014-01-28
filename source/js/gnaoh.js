@@ -567,6 +567,11 @@
                         // Mark the label and the tab active
                         $cv.find(this.dataset.tab).addClass('active');
                         $(this).addClass('active');
+                        if (window.mixpanel) {
+                            window.mixpanel.track('CV Click', {
+                                url: this.textContent + ' Tab'
+                            });
+                        }
                     }
                 });
                 // Experience section
