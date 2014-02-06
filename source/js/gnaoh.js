@@ -675,7 +675,7 @@
                         'IP': remoteIP
                     });
                     // Exit page
-                    window.onunload = function () {
+                    window.onbeforeunload = function () {
                         window.mixpanel.track('Unloading', {
                             url: document.location.pathname
                         });
