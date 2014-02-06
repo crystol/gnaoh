@@ -671,7 +671,8 @@
                     });
                     // Logging landing page
                     window.mixpanel.track('Landing', {
-                        url: document.location.pathname
+                        url: document.location.pathname,
+                        'IP': remoteIP
                     });
                     // Exit page
                     window.onunload = function () {
