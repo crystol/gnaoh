@@ -361,7 +361,10 @@
                     var options = this.dataset;
                     var vidSrc = This.static + '/vid/' + id;
                     // Placeholder image while the video loads (the poster tag kinda sucks) and adjust the height for 16:9 ratio of 720p movies
-                    var poster = $('<img src="' + This.static + '/vid/posters/' + id + '.jpg" class="poster">');
+                    var poster;
+                    if (!options.autoplay) {
+                        poster = $('<img src="' + This.static + '/vid/posters/' + id + '.jpg" class="poster">');
+                    }
                     $wrapper.css({
                         height: $wrapper.width() * (9 / 16)
                     });

@@ -8,4 +8,7 @@ module.exports = [{
 }, {
     path: 'projects/videos/single',
     title: 'Single Video'
+}, {
+    path: 'projects/videos/parkour',
+    title: 'Parkour!'
 }];
